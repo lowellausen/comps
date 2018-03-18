@@ -1,4 +1,6 @@
 %{
+#include <stdio.h>
+#include <stdlib.h>
 #include "hash.h"
 #include "tokens.h"
 
@@ -26,7 +28,7 @@ print	{return KW_PRINT;}
 char	{return KW_CHAR;}
 
 [,;:(){}+-/<>=!&$#] { return yytext[0]; }
-"["	{ return yytext[0]; }  //estavam dando erro se juntos dos acima
+"["	{ return yytext[0]; }  
 "]"	{ return yytext[0]; }
 "*"	{ return yytext[0]; }
 
@@ -37,20 +39,20 @@ char	{return KW_CHAR;}
 "&&"	{return OPERATOR_AND;}
 "||"	{return OPERATOR_OR;}
 
-[A-Za-z_][A-Za-z_0-9]*	{return TK_IDENTIFIER;}
-[0-9]+ 			{return LIT_INTEGER;}
-[0-9]+.[0-9]+		{return LIT_REAL;}
-"'"[0-9a-zA-Z]"'"	{return LIT_CHAR; }
-\"([^\\\"]|\\.)*\"	{return LIT_STRING; }
+[A-Za-z_][A-Za-z_0-9]*	{hashInsert(yytext,TK_IDENTIFIER);return TK_IDENTIFIER;}
+[0-9]+ 			{hashInsert(yytext,LIT_INTEGER);return LIT_INTEGER;}
+[0-9]+.[0-9]+		{hashInsert(yytext,LIT_REAL);return LIT_REAL;}
+"'"[0-9a-zA-Z]"'"	{hashInsert(yytext,LIT_CHAR);return LIT_CHAR; }
+\"([^\\\"]|\\.)*\"	{hashInsert(yytext,LIT_STRING);return LIT_STRING; }
 
-[ \t]  //ignorar espaçamentos
+[ \t]  
 
-\n   {++lineCount;}  //incrementar as linhas
+\n   {++lineCount;}  
 
-"//".*  //ignorar comentários
+"//".* 
 
 "/*"   {BEGIN(COMMENT);}  
-<COMMENT>\n       { }		
+<COMMENT>\n       {++lineCount;}		
 <COMMENT>.
 <COMMENT>"*/"  {BEGIN(INITIAL);}
 

@@ -26,6 +26,7 @@ void hashPrint(){
 int getHashAddress(char * text){
 	int address =1;
 	int i;
+
 	for (i=0; i < strlen(text);i++)
 		address = (address*text[i]) % HASH_TABLE_SIZE +1;
 	return address -1;
@@ -34,6 +35,7 @@ int getHashAddress(char * text){
 HASHNODE * hashInsert(char * text, int type){
 	HASHNODE * newNode = hashSearch(text);
 	int address = getHashAddress(text);
+	
 	if (newNode != NULL)
 		return newNode;
 	newNode = (HASHNODE *) calloc (1, sizeof(HASHNODE));

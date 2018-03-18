@@ -21,6 +21,9 @@ lex.yy.c: scanner.l
 run: etapa1
 	./etapa1
 
+file: etapa1
+	./etapa1 code.test
+
 
 clean:
 	rm lex.yy.c lex.yy.o main.o hash.o etapa1
