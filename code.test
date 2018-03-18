@@ -18,5 +18,3 @@ float f = 5.66;
 read x;
 
 return 0;
-
-

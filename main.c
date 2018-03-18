@@ -27,7 +27,7 @@ int main (int argc, char *argv[])
 	while(isRunning())
 	{
  		tok = yylex();	
-		
+		if(isRunning()){
 		switch (tok)
 		{
 		case KW_CHAR:
@@ -105,10 +105,11 @@ int main (int argc, char *argv[])
 		default:
 			printf("Olha lá um %c na linha %d\n",tok, getLineNumber());
 			break;
+		}
 		}	
 	}
-	printf("\nTinha %d linhas.\n", getLineNumber());
 	hashPrint();
-	//fclose(yyin);
-	exit(0);
+	fclose(yyin);
+	printf("\nTotal de linhas : %d\n", getLineNumber());
+	return 0;
 }

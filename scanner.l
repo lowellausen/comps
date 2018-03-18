@@ -59,7 +59,7 @@ char	{return KW_CHAR;}
 
 
 
-.	{ return TOKEN_ERROR; }
+.	{return TOKEN_ERROR;}
 
 
 %%
@@ -75,6 +75,7 @@ void initMe(){
 
 int yywrap(){
 	running = 0;
+	lineCount--; //tá lindo um \n a mais no fim do arquivo!!
 
 	return 1;
 }
