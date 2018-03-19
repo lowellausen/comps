@@ -41,7 +41,7 @@ char	{return KW_CHAR;}
 
 [A-Za-z_][A-Za-z_0-9]*	{hashInsert(yytext,TK_IDENTIFIER);return TK_IDENTIFIER;}
 [0-9]+ 			{hashInsert(yytext,LIT_INTEGER);return LIT_INTEGER;}
-[0-9]+[A-Za-z_]		{return TOKEN_ERROR;}
+[0-9]+[A-Za-z_]+		{return TOKEN_ERROR;}
 [0-9]+"."[0-9]+		{hashInsert(yytext,LIT_REAL);return LIT_REAL;}
 "'"[0-9a-zA-Z]"'"	{hashInsert(yytext,LIT_CHAR);return LIT_CHAR; }
 "'"[0-9a-zA-Z]+"'"	{return TOKEN_ERROR;}
