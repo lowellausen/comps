@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "hash.h"
-#include "tokens.h"
+#include "y.tab.h"
 
 int lineCount = 1;
 int running = 1;
@@ -15,17 +15,17 @@ int running = 1;
 
 
 
-if	{return KW_IF;}
-then 	{return KW_THEN;}
-else	{return KW_ELSE;}
-while	{return KW_WHILE;}
-int	{return KW_INT;}
-float	{return KW_FLOAT;}
-for	{return KW_FOR;}
-read	{return KW_READ;}
-return	{return KW_RETURN;}
-print	{return KW_PRINT;}
-char	{return KW_CHAR;}
+if	{return TK_IF;}
+then 	{return TK_THEN;}
+else	{return TK_ELSE;}
+while	{return TK_WHILE;}
+int	{return TK_INT;}
+float	{return TK_FLOAT;}
+for	{return TK_FOR;}
+read	{return TK_READ;}
+return	{return TK_RETURN;}
+print	{return TK_PRINT;}
+char	{return TK_CHAR;}
 
 [,;:(){}+-/<>=!&$#] { return yytext[0]; }
 "["	{ return yytext[0]; }  

@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "tokens.h"
 #include "hash.h"
+#include "y.tab.h"
 
 
 extern int yylex();
@@ -9,6 +9,8 @@ extern int isRunning();
 extern int getLineNumber();
 extern void initMe();
 extern FILE *yyin;
+extern int yyparse();
+
 
 int main (int argc, char *argv[])
 {
@@ -24,7 +26,7 @@ int main (int argc, char *argv[])
 	
  
  
-	while(isRunning())
+	/*while(isRunning())
 	{
  		tok = yylex();	
 		if(isRunning()){
@@ -107,7 +109,10 @@ int main (int argc, char *argv[])
 			break;
 		}
 		}	
-	}
+	}*/
+
+	if(!yyparse())printf("programa aceito");	
+
 	hashPrint();
 	fclose(yyin);
 	printf("\nTotal de linhas : %d\n", getLineNumber());

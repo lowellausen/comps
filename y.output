@@ -1,0 +1,145 @@
+   0  $accept : program $end
+
+   1  program : commandList
+
+   2  commandList : command commandList
+   3              |
+
+   4  command : reservedFunc '(' ')'
+
+   5  reservedFunc : TK_WHILE
+   6               | TK_IF
+   7               | TK_THEN
+   8               | TK_ELSE
+   9               | TK_FOR
+  10               | TK_READ
+  11               | TK_RETURN
+  12               | TK_PRINT
+
+state 0
+	$accept : . program $end  (0)
+	commandList : .  (3)
+
+	TK_WHILE  shift 1
+	TK_IF  shift 2
+	TK_THEN  shift 3
+	TK_ELSE  shift 4
+	TK_FOR  shift 5
+	TK_READ  shift 6
+	TK_RETURN  shift 7
+	TK_PRINT  shift 8
+	$end  reduce 3
+
+	program  goto 9
+	commandList  goto 10
+	command  goto 11
+	reservedFunc  goto 12
+
+
+state 1
+	reservedFunc : TK_WHILE .  (5)
+
+	.  reduce 5
+
+
+state 2
+	reservedFunc : TK_IF .  (6)
+
+	.  reduce 6
+
+
+state 3
+	reservedFunc : TK_THEN .  (7)
+
+	.  reduce 7
+
+
+state 4
+	reservedFunc : TK_ELSE .  (8)
+
+	.  reduce 8
+
+
+state 5
+	reservedFunc : TK_FOR .  (9)
+
+	.  reduce 9
+
+
+state 6
+	reservedFunc : TK_READ .  (10)
+
+	.  reduce 10
+
+
+state 7
+	reservedFunc : TK_RETURN .  (11)
+
+	.  reduce 11
+
+
+state 8
+	reservedFunc : TK_PRINT .  (12)
+
+	.  reduce 12
+
+
+state 9
+	$accept : program . $end  (0)
+
+	$end  accept
+
+
+state 10
+	program : commandList .  (1)
+
+	.  reduce 1
+
+
+state 11
+	commandList : command . commandList  (2)
+	commandList : .  (3)
+
+	TK_WHILE  shift 1
+	TK_IF  shift 2
+	TK_THEN  shift 3
+	TK_ELSE  shift 4
+	TK_FOR  shift 5
+	TK_READ  shift 6
+	TK_RETURN  shift 7
+	TK_PRINT  shift 8
+	$end  reduce 3
+
+	commandList  goto 13
+	command  goto 11
+	reservedFunc  goto 12
+
+
+state 12
+	command : reservedFunc . '(' ')'  (4)
+
+	'('  shift 14
+	.  error
+
+
+state 13
+	commandList : command commandList .  (2)
+
+	.  reduce 2
+
+
+state 14
+	command : reservedFunc '(' . ')'  (4)
+
+	')'  shift 15
+	.  error
+
+
+state 15
+	command : reservedFunc '(' ')' .  (4)
+
+	.  reduce 4
+
+
+27 terminals, 5 nonterminals
+13 grammar rules, 16 states
