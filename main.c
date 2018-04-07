@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "tokens.h"
+//#include "tokens.h"
+#include "y.tab.h"
 
 
 extern int yylex();
@@ -31,37 +32,37 @@ int main (int argc, char *argv[])
 		if(isRunning()){
 		switch (tok)
 		{
-		case KW_CHAR:
+		case TK_CHAR:
 			printf("Olha lá um CHAR na linha %d\n", getLineNumber());
 			break;
-		case KW_INT:
+		case TK_INT:
 			printf("Olha lá um INT na linha %d\n", getLineNumber());
 			break;
-		case KW_FLOAT:
+		case TK_FLOAT:
 			printf("Olha lá um FLOAT na linha %d\n", getLineNumber());
 			break;
-		case KW_IF:
+		case TK_IF:
 			printf("Olha lá um IF na linha %d\n", getLineNumber());
 			break;
-		case KW_THEN:
+		case TK_THEN:
 			printf("Olha lá um THEN na linha %d\n", getLineNumber());
 			break;
-		case KW_ELSE:
+		case TK_ELSE:
 			printf("Olha lá um ELSE na linha %d\n", getLineNumber());
 			break;
-		case KW_WHILE:
+		case TK_WHILE:
 			printf("Olha lá um WHILE na linha %d\n", getLineNumber());
 			break;
-		case KW_FOR:
+		case TK_FOR:
 			printf("Olha lá um FOR na linha %d\n", getLineNumber());
 			break;
-		case KW_READ:
+		case TK_READ:
 			printf("Olha lá um READ na linha %d\n", getLineNumber());
 			break;
-		case KW_RETURN:
+		case TK_RETURN:
 			printf("Olha lá um RETURN na linha %d\n", getLineNumber());
 			break;
-		case KW_PRINT:
+		case TK_PRINT:
 			printf("Olha lá um PRINT na linha %d\n", getLineNumber());
 			break;
 
@@ -112,7 +113,7 @@ int main (int argc, char *argv[])
 
 	if(!yyparse())printf("programa aceito");	
 
-	hashPrint();
+	//hashPrint();
 	fclose(yyin);
 	printf("\nTotal de linhas : %d\n", getLineNumber());
 	return 0;

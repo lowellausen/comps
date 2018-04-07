@@ -22,6 +22,7 @@ while	{return TK_WHILE;}
 int	{return TK_INT;}
 float	{return TK_FLOAT;}
 for	{return TK_FOR;}
+to	{return TK_TO;}
 read	{return TK_READ;}
 return	{return TK_RETURN;}
 print	{return TK_PRINT;}
@@ -41,7 +42,7 @@ char	{return TK_CHAR;}
 
 [A-Za-z_][A-Za-z_0-9]*	{hashInsert(yytext,TK_IDENTIFIER);return TK_IDENTIFIER;}
 [0-9]+ 			{hashInsert(yytext,LIT_INTEGER);return LIT_INTEGER;}
-[0-9]+"."[0-9]		{hashInsert(yytext,LIT_REAL);return LIT_REAL;}
+[0-9]+"."[0-9]+		{hashInsert(yytext,LIT_REAL);return LIT_REAL;}
 "'"[0-9a-zA-Z]"'"	{hashInsert(yytext,LIT_CHAR);return LIT_CHAR; }
 \"([^\\\"]|\\.)*\"	{hashInsert(yytext,LIT_STRING);return LIT_STRING; }
 
