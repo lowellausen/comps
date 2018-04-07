@@ -21,87 +21,86 @@
   14  lit : LIT_INTEGER
   15      | LIT_REAL
   16      | LIT_CHAR
-  17      | LIT_STRING
 
-  18  lit_list : lit lit_list
-  19           |
+  17  lit_list : lit lit_list
+  18           |
 
-  20  func : var_type TK_IDENTIFIER '(' param_list ')' block
+  19  func : var_type TK_IDENTIFIER '(' param_list ')' block
 
-  21  param : var_type TK_IDENTIFIER
+  20  param : var_type TK_IDENTIFIER
 
-  22  param_list : param
-  23             | param aux_param_list
-  24             |
+  21  param_list : param
+  22             | param aux_param_list
+  23             |
 
-  25  aux_param_list : ',' param aux_param_list
-  26                 |
+  24  aux_param_list : ',' param aux_param_list
+  25                 |
 
-  27  block : '{' command_list '}'
+  26  block : '{' command_list '}'
 
-  28  command_list : command ';' command_list
-  29               | command
-  30               |
+  27  command_list : command ';' command_list
+  28               | command
+  29               |
 
-  31  command : attribution
-  32          | read
-  33          | print
-  34          | return
-  35          | block
-  36          | control
-  37          |
+  30  command : attribution
+  31          | read
+  32          | print
+  33          | return
+  34          | block
+  35          | control
+  36          |
 
-  38  attribution : TK_IDENTIFIER '=' expr
-  39              | TK_IDENTIFIER '[' expr ']' '=' expr
+  37  attribution : TK_IDENTIFIER '=' expr
+  38              | TK_IDENTIFIER '[' expr ']' '=' expr
 
-  40  read : TK_READ TK_IDENTIFIER
+  39  read : TK_READ TK_IDENTIFIER
 
-  41  print : TK_PRINT print_list
+  40  print : TK_PRINT print_list
 
-  42  print_list : LIT_STRING
-  43             | expr
-  44             | LIT_STRING print_list
-  45             | expr print_list
+  41  print_list : LIT_STRING
+  42             | expr
+  43             | LIT_STRING print_list
+  44             | expr print_list
 
-  46  return : TK_RETURN expr
+  45  return : TK_RETURN expr
 
-  47  expr : TK_IDENTIFIER
-  48       | TK_IDENTIFIER '[' expr ']'
-  49       | lit
-  50       | func_call
-  51       | '#' TK_IDENTIFIER
-  52       | '&' TK_IDENTIFIER
-  53       | '(' expr ')'
-  54       | expr '+' expr
-  55       | expr '-' expr
-  56       | expr '*' expr
-  57       | expr '/' expr
-  58       | expr '<' expr
-  59       | expr '>' expr
-  60       | expr '!' expr
-  61       | expr OPERATOR_LE expr
-  62       | expr OPERATOR_GE expr
-  63       | expr OPERATOR_EQ expr
-  64       | expr OPERATOR_NE expr
-  65       | expr OPERATOR_AND expr
-  66       | expr OPERATOR_OR expr
+  46  expr : TK_IDENTIFIER
+  47       | TK_IDENTIFIER '[' expr ']'
+  48       | lit
+  49       | func_call
+  50       | '#' TK_IDENTIFIER
+  51       | '&' TK_IDENTIFIER
+  52       | '(' expr ')'
+  53       | expr '+' expr
+  54       | expr '-' expr
+  55       | expr '*' expr
+  56       | expr '/' expr
+  57       | expr '<' expr
+  58       | expr '>' expr
+  59       | expr '!' expr
+  60       | expr OPERATOR_LE expr
+  61       | expr OPERATOR_GE expr
+  62       | expr OPERATOR_EQ expr
+  63       | expr OPERATOR_NE expr
+  64       | expr OPERATOR_AND expr
+  65       | expr OPERATOR_OR expr
 
-  67  func_call : TK_IDENTIFIER '(' call_param_list ')'
-  68            | TK_IDENTIFIER '(' ')'
+  66  func_call : TK_IDENTIFIER '(' call_param_list ')'
+  67            | TK_IDENTIFIER '(' ')'
 
-  69  call_param_list : expr
-  70                  | expr ',' call_param_list
+  68  call_param_list : expr
+  69                  | expr ',' call_param_list
 
-  71  control : if
-  72          | while
-  73          | for
+  70  control : if
+  71          | while
+  72          | for
 
-  74  if : TK_IF '(' expr ')' TK_THEN command
-  75     | TK_IF '(' expr ')' TK_THEN command TK_ELSE command
+  73  if : TK_IF '(' expr ')' TK_THEN command
+  74     | TK_IF '(' expr ')' TK_THEN command TK_ELSE command
 
-  76  while : TK_WHILE '(' expr ')' command
+  75  while : TK_WHILE '(' expr ')' command
 
-  77  for : TK_FOR '(' TK_IDENTIFIER '=' expr TK_TO expr ')' command
+  76  for : TK_FOR '(' TK_IDENTIFIER '=' expr TK_TO expr ')' command
 
 state 0
 	$accept : . program $end  (0)
@@ -183,7 +182,7 @@ state 8
 	var : var_type . TK_IDENTIFIER '=' lit ';'  (5)
 	var : var_type . '#' TK_IDENTIFIER '=' lit ';'  (6)
 	var : var_type . TK_IDENTIFIER vec_dec ';'  (7)
-	func : var_type . TK_IDENTIFIER '(' param_list ')' block  (20)
+	func : var_type . TK_IDENTIFIER '(' param_list ')' block  (19)
 
 	TK_IDENTIFIER  shift 11
 	'#'  shift 12
@@ -205,7 +204,7 @@ state 10
 state 11
 	var : var_type TK_IDENTIFIER . '=' lit ';'  (5)
 	var : var_type TK_IDENTIFIER . vec_dec ';'  (7)
-	func : var_type TK_IDENTIFIER . '(' param_list ')' block  (20)
+	func : var_type TK_IDENTIFIER . '(' param_list ')' block  (19)
 	vec_dec : .  (13)
 
 	'='  shift 13
@@ -229,45 +228,44 @@ state 13
 	LIT_INTEGER  shift 18
 	LIT_REAL  shift 19
 	LIT_CHAR  shift 20
-	LIT_STRING  shift 21
 	.  error
 
-	lit  goto 22
+	lit  goto 21
 
 
 state 14
 	vec_dec : '[' . LIT_INTEGER ']'  (11)
 	vec_dec : '[' . LIT_INTEGER ']' ':' lit_list  (12)
 
-	LIT_INTEGER  shift 23
+	LIT_INTEGER  shift 22
 	.  error
 
 
 state 15
-	func : var_type TK_IDENTIFIER '(' . param_list ')' block  (20)
-	param_list : .  (24)
+	func : var_type TK_IDENTIFIER '(' . param_list ')' block  (19)
+	param_list : .  (23)
 
 	TK_CHAR  shift 1
 	TK_INT  shift 2
 	TK_FLOAT  shift 3
-	')'  reduce 24
+	')'  reduce 23
 
-	var_type  goto 24
-	param_list  goto 25
-	param  goto 26
+	var_type  goto 23
+	param_list  goto 24
+	param  goto 25
 
 
 state 16
 	var : var_type TK_IDENTIFIER vec_dec . ';'  (7)
 
-	';'  shift 27
+	';'  shift 26
 	.  error
 
 
 state 17
 	var : var_type '#' TK_IDENTIFIER . '=' lit ';'  (6)
 
-	'='  shift 28
+	'='  shift 27
 	.  error
 
 
@@ -290,2072 +288,1308 @@ state 20
 
 
 state 21
-	lit : LIT_STRING .  (17)
+	var : var_type TK_IDENTIFIER '=' lit . ';'  (5)
 
-	.  reduce 17
+	';'  shift 28
+	.  error
 
 
 state 22
-	var : var_type TK_IDENTIFIER '=' lit . ';'  (5)
+	vec_dec : '[' LIT_INTEGER . ']'  (11)
+	vec_dec : '[' LIT_INTEGER . ']' ':' lit_list  (12)
 
-	';'  shift 29
+	']'  shift 29
 	.  error
 
 
 state 23
-	vec_dec : '[' LIT_INTEGER . ']'  (11)
-	vec_dec : '[' LIT_INTEGER . ']' ':' lit_list  (12)
+	param : var_type . TK_IDENTIFIER  (20)
 
-	']'  shift 30
+	TK_IDENTIFIER  shift 30
 	.  error
 
 
 state 24
-	param : var_type . TK_IDENTIFIER  (21)
+	func : var_type TK_IDENTIFIER '(' param_list . ')' block  (19)
 
-	TK_IDENTIFIER  shift 31
+	')'  shift 31
 	.  error
 
 
+25: reduce/reduce conflict (reduce 21, reduce 25) on ')'
 state 25
-	func : var_type TK_IDENTIFIER '(' param_list . ')' block  (20)
+	param_list : param .  (21)
+	param_list : param . aux_param_list  (22)
+	aux_param_list : .  (25)
 
-	')'  shift 32
-	.  error
+	','  shift 32
+	')'  reduce 21
+
+	aux_param_list  goto 33
 
 
-26: reduce/reduce conflict (reduce 22, reduce 26) on ')'
 state 26
-	param_list : param .  (22)
-	param_list : param . aux_param_list  (23)
-	aux_param_list : .  (26)
-
-	','  shift 33
-	')'  reduce 22
-
-	aux_param_list  goto 34
-
-
-state 27
 	var : var_type TK_IDENTIFIER vec_dec ';' .  (7)
 
 	.  reduce 7
 
 
-state 28
+state 27
 	var : var_type '#' TK_IDENTIFIER '=' . lit ';'  (6)
 
 	LIT_INTEGER  shift 18
 	LIT_REAL  shift 19
 	LIT_CHAR  shift 20
-	LIT_STRING  shift 21
 	.  error
 
-	lit  goto 35
+	lit  goto 34
 
 
-state 29
+state 28
 	var : var_type TK_IDENTIFIER '=' lit ';' .  (5)
 
 	.  reduce 5
 
 
-state 30
+state 29
 	vec_dec : '[' LIT_INTEGER ']' .  (11)
 	vec_dec : '[' LIT_INTEGER ']' . ':' lit_list  (12)
 
-	':'  shift 36
+	':'  shift 35
 	';'  reduce 11
 
 
-state 31
-	param : var_type TK_IDENTIFIER .  (21)
+state 30
+	param : var_type TK_IDENTIFIER .  (20)
 
-	.  reduce 21
+	.  reduce 20
+
+
+state 31
+	func : var_type TK_IDENTIFIER '(' param_list ')' . block  (19)
+
+	'{'  shift 36
+	.  error
+
+	block  goto 37
 
 
 state 32
-	func : var_type TK_IDENTIFIER '(' param_list ')' . block  (20)
-
-	'{'  shift 37
-	.  error
-
-	block  goto 38
-
-
-state 33
-	aux_param_list : ',' . param aux_param_list  (25)
+	aux_param_list : ',' . param aux_param_list  (24)
 
 	TK_CHAR  shift 1
 	TK_INT  shift 2
 	TK_FLOAT  shift 3
 	.  error
 
-	var_type  goto 24
-	param  goto 39
+	var_type  goto 23
+	param  goto 38
+
+
+state 33
+	param_list : param aux_param_list .  (22)
+
+	.  reduce 22
 
 
 state 34
-	param_list : param aux_param_list .  (23)
-
-	.  reduce 23
-
-
-state 35
 	var : var_type '#' TK_IDENTIFIER '=' lit . ';'  (6)
 
-	';'  shift 40
+	';'  shift 39
 	.  error
 
 
-state 36
+state 35
 	vec_dec : '[' LIT_INTEGER ']' ':' . lit_list  (12)
-	lit_list : .  (19)
+	lit_list : .  (18)
 
 	LIT_INTEGER  shift 18
 	LIT_REAL  shift 19
 	LIT_CHAR  shift 20
-	LIT_STRING  shift 21
-	';'  reduce 19
+	';'  reduce 18
 
-	lit  goto 41
-	lit_list  goto 42
+	lit  goto 40
+	lit_list  goto 41
 
 
-37: reduce/reduce conflict (reduce 30, reduce 37) on '}'
+36: reduce/reduce conflict (reduce 29, reduce 36) on '}'
+state 36
+	block : '{' . command_list '}'  (26)
+	command_list : .  (29)
+	command : .  (36)
+
+	TK_WHILE  shift 42
+	TK_IF  shift 43
+	TK_FOR  shift 44
+	TK_READ  shift 45
+	TK_RETURN  shift 46
+	TK_PRINT  shift 47
+	TK_IDENTIFIER  shift 48
+	'{'  shift 36
+	';'  reduce 36
+	'}'  reduce 29
+
+	block  goto 49
+	command_list  goto 50
+	command  goto 51
+	attribution  goto 52
+	read  goto 53
+	print  goto 54
+	return  goto 55
+	control  goto 56
+	if  goto 57
+	while  goto 58
+	for  goto 59
+
+
 state 37
-	block : '{' . command_list '}'  (27)
-	command_list : .  (30)
-	command : .  (37)
+	func : var_type TK_IDENTIFIER '(' param_list ')' block .  (19)
 
-	TK_WHILE  shift 43
-	TK_IF  shift 44
-	TK_FOR  shift 45
-	TK_READ  shift 46
-	TK_RETURN  shift 47
-	TK_PRINT  shift 48
-	TK_IDENTIFIER  shift 49
-	'{'  shift 37
-	';'  reduce 37
-	'}'  reduce 30
-
-	block  goto 50
-	command_list  goto 51
-	command  goto 52
-	attribution  goto 53
-	read  goto 54
-	print  goto 55
-	return  goto 56
-	control  goto 57
-	if  goto 58
-	while  goto 59
-	for  goto 60
+	.  reduce 19
 
 
 state 38
-	func : var_type TK_IDENTIFIER '(' param_list ')' block .  (20)
+	aux_param_list : ',' param . aux_param_list  (24)
+	aux_param_list : .  (25)
 
-	.  reduce 20
+	','  shift 32
+	')'  reduce 25
+
+	aux_param_list  goto 60
 
 
 state 39
-	aux_param_list : ',' param . aux_param_list  (25)
-	aux_param_list : .  (26)
-
-	','  shift 33
-	')'  reduce 26
-
-	aux_param_list  goto 61
-
-
-state 40
 	var : var_type '#' TK_IDENTIFIER '=' lit ';' .  (6)
 
 	.  reduce 6
 
 
-state 41
-	lit_list : lit . lit_list  (18)
-	lit_list : .  (19)
+state 40
+	lit_list : lit . lit_list  (17)
+	lit_list : .  (18)
 
 	LIT_INTEGER  shift 18
 	LIT_REAL  shift 19
 	LIT_CHAR  shift 20
-	LIT_STRING  shift 21
-	';'  reduce 19
+	';'  reduce 18
 
-	lit  goto 41
-	lit_list  goto 62
+	lit  goto 40
+	lit_list  goto 61
 
 
-state 42
+state 41
 	vec_dec : '[' LIT_INTEGER ']' ':' lit_list .  (12)
 
 	.  reduce 12
 
 
+state 42
+	while : TK_WHILE . '(' expr ')' command  (75)
+
+	'('  shift 62
+	.  error
+
+
 state 43
-	while : TK_WHILE . '(' expr ')' command  (76)
+	if : TK_IF . '(' expr ')' TK_THEN command  (73)
+	if : TK_IF . '(' expr ')' TK_THEN command TK_ELSE command  (74)
 
 	'('  shift 63
 	.  error
 
 
 state 44
-	if : TK_IF . '(' expr ')' TK_THEN command  (74)
-	if : TK_IF . '(' expr ')' TK_THEN command TK_ELSE command  (75)
+	for : TK_FOR . '(' TK_IDENTIFIER '=' expr TK_TO expr ')' command  (76)
 
 	'('  shift 64
 	.  error
 
 
 state 45
-	for : TK_FOR . '(' TK_IDENTIFIER '=' expr TK_TO expr ')' command  (77)
+	read : TK_READ . TK_IDENTIFIER  (39)
 
-	'('  shift 65
+	TK_IDENTIFIER  shift 65
 	.  error
 
 
 state 46
-	read : TK_READ . TK_IDENTIFIER  (40)
+	return : TK_RETURN . expr  (45)
 
 	TK_IDENTIFIER  shift 66
+	LIT_INTEGER  shift 18
+	LIT_REAL  shift 19
+	LIT_CHAR  shift 20
+	'#'  shift 67
+	'('  shift 68
+	'&'  shift 69
 	.  error
+
+	lit  goto 70
+	expr  goto 71
+	func_call  goto 72
 
 
 state 47
-	return : TK_RETURN . expr  (46)
+	print : TK_PRINT . print_list  (40)
 
-	TK_IDENTIFIER  shift 67
+	TK_IDENTIFIER  shift 66
 	LIT_INTEGER  shift 18
 	LIT_REAL  shift 19
 	LIT_CHAR  shift 20
-	LIT_STRING  shift 21
-	'#'  shift 68
-	'('  shift 69
-	'&'  shift 70
+	LIT_STRING  shift 73
+	'#'  shift 67
+	'('  shift 68
+	'&'  shift 69
 	.  error
 
-	lit  goto 71
-	expr  goto 72
-	func_call  goto 73
+	lit  goto 70
+	expr  goto 74
+	print_list  goto 75
+	func_call  goto 72
 
 
 state 48
-	print : TK_PRINT . print_list  (41)
+	attribution : TK_IDENTIFIER . '=' expr  (37)
+	attribution : TK_IDENTIFIER . '[' expr ']' '=' expr  (38)
 
-	TK_IDENTIFIER  shift 67
-	LIT_INTEGER  shift 18
-	LIT_REAL  shift 19
-	LIT_CHAR  shift 20
-	LIT_STRING  shift 74
-	'#'  shift 68
-	'('  shift 69
-	'&'  shift 70
+	'='  shift 76
+	'['  shift 77
 	.  error
-
-	lit  goto 71
-	expr  goto 75
-	print_list  goto 76
-	func_call  goto 73
 
 
 state 49
-	attribution : TK_IDENTIFIER . '=' expr  (38)
-	attribution : TK_IDENTIFIER . '[' expr ']' '=' expr  (39)
+	command : block .  (34)
 
-	'='  shift 77
-	'['  shift 78
-	.  error
+	.  reduce 34
 
 
 state 50
-	command : block .  (35)
+	block : '{' command_list . '}'  (26)
 
-	.  reduce 35
-
-
-state 51
-	block : '{' command_list . '}'  (27)
-
-	'}'  shift 79
+	'}'  shift 78
 	.  error
 
 
-state 52
-	command_list : command . ';' command_list  (28)
-	command_list : command .  (29)
+state 51
+	command_list : command . ';' command_list  (27)
+	command_list : command .  (28)
 
-	';'  shift 80
-	'}'  reduce 29
+	';'  shift 79
+	'}'  reduce 28
+
+
+state 52
+	command : attribution .  (30)
+
+	.  reduce 30
 
 
 state 53
-	command : attribution .  (31)
+	command : read .  (31)
 
 	.  reduce 31
 
 
 state 54
-	command : read .  (32)
+	command : print .  (32)
 
 	.  reduce 32
 
 
 state 55
-	command : print .  (33)
+	command : return .  (33)
 
 	.  reduce 33
 
 
 state 56
-	command : return .  (34)
+	command : control .  (35)
 
-	.  reduce 34
+	.  reduce 35
 
 
 state 57
-	command : control .  (36)
+	control : if .  (70)
 
-	.  reduce 36
+	.  reduce 70
 
 
 state 58
-	control : if .  (71)
+	control : while .  (71)
 
 	.  reduce 71
 
 
 state 59
-	control : while .  (72)
+	control : for .  (72)
 
 	.  reduce 72
 
 
 state 60
-	control : for .  (73)
+	aux_param_list : ',' param aux_param_list .  (24)
 
-	.  reduce 73
+	.  reduce 24
 
 
 state 61
-	aux_param_list : ',' param aux_param_list .  (25)
+	lit_list : lit lit_list .  (17)
 
-	.  reduce 25
+	.  reduce 17
 
 
 state 62
-	lit_list : lit lit_list .  (18)
+	while : TK_WHILE '(' . expr ')' command  (75)
 
-	.  reduce 18
+	TK_IDENTIFIER  shift 66
+	LIT_INTEGER  shift 18
+	LIT_REAL  shift 19
+	LIT_CHAR  shift 20
+	'#'  shift 67
+	'('  shift 68
+	'&'  shift 69
+	.  error
+
+	lit  goto 70
+	expr  goto 80
+	func_call  goto 72
 
 
 state 63
-	while : TK_WHILE '(' . expr ')' command  (76)
+	if : TK_IF '(' . expr ')' TK_THEN command  (73)
+	if : TK_IF '(' . expr ')' TK_THEN command TK_ELSE command  (74)
 
-	TK_IDENTIFIER  shift 67
+	TK_IDENTIFIER  shift 66
 	LIT_INTEGER  shift 18
 	LIT_REAL  shift 19
 	LIT_CHAR  shift 20
-	LIT_STRING  shift 21
-	'#'  shift 68
-	'('  shift 69
-	'&'  shift 70
+	'#'  shift 67
+	'('  shift 68
+	'&'  shift 69
 	.  error
 
-	lit  goto 71
+	lit  goto 70
 	expr  goto 81
-	func_call  goto 73
+	func_call  goto 72
 
 
 state 64
-	if : TK_IF '(' . expr ')' TK_THEN command  (74)
-	if : TK_IF '(' . expr ')' TK_THEN command TK_ELSE command  (75)
+	for : TK_FOR '(' . TK_IDENTIFIER '=' expr TK_TO expr ')' command  (76)
 
-	TK_IDENTIFIER  shift 67
-	LIT_INTEGER  shift 18
-	LIT_REAL  shift 19
-	LIT_CHAR  shift 20
-	LIT_STRING  shift 21
-	'#'  shift 68
-	'('  shift 69
-	'&'  shift 70
+	TK_IDENTIFIER  shift 82
 	.  error
-
-	lit  goto 71
-	expr  goto 82
-	func_call  goto 73
 
 
 state 65
-	for : TK_FOR '(' . TK_IDENTIFIER '=' expr TK_TO expr ')' command  (77)
+	read : TK_READ TK_IDENTIFIER .  (39)
 
-	TK_IDENTIFIER  shift 83
-	.  error
+	.  reduce 39
 
 
+66: shift/reduce conflict (shift 84, reduce 46) on '('
 state 66
-	read : TK_READ TK_IDENTIFIER .  (40)
+	expr : TK_IDENTIFIER .  (46)
+	expr : TK_IDENTIFIER . '[' expr ']'  (47)
+	func_call : TK_IDENTIFIER . '(' call_param_list ')'  (66)
+	func_call : TK_IDENTIFIER . '(' ')'  (67)
 
-	.  reduce 40
+	'['  shift 83
+	'('  shift 84
+	TK_ELSE  reduce 46
+	TK_TO  reduce 46
+	OPERATOR_LE  reduce 46
+	OPERATOR_GE  reduce 46
+	OPERATOR_EQ  reduce 46
+	OPERATOR_NE  reduce 46
+	OPERATOR_AND  reduce 46
+	OPERATOR_OR  reduce 46
+	TK_IDENTIFIER  reduce 46
+	LIT_INTEGER  reduce 46
+	LIT_REAL  reduce 46
+	LIT_CHAR  reduce 46
+	LIT_STRING  reduce 46
+	';'  reduce 46
+	'#'  reduce 46
+	']'  reduce 46
+	')'  reduce 46
+	','  reduce 46
+	'}'  reduce 46
+	'&'  reduce 46
+	'+'  reduce 46
+	'-'  reduce 46
+	'*'  reduce 46
+	'/'  reduce 46
+	'<'  reduce 46
+	'>'  reduce 46
+	'!'  reduce 46
 
 
-67: shift/reduce conflict (shift 85, reduce 47) on '('
 state 67
-	expr : TK_IDENTIFIER .  (47)
-	expr : TK_IDENTIFIER . '[' expr ']'  (48)
-	func_call : TK_IDENTIFIER . '(' call_param_list ')'  (67)
-	func_call : TK_IDENTIFIER . '(' ')'  (68)
+	expr : '#' . TK_IDENTIFIER  (50)
 
-	'['  shift 84
-	'('  shift 85
-	TK_ELSE  reduce 47
-	TK_TO  reduce 47
-	OPERATOR_LE  reduce 47
-	OPERATOR_GE  reduce 47
-	OPERATOR_EQ  reduce 47
-	OPERATOR_NE  reduce 47
-	OPERATOR_AND  reduce 47
-	OPERATOR_OR  reduce 47
-	TK_IDENTIFIER  reduce 47
-	LIT_INTEGER  reduce 47
-	LIT_REAL  reduce 47
-	LIT_CHAR  reduce 47
-	LIT_STRING  reduce 47
-	';'  reduce 47
-	'#'  reduce 47
-	']'  reduce 47
-	')'  reduce 47
-	','  reduce 47
-	'}'  reduce 47
-	'&'  reduce 47
-	'+'  reduce 47
-	'-'  reduce 47
-	'*'  reduce 47
-	'/'  reduce 47
-	'<'  reduce 47
-	'>'  reduce 47
-	'!'  reduce 47
+	TK_IDENTIFIER  shift 85
+	.  error
 
 
 state 68
-	expr : '#' . TK_IDENTIFIER  (51)
+	expr : '(' . expr ')'  (52)
 
-	TK_IDENTIFIER  shift 86
-	.  error
-
-
-state 69
-	expr : '(' . expr ')'  (53)
-
-	TK_IDENTIFIER  shift 67
+	TK_IDENTIFIER  shift 66
 	LIT_INTEGER  shift 18
 	LIT_REAL  shift 19
 	LIT_CHAR  shift 20
-	LIT_STRING  shift 21
-	'#'  shift 68
-	'('  shift 69
-	'&'  shift 70
+	'#'  shift 67
+	'('  shift 68
+	'&'  shift 69
 	.  error
 
-	lit  goto 71
-	expr  goto 87
-	func_call  goto 73
+	lit  goto 70
+	expr  goto 86
+	func_call  goto 72
+
+
+state 69
+	expr : '&' . TK_IDENTIFIER  (51)
+
+	TK_IDENTIFIER  shift 87
+	.  error
 
 
 state 70
-	expr : '&' . TK_IDENTIFIER  (52)
+	expr : lit .  (48)
 
-	TK_IDENTIFIER  shift 88
-	.  error
+	.  reduce 48
 
 
 state 71
-	expr : lit .  (49)
+	return : TK_RETURN expr .  (45)
+	expr : expr . '+' expr  (53)
+	expr : expr . '-' expr  (54)
+	expr : expr . '*' expr  (55)
+	expr : expr . '/' expr  (56)
+	expr : expr . '<' expr  (57)
+	expr : expr . '>' expr  (58)
+	expr : expr . '!' expr  (59)
+	expr : expr . OPERATOR_LE expr  (60)
+	expr : expr . OPERATOR_GE expr  (61)
+	expr : expr . OPERATOR_EQ expr  (62)
+	expr : expr . OPERATOR_NE expr  (63)
+	expr : expr . OPERATOR_AND expr  (64)
+	expr : expr . OPERATOR_OR expr  (65)
+
+	OPERATOR_LE  shift 88
+	OPERATOR_GE  shift 89
+	OPERATOR_EQ  shift 90
+	OPERATOR_NE  shift 91
+	OPERATOR_AND  shift 92
+	OPERATOR_OR  shift 93
+	'+'  shift 94
+	'-'  shift 95
+	'*'  shift 96
+	'/'  shift 97
+	'<'  shift 98
+	'>'  shift 99
+	'!'  shift 100
+	TK_ELSE  reduce 45
+	';'  reduce 45
+	'}'  reduce 45
+
+
+state 72
+	expr : func_call .  (49)
 
 	.  reduce 49
 
 
-state 72
-	return : TK_RETURN expr .  (46)
-	expr : expr . '+' expr  (54)
-	expr : expr . '-' expr  (55)
-	expr : expr . '*' expr  (56)
-	expr : expr . '/' expr  (57)
-	expr : expr . '<' expr  (58)
-	expr : expr . '>' expr  (59)
-	expr : expr . '!' expr  (60)
-	expr : expr . OPERATOR_LE expr  (61)
-	expr : expr . OPERATOR_GE expr  (62)
-	expr : expr . OPERATOR_EQ expr  (63)
-	expr : expr . OPERATOR_NE expr  (64)
-	expr : expr . OPERATOR_AND expr  (65)
-	expr : expr . OPERATOR_OR expr  (66)
-
-	OPERATOR_LE  shift 89
-	OPERATOR_GE  shift 90
-	OPERATOR_EQ  shift 91
-	OPERATOR_NE  shift 92
-	OPERATOR_AND  shift 93
-	OPERATOR_OR  shift 94
-	'+'  shift 95
-	'-'  shift 96
-	'*'  shift 97
-	'/'  shift 98
-	'<'  shift 99
-	'>'  shift 100
-	'!'  shift 101
-	TK_ELSE  reduce 46
-	';'  reduce 46
-	'}'  reduce 46
-
-
 state 73
-	expr : func_call .  (50)
+	print_list : LIT_STRING .  (41)
+	print_list : LIT_STRING . print_list  (43)
 
-	.  reduce 50
-
-
-74: reduce/reduce conflict (reduce 17, reduce 42) on TK_ELSE
-74: shift/reduce conflict (shift 67, reduce 17) on TK_IDENTIFIER
-74: shift/reduce conflict (shift 18, reduce 17) on LIT_INTEGER
-74: shift/reduce conflict (shift 19, reduce 17) on LIT_REAL
-74: shift/reduce conflict (shift 20, reduce 17) on LIT_CHAR
-74: shift/reduce conflict (shift 74, reduce 17) on LIT_STRING
-74: reduce/reduce conflict (reduce 17, reduce 42) on ';'
-74: shift/reduce conflict (shift 68, reduce 17) on '#'
-74: shift/reduce conflict (shift 69, reduce 17) on '('
-74: reduce/reduce conflict (reduce 17, reduce 42) on '}'
-74: shift/reduce conflict (shift 70, reduce 17) on '&'
-state 74
-	lit : LIT_STRING .  (17)
-	print_list : LIT_STRING .  (42)
-	print_list : LIT_STRING . print_list  (44)
-
-	TK_IDENTIFIER  shift 67
+	TK_IDENTIFIER  shift 66
 	LIT_INTEGER  shift 18
 	LIT_REAL  shift 19
 	LIT_CHAR  shift 20
-	LIT_STRING  shift 74
-	'#'  shift 68
-	'('  shift 69
-	'&'  shift 70
-	TK_ELSE  reduce 17
-	OPERATOR_LE  reduce 17
-	OPERATOR_GE  reduce 17
-	OPERATOR_EQ  reduce 17
-	OPERATOR_NE  reduce 17
-	OPERATOR_AND  reduce 17
-	OPERATOR_OR  reduce 17
-	';'  reduce 17
-	'}'  reduce 17
-	'+'  reduce 17
-	'-'  reduce 17
-	'*'  reduce 17
-	'/'  reduce 17
-	'<'  reduce 17
-	'>'  reduce 17
-	'!'  reduce 17
+	LIT_STRING  shift 73
+	'#'  shift 67
+	'('  shift 68
+	'&'  shift 69
+	TK_ELSE  reduce 41
+	';'  reduce 41
+	'}'  reduce 41
 
-	lit  goto 71
-	expr  goto 75
+	lit  goto 70
+	expr  goto 74
+	print_list  goto 101
+	func_call  goto 72
+
+
+state 74
+	print_list : expr .  (42)
+	print_list : expr . print_list  (44)
+	expr : expr . '+' expr  (53)
+	expr : expr . '-' expr  (54)
+	expr : expr . '*' expr  (55)
+	expr : expr . '/' expr  (56)
+	expr : expr . '<' expr  (57)
+	expr : expr . '>' expr  (58)
+	expr : expr . '!' expr  (59)
+	expr : expr . OPERATOR_LE expr  (60)
+	expr : expr . OPERATOR_GE expr  (61)
+	expr : expr . OPERATOR_EQ expr  (62)
+	expr : expr . OPERATOR_NE expr  (63)
+	expr : expr . OPERATOR_AND expr  (64)
+	expr : expr . OPERATOR_OR expr  (65)
+
+	OPERATOR_LE  shift 88
+	OPERATOR_GE  shift 89
+	OPERATOR_EQ  shift 90
+	OPERATOR_NE  shift 91
+	OPERATOR_AND  shift 92
+	OPERATOR_OR  shift 93
+	TK_IDENTIFIER  shift 66
+	LIT_INTEGER  shift 18
+	LIT_REAL  shift 19
+	LIT_CHAR  shift 20
+	LIT_STRING  shift 73
+	'#'  shift 67
+	'('  shift 68
+	'&'  shift 69
+	'+'  shift 94
+	'-'  shift 95
+	'*'  shift 96
+	'/'  shift 97
+	'<'  shift 98
+	'>'  shift 99
+	'!'  shift 100
+	TK_ELSE  reduce 42
+	';'  reduce 42
+	'}'  reduce 42
+
+	lit  goto 70
+	expr  goto 74
 	print_list  goto 102
-	func_call  goto 73
+	func_call  goto 72
 
 
 state 75
-	print_list : expr .  (43)
-	print_list : expr . print_list  (45)
-	expr : expr . '+' expr  (54)
-	expr : expr . '-' expr  (55)
-	expr : expr . '*' expr  (56)
-	expr : expr . '/' expr  (57)
-	expr : expr . '<' expr  (58)
-	expr : expr . '>' expr  (59)
-	expr : expr . '!' expr  (60)
-	expr : expr . OPERATOR_LE expr  (61)
-	expr : expr . OPERATOR_GE expr  (62)
-	expr : expr . OPERATOR_EQ expr  (63)
-	expr : expr . OPERATOR_NE expr  (64)
-	expr : expr . OPERATOR_AND expr  (65)
-	expr : expr . OPERATOR_OR expr  (66)
+	print : TK_PRINT print_list .  (40)
 
-	OPERATOR_LE  shift 89
-	OPERATOR_GE  shift 90
-	OPERATOR_EQ  shift 91
-	OPERATOR_NE  shift 92
-	OPERATOR_AND  shift 93
-	OPERATOR_OR  shift 94
-	TK_IDENTIFIER  shift 67
-	LIT_INTEGER  shift 18
-	LIT_REAL  shift 19
-	LIT_CHAR  shift 20
-	LIT_STRING  shift 74
-	'#'  shift 68
-	'('  shift 69
-	'&'  shift 70
-	'+'  shift 95
-	'-'  shift 96
-	'*'  shift 97
-	'/'  shift 98
-	'<'  shift 99
-	'>'  shift 100
-	'!'  shift 101
-	TK_ELSE  reduce 43
-	';'  reduce 43
-	'}'  reduce 43
-
-	lit  goto 71
-	expr  goto 75
-	print_list  goto 103
-	func_call  goto 73
+	.  reduce 40
 
 
 state 76
-	print : TK_PRINT print_list .  (41)
+	attribution : TK_IDENTIFIER '=' . expr  (37)
 
-	.  reduce 41
+	TK_IDENTIFIER  shift 66
+	LIT_INTEGER  shift 18
+	LIT_REAL  shift 19
+	LIT_CHAR  shift 20
+	'#'  shift 67
+	'('  shift 68
+	'&'  shift 69
+	.  error
+
+	lit  goto 70
+	expr  goto 103
+	func_call  goto 72
 
 
 state 77
-	attribution : TK_IDENTIFIER '=' . expr  (38)
+	attribution : TK_IDENTIFIER '[' . expr ']' '=' expr  (38)
 
-	TK_IDENTIFIER  shift 67
+	TK_IDENTIFIER  shift 66
 	LIT_INTEGER  shift 18
 	LIT_REAL  shift 19
 	LIT_CHAR  shift 20
-	LIT_STRING  shift 21
-	'#'  shift 68
-	'('  shift 69
-	'&'  shift 70
+	'#'  shift 67
+	'('  shift 68
+	'&'  shift 69
 	.  error
 
-	lit  goto 71
+	lit  goto 70
 	expr  goto 104
-	func_call  goto 73
+	func_call  goto 72
 
 
 state 78
-	attribution : TK_IDENTIFIER '[' . expr ']' '=' expr  (39)
+	block : '{' command_list '}' .  (26)
 
-	TK_IDENTIFIER  shift 67
-	LIT_INTEGER  shift 18
-	LIT_REAL  shift 19
-	LIT_CHAR  shift 20
-	LIT_STRING  shift 21
-	'#'  shift 68
-	'('  shift 69
-	'&'  shift 70
-	.  error
-
-	lit  goto 71
-	expr  goto 105
-	func_call  goto 73
+	.  reduce 26
 
 
+79: reduce/reduce conflict (reduce 29, reduce 36) on '}'
 state 79
-	block : '{' command_list '}' .  (27)
+	command_list : command ';' . command_list  (27)
+	command_list : .  (29)
+	command : .  (36)
 
-	.  reduce 27
+	TK_WHILE  shift 42
+	TK_IF  shift 43
+	TK_FOR  shift 44
+	TK_READ  shift 45
+	TK_RETURN  shift 46
+	TK_PRINT  shift 47
+	TK_IDENTIFIER  shift 48
+	'{'  shift 36
+	';'  reduce 36
+	'}'  reduce 29
+
+	block  goto 49
+	command_list  goto 105
+	command  goto 51
+	attribution  goto 52
+	read  goto 53
+	print  goto 54
+	return  goto 55
+	control  goto 56
+	if  goto 57
+	while  goto 58
+	for  goto 59
 
 
-80: reduce/reduce conflict (reduce 30, reduce 37) on '}'
 state 80
-	command_list : command ';' . command_list  (28)
-	command_list : .  (30)
-	command : .  (37)
+	expr : expr . '+' expr  (53)
+	expr : expr . '-' expr  (54)
+	expr : expr . '*' expr  (55)
+	expr : expr . '/' expr  (56)
+	expr : expr . '<' expr  (57)
+	expr : expr . '>' expr  (58)
+	expr : expr . '!' expr  (59)
+	expr : expr . OPERATOR_LE expr  (60)
+	expr : expr . OPERATOR_GE expr  (61)
+	expr : expr . OPERATOR_EQ expr  (62)
+	expr : expr . OPERATOR_NE expr  (63)
+	expr : expr . OPERATOR_AND expr  (64)
+	expr : expr . OPERATOR_OR expr  (65)
+	while : TK_WHILE '(' expr . ')' command  (75)
 
-	TK_WHILE  shift 43
-	TK_IF  shift 44
-	TK_FOR  shift 45
-	TK_READ  shift 46
-	TK_RETURN  shift 47
-	TK_PRINT  shift 48
-	TK_IDENTIFIER  shift 49
-	'{'  shift 37
-	';'  reduce 37
-	'}'  reduce 30
-
-	block  goto 50
-	command_list  goto 106
-	command  goto 52
-	attribution  goto 53
-	read  goto 54
-	print  goto 55
-	return  goto 56
-	control  goto 57
-	if  goto 58
-	while  goto 59
-	for  goto 60
+	OPERATOR_LE  shift 88
+	OPERATOR_GE  shift 89
+	OPERATOR_EQ  shift 90
+	OPERATOR_NE  shift 91
+	OPERATOR_AND  shift 92
+	OPERATOR_OR  shift 93
+	')'  shift 106
+	'+'  shift 94
+	'-'  shift 95
+	'*'  shift 96
+	'/'  shift 97
+	'<'  shift 98
+	'>'  shift 99
+	'!'  shift 100
+	.  error
 
 
 state 81
-	expr : expr . '+' expr  (54)
-	expr : expr . '-' expr  (55)
-	expr : expr . '*' expr  (56)
-	expr : expr . '/' expr  (57)
-	expr : expr . '<' expr  (58)
-	expr : expr . '>' expr  (59)
-	expr : expr . '!' expr  (60)
-	expr : expr . OPERATOR_LE expr  (61)
-	expr : expr . OPERATOR_GE expr  (62)
-	expr : expr . OPERATOR_EQ expr  (63)
-	expr : expr . OPERATOR_NE expr  (64)
-	expr : expr . OPERATOR_AND expr  (65)
-	expr : expr . OPERATOR_OR expr  (66)
-	while : TK_WHILE '(' expr . ')' command  (76)
+	expr : expr . '+' expr  (53)
+	expr : expr . '-' expr  (54)
+	expr : expr . '*' expr  (55)
+	expr : expr . '/' expr  (56)
+	expr : expr . '<' expr  (57)
+	expr : expr . '>' expr  (58)
+	expr : expr . '!' expr  (59)
+	expr : expr . OPERATOR_LE expr  (60)
+	expr : expr . OPERATOR_GE expr  (61)
+	expr : expr . OPERATOR_EQ expr  (62)
+	expr : expr . OPERATOR_NE expr  (63)
+	expr : expr . OPERATOR_AND expr  (64)
+	expr : expr . OPERATOR_OR expr  (65)
+	if : TK_IF '(' expr . ')' TK_THEN command  (73)
+	if : TK_IF '(' expr . ')' TK_THEN command TK_ELSE command  (74)
 
-	OPERATOR_LE  shift 89
-	OPERATOR_GE  shift 90
-	OPERATOR_EQ  shift 91
-	OPERATOR_NE  shift 92
-	OPERATOR_AND  shift 93
-	OPERATOR_OR  shift 94
+	OPERATOR_LE  shift 88
+	OPERATOR_GE  shift 89
+	OPERATOR_EQ  shift 90
+	OPERATOR_NE  shift 91
+	OPERATOR_AND  shift 92
+	OPERATOR_OR  shift 93
 	')'  shift 107
-	'+'  shift 95
-	'-'  shift 96
-	'*'  shift 97
-	'/'  shift 98
-	'<'  shift 99
-	'>'  shift 100
-	'!'  shift 101
+	'+'  shift 94
+	'-'  shift 95
+	'*'  shift 96
+	'/'  shift 97
+	'<'  shift 98
+	'>'  shift 99
+	'!'  shift 100
 	.  error
 
 
 state 82
-	expr : expr . '+' expr  (54)
-	expr : expr . '-' expr  (55)
-	expr : expr . '*' expr  (56)
-	expr : expr . '/' expr  (57)
-	expr : expr . '<' expr  (58)
-	expr : expr . '>' expr  (59)
-	expr : expr . '!' expr  (60)
-	expr : expr . OPERATOR_LE expr  (61)
-	expr : expr . OPERATOR_GE expr  (62)
-	expr : expr . OPERATOR_EQ expr  (63)
-	expr : expr . OPERATOR_NE expr  (64)
-	expr : expr . OPERATOR_AND expr  (65)
-	expr : expr . OPERATOR_OR expr  (66)
-	if : TK_IF '(' expr . ')' TK_THEN command  (74)
-	if : TK_IF '(' expr . ')' TK_THEN command TK_ELSE command  (75)
+	for : TK_FOR '(' TK_IDENTIFIER . '=' expr TK_TO expr ')' command  (76)
 
-	OPERATOR_LE  shift 89
-	OPERATOR_GE  shift 90
-	OPERATOR_EQ  shift 91
-	OPERATOR_NE  shift 92
-	OPERATOR_AND  shift 93
-	OPERATOR_OR  shift 94
-	')'  shift 108
-	'+'  shift 95
-	'-'  shift 96
-	'*'  shift 97
-	'/'  shift 98
-	'<'  shift 99
-	'>'  shift 100
-	'!'  shift 101
+	'='  shift 108
 	.  error
 
 
 state 83
-	for : TK_FOR '(' TK_IDENTIFIER . '=' expr TK_TO expr ')' command  (77)
+	expr : TK_IDENTIFIER '[' . expr ']'  (47)
 
-	'='  shift 109
+	TK_IDENTIFIER  shift 66
+	LIT_INTEGER  shift 18
+	LIT_REAL  shift 19
+	LIT_CHAR  shift 20
+	'#'  shift 67
+	'('  shift 68
+	'&'  shift 69
 	.  error
+
+	lit  goto 70
+	expr  goto 109
+	func_call  goto 72
 
 
 state 84
-	expr : TK_IDENTIFIER '[' . expr ']'  (48)
+	func_call : TK_IDENTIFIER '(' . call_param_list ')'  (66)
+	func_call : TK_IDENTIFIER '(' . ')'  (67)
 
-	TK_IDENTIFIER  shift 67
+	TK_IDENTIFIER  shift 66
 	LIT_INTEGER  shift 18
 	LIT_REAL  shift 19
 	LIT_CHAR  shift 20
-	LIT_STRING  shift 21
-	'#'  shift 68
-	'('  shift 69
-	'&'  shift 70
+	'#'  shift 67
+	'('  shift 68
+	')'  shift 110
+	'&'  shift 69
 	.  error
 
-	lit  goto 71
-	expr  goto 110
-	func_call  goto 73
+	lit  goto 70
+	expr  goto 111
+	func_call  goto 72
+	call_param_list  goto 112
 
 
 state 85
-	func_call : TK_IDENTIFIER '(' . call_param_list ')'  (67)
-	func_call : TK_IDENTIFIER '(' . ')'  (68)
+	expr : '#' TK_IDENTIFIER .  (50)
 
-	TK_IDENTIFIER  shift 67
-	LIT_INTEGER  shift 18
-	LIT_REAL  shift 19
-	LIT_CHAR  shift 20
-	LIT_STRING  shift 21
-	'#'  shift 68
-	'('  shift 69
-	')'  shift 111
-	'&'  shift 70
-	.  error
-
-	lit  goto 71
-	expr  goto 112
-	func_call  goto 73
-	call_param_list  goto 113
+	.  reduce 50
 
 
 state 86
-	expr : '#' TK_IDENTIFIER .  (51)
+	expr : '(' expr . ')'  (52)
+	expr : expr . '+' expr  (53)
+	expr : expr . '-' expr  (54)
+	expr : expr . '*' expr  (55)
+	expr : expr . '/' expr  (56)
+	expr : expr . '<' expr  (57)
+	expr : expr . '>' expr  (58)
+	expr : expr . '!' expr  (59)
+	expr : expr . OPERATOR_LE expr  (60)
+	expr : expr . OPERATOR_GE expr  (61)
+	expr : expr . OPERATOR_EQ expr  (62)
+	expr : expr . OPERATOR_NE expr  (63)
+	expr : expr . OPERATOR_AND expr  (64)
+	expr : expr . OPERATOR_OR expr  (65)
+
+	OPERATOR_LE  shift 88
+	OPERATOR_GE  shift 89
+	OPERATOR_EQ  shift 90
+	OPERATOR_NE  shift 91
+	OPERATOR_AND  shift 92
+	OPERATOR_OR  shift 93
+	')'  shift 113
+	'+'  shift 94
+	'-'  shift 95
+	'*'  shift 96
+	'/'  shift 97
+	'<'  shift 98
+	'>'  shift 99
+	'!'  shift 100
+	.  error
+
+
+state 87
+	expr : '&' TK_IDENTIFIER .  (51)
 
 	.  reduce 51
 
 
-state 87
-	expr : '(' expr . ')'  (53)
-	expr : expr . '+' expr  (54)
-	expr : expr . '-' expr  (55)
-	expr : expr . '*' expr  (56)
-	expr : expr . '/' expr  (57)
-	expr : expr . '<' expr  (58)
-	expr : expr . '>' expr  (59)
-	expr : expr . '!' expr  (60)
-	expr : expr . OPERATOR_LE expr  (61)
-	expr : expr . OPERATOR_GE expr  (62)
-	expr : expr . OPERATOR_EQ expr  (63)
-	expr : expr . OPERATOR_NE expr  (64)
-	expr : expr . OPERATOR_AND expr  (65)
-	expr : expr . OPERATOR_OR expr  (66)
+state 88
+	expr : expr OPERATOR_LE . expr  (60)
 
-	OPERATOR_LE  shift 89
-	OPERATOR_GE  shift 90
-	OPERATOR_EQ  shift 91
-	OPERATOR_NE  shift 92
-	OPERATOR_AND  shift 93
-	OPERATOR_OR  shift 94
-	')'  shift 114
-	'+'  shift 95
-	'-'  shift 96
-	'*'  shift 97
-	'/'  shift 98
-	'<'  shift 99
-	'>'  shift 100
-	'!'  shift 101
+	TK_IDENTIFIER  shift 66
+	LIT_INTEGER  shift 18
+	LIT_REAL  shift 19
+	LIT_CHAR  shift 20
+	'#'  shift 67
+	'('  shift 68
+	'&'  shift 69
 	.  error
 
-
-state 88
-	expr : '&' TK_IDENTIFIER .  (52)
-
-	.  reduce 52
+	lit  goto 70
+	expr  goto 114
+	func_call  goto 72
 
 
 state 89
-	expr : expr OPERATOR_LE . expr  (61)
+	expr : expr OPERATOR_GE . expr  (61)
 
-	TK_IDENTIFIER  shift 67
+	TK_IDENTIFIER  shift 66
 	LIT_INTEGER  shift 18
 	LIT_REAL  shift 19
 	LIT_CHAR  shift 20
-	LIT_STRING  shift 21
-	'#'  shift 68
-	'('  shift 69
-	'&'  shift 70
+	'#'  shift 67
+	'('  shift 68
+	'&'  shift 69
 	.  error
 
-	lit  goto 71
+	lit  goto 70
 	expr  goto 115
-	func_call  goto 73
+	func_call  goto 72
 
 
 state 90
-	expr : expr OPERATOR_GE . expr  (62)
+	expr : expr OPERATOR_EQ . expr  (62)
 
-	TK_IDENTIFIER  shift 67
+	TK_IDENTIFIER  shift 66
 	LIT_INTEGER  shift 18
 	LIT_REAL  shift 19
 	LIT_CHAR  shift 20
-	LIT_STRING  shift 21
-	'#'  shift 68
-	'('  shift 69
-	'&'  shift 70
+	'#'  shift 67
+	'('  shift 68
+	'&'  shift 69
 	.  error
 
-	lit  goto 71
+	lit  goto 70
 	expr  goto 116
-	func_call  goto 73
+	func_call  goto 72
 
 
 state 91
-	expr : expr OPERATOR_EQ . expr  (63)
+	expr : expr OPERATOR_NE . expr  (63)
 
-	TK_IDENTIFIER  shift 67
+	TK_IDENTIFIER  shift 66
 	LIT_INTEGER  shift 18
 	LIT_REAL  shift 19
 	LIT_CHAR  shift 20
-	LIT_STRING  shift 21
-	'#'  shift 68
-	'('  shift 69
-	'&'  shift 70
+	'#'  shift 67
+	'('  shift 68
+	'&'  shift 69
 	.  error
 
-	lit  goto 71
+	lit  goto 70
 	expr  goto 117
-	func_call  goto 73
+	func_call  goto 72
 
 
 state 92
-	expr : expr OPERATOR_NE . expr  (64)
+	expr : expr OPERATOR_AND . expr  (64)
 
-	TK_IDENTIFIER  shift 67
+	TK_IDENTIFIER  shift 66
 	LIT_INTEGER  shift 18
 	LIT_REAL  shift 19
 	LIT_CHAR  shift 20
-	LIT_STRING  shift 21
-	'#'  shift 68
-	'('  shift 69
-	'&'  shift 70
+	'#'  shift 67
+	'('  shift 68
+	'&'  shift 69
 	.  error
 
-	lit  goto 71
+	lit  goto 70
 	expr  goto 118
-	func_call  goto 73
+	func_call  goto 72
 
 
 state 93
-	expr : expr OPERATOR_AND . expr  (65)
+	expr : expr OPERATOR_OR . expr  (65)
 
-	TK_IDENTIFIER  shift 67
+	TK_IDENTIFIER  shift 66
 	LIT_INTEGER  shift 18
 	LIT_REAL  shift 19
 	LIT_CHAR  shift 20
-	LIT_STRING  shift 21
-	'#'  shift 68
-	'('  shift 69
-	'&'  shift 70
+	'#'  shift 67
+	'('  shift 68
+	'&'  shift 69
 	.  error
 
-	lit  goto 71
+	lit  goto 70
 	expr  goto 119
-	func_call  goto 73
+	func_call  goto 72
 
 
 state 94
-	expr : expr OPERATOR_OR . expr  (66)
+	expr : expr '+' . expr  (53)
 
-	TK_IDENTIFIER  shift 67
+	TK_IDENTIFIER  shift 66
 	LIT_INTEGER  shift 18
 	LIT_REAL  shift 19
 	LIT_CHAR  shift 20
-	LIT_STRING  shift 21
-	'#'  shift 68
-	'('  shift 69
-	'&'  shift 70
+	'#'  shift 67
+	'('  shift 68
+	'&'  shift 69
 	.  error
 
-	lit  goto 71
+	lit  goto 70
 	expr  goto 120
-	func_call  goto 73
+	func_call  goto 72
 
 
 state 95
-	expr : expr '+' . expr  (54)
+	expr : expr '-' . expr  (54)
 
-	TK_IDENTIFIER  shift 67
+	TK_IDENTIFIER  shift 66
 	LIT_INTEGER  shift 18
 	LIT_REAL  shift 19
 	LIT_CHAR  shift 20
-	LIT_STRING  shift 21
-	'#'  shift 68
-	'('  shift 69
-	'&'  shift 70
+	'#'  shift 67
+	'('  shift 68
+	'&'  shift 69
 	.  error
 
-	lit  goto 71
+	lit  goto 70
 	expr  goto 121
-	func_call  goto 73
+	func_call  goto 72
 
 
 state 96
-	expr : expr '-' . expr  (55)
+	expr : expr '*' . expr  (55)
 
-	TK_IDENTIFIER  shift 67
+	TK_IDENTIFIER  shift 66
 	LIT_INTEGER  shift 18
 	LIT_REAL  shift 19
 	LIT_CHAR  shift 20
-	LIT_STRING  shift 21
-	'#'  shift 68
-	'('  shift 69
-	'&'  shift 70
+	'#'  shift 67
+	'('  shift 68
+	'&'  shift 69
 	.  error
 
-	lit  goto 71
+	lit  goto 70
 	expr  goto 122
-	func_call  goto 73
+	func_call  goto 72
 
 
 state 97
-	expr : expr '*' . expr  (56)
+	expr : expr '/' . expr  (56)
 
-	TK_IDENTIFIER  shift 67
+	TK_IDENTIFIER  shift 66
 	LIT_INTEGER  shift 18
 	LIT_REAL  shift 19
 	LIT_CHAR  shift 20
-	LIT_STRING  shift 21
-	'#'  shift 68
-	'('  shift 69
-	'&'  shift 70
+	'#'  shift 67
+	'('  shift 68
+	'&'  shift 69
 	.  error
 
-	lit  goto 71
+	lit  goto 70
 	expr  goto 123
-	func_call  goto 73
+	func_call  goto 72
 
 
 state 98
-	expr : expr '/' . expr  (57)
+	expr : expr '<' . expr  (57)
 
-	TK_IDENTIFIER  shift 67
+	TK_IDENTIFIER  shift 66
 	LIT_INTEGER  shift 18
 	LIT_REAL  shift 19
 	LIT_CHAR  shift 20
-	LIT_STRING  shift 21
-	'#'  shift 68
-	'('  shift 69
-	'&'  shift 70
+	'#'  shift 67
+	'('  shift 68
+	'&'  shift 69
 	.  error
 
-	lit  goto 71
+	lit  goto 70
 	expr  goto 124
-	func_call  goto 73
+	func_call  goto 72
 
 
 state 99
-	expr : expr '<' . expr  (58)
+	expr : expr '>' . expr  (58)
 
-	TK_IDENTIFIER  shift 67
+	TK_IDENTIFIER  shift 66
 	LIT_INTEGER  shift 18
 	LIT_REAL  shift 19
 	LIT_CHAR  shift 20
-	LIT_STRING  shift 21
-	'#'  shift 68
-	'('  shift 69
-	'&'  shift 70
+	'#'  shift 67
+	'('  shift 68
+	'&'  shift 69
 	.  error
 
-	lit  goto 71
+	lit  goto 70
 	expr  goto 125
-	func_call  goto 73
+	func_call  goto 72
 
 
 state 100
-	expr : expr '>' . expr  (59)
+	expr : expr '!' . expr  (59)
 
-	TK_IDENTIFIER  shift 67
+	TK_IDENTIFIER  shift 66
 	LIT_INTEGER  shift 18
 	LIT_REAL  shift 19
 	LIT_CHAR  shift 20
-	LIT_STRING  shift 21
-	'#'  shift 68
-	'('  shift 69
-	'&'  shift 70
+	'#'  shift 67
+	'('  shift 68
+	'&'  shift 69
 	.  error
 
-	lit  goto 71
+	lit  goto 70
 	expr  goto 126
-	func_call  goto 73
+	func_call  goto 72
 
 
 state 101
-	expr : expr '!' . expr  (60)
+	print_list : LIT_STRING print_list .  (43)
 
-	TK_IDENTIFIER  shift 67
-	LIT_INTEGER  shift 18
-	LIT_REAL  shift 19
-	LIT_CHAR  shift 20
-	LIT_STRING  shift 21
-	'#'  shift 68
-	'('  shift 69
-	'&'  shift 70
-	.  error
-
-	lit  goto 71
-	expr  goto 127
-	func_call  goto 73
+	.  reduce 43
 
 
 state 102
-	print_list : LIT_STRING print_list .  (44)
+	print_list : expr print_list .  (44)
 
 	.  reduce 44
 
 
 state 103
-	print_list : expr print_list .  (45)
+	attribution : TK_IDENTIFIER '=' expr .  (37)
+	expr : expr . '+' expr  (53)
+	expr : expr . '-' expr  (54)
+	expr : expr . '*' expr  (55)
+	expr : expr . '/' expr  (56)
+	expr : expr . '<' expr  (57)
+	expr : expr . '>' expr  (58)
+	expr : expr . '!' expr  (59)
+	expr : expr . OPERATOR_LE expr  (60)
+	expr : expr . OPERATOR_GE expr  (61)
+	expr : expr . OPERATOR_EQ expr  (62)
+	expr : expr . OPERATOR_NE expr  (63)
+	expr : expr . OPERATOR_AND expr  (64)
+	expr : expr . OPERATOR_OR expr  (65)
 
-	.  reduce 45
-
-
-state 104
-	attribution : TK_IDENTIFIER '=' expr .  (38)
-	expr : expr . '+' expr  (54)
-	expr : expr . '-' expr  (55)
-	expr : expr . '*' expr  (56)
-	expr : expr . '/' expr  (57)
-	expr : expr . '<' expr  (58)
-	expr : expr . '>' expr  (59)
-	expr : expr . '!' expr  (60)
-	expr : expr . OPERATOR_LE expr  (61)
-	expr : expr . OPERATOR_GE expr  (62)
-	expr : expr . OPERATOR_EQ expr  (63)
-	expr : expr . OPERATOR_NE expr  (64)
-	expr : expr . OPERATOR_AND expr  (65)
-	expr : expr . OPERATOR_OR expr  (66)
-
-	OPERATOR_LE  shift 89
-	OPERATOR_GE  shift 90
-	OPERATOR_EQ  shift 91
-	OPERATOR_NE  shift 92
-	OPERATOR_AND  shift 93
-	OPERATOR_OR  shift 94
-	'+'  shift 95
-	'-'  shift 96
-	'*'  shift 97
-	'/'  shift 98
-	'<'  shift 99
-	'>'  shift 100
-	'!'  shift 101
-	TK_ELSE  reduce 38
-	';'  reduce 38
-	'}'  reduce 38
-
-
-state 105
-	attribution : TK_IDENTIFIER '[' expr . ']' '=' expr  (39)
-	expr : expr . '+' expr  (54)
-	expr : expr . '-' expr  (55)
-	expr : expr . '*' expr  (56)
-	expr : expr . '/' expr  (57)
-	expr : expr . '<' expr  (58)
-	expr : expr . '>' expr  (59)
-	expr : expr . '!' expr  (60)
-	expr : expr . OPERATOR_LE expr  (61)
-	expr : expr . OPERATOR_GE expr  (62)
-	expr : expr . OPERATOR_EQ expr  (63)
-	expr : expr . OPERATOR_NE expr  (64)
-	expr : expr . OPERATOR_AND expr  (65)
-	expr : expr . OPERATOR_OR expr  (66)
-
-	OPERATOR_LE  shift 89
-	OPERATOR_GE  shift 90
-	OPERATOR_EQ  shift 91
-	OPERATOR_NE  shift 92
-	OPERATOR_AND  shift 93
-	OPERATOR_OR  shift 94
-	']'  shift 128
-	'+'  shift 95
-	'-'  shift 96
-	'*'  shift 97
-	'/'  shift 98
-	'<'  shift 99
-	'>'  shift 100
-	'!'  shift 101
-	.  error
-
-
-state 106
-	command_list : command ';' command_list .  (28)
-
-	.  reduce 28
-
-
-state 107
-	while : TK_WHILE '(' expr ')' . command  (76)
-	command : .  (37)
-
-	TK_WHILE  shift 43
-	TK_IF  shift 44
-	TK_FOR  shift 45
-	TK_READ  shift 46
-	TK_RETURN  shift 47
-	TK_PRINT  shift 48
-	TK_IDENTIFIER  shift 49
-	'{'  shift 37
+	OPERATOR_LE  shift 88
+	OPERATOR_GE  shift 89
+	OPERATOR_EQ  shift 90
+	OPERATOR_NE  shift 91
+	OPERATOR_AND  shift 92
+	OPERATOR_OR  shift 93
+	'+'  shift 94
+	'-'  shift 95
+	'*'  shift 96
+	'/'  shift 97
+	'<'  shift 98
+	'>'  shift 99
+	'!'  shift 100
 	TK_ELSE  reduce 37
 	';'  reduce 37
 	'}'  reduce 37
 
-	block  goto 50
-	command  goto 129
-	attribution  goto 53
-	read  goto 54
-	print  goto 55
-	return  goto 56
-	control  goto 57
-	if  goto 58
-	while  goto 59
-	for  goto 60
+
+state 104
+	attribution : TK_IDENTIFIER '[' expr . ']' '=' expr  (38)
+	expr : expr . '+' expr  (53)
+	expr : expr . '-' expr  (54)
+	expr : expr . '*' expr  (55)
+	expr : expr . '/' expr  (56)
+	expr : expr . '<' expr  (57)
+	expr : expr . '>' expr  (58)
+	expr : expr . '!' expr  (59)
+	expr : expr . OPERATOR_LE expr  (60)
+	expr : expr . OPERATOR_GE expr  (61)
+	expr : expr . OPERATOR_EQ expr  (62)
+	expr : expr . OPERATOR_NE expr  (63)
+	expr : expr . OPERATOR_AND expr  (64)
+	expr : expr . OPERATOR_OR expr  (65)
+
+	OPERATOR_LE  shift 88
+	OPERATOR_GE  shift 89
+	OPERATOR_EQ  shift 90
+	OPERATOR_NE  shift 91
+	OPERATOR_AND  shift 92
+	OPERATOR_OR  shift 93
+	']'  shift 127
+	'+'  shift 94
+	'-'  shift 95
+	'*'  shift 96
+	'/'  shift 97
+	'<'  shift 98
+	'>'  shift 99
+	'!'  shift 100
+	.  error
+
+
+state 105
+	command_list : command ';' command_list .  (27)
+
+	.  reduce 27
+
+
+state 106
+	while : TK_WHILE '(' expr ')' . command  (75)
+	command : .  (36)
+
+	TK_WHILE  shift 42
+	TK_IF  shift 43
+	TK_FOR  shift 44
+	TK_READ  shift 45
+	TK_RETURN  shift 46
+	TK_PRINT  shift 47
+	TK_IDENTIFIER  shift 48
+	'{'  shift 36
+	TK_ELSE  reduce 36
+	';'  reduce 36
+	'}'  reduce 36
+
+	block  goto 49
+	command  goto 128
+	attribution  goto 52
+	read  goto 53
+	print  goto 54
+	return  goto 55
+	control  goto 56
+	if  goto 57
+	while  goto 58
+	for  goto 59
+
+
+state 107
+	if : TK_IF '(' expr ')' . TK_THEN command  (73)
+	if : TK_IF '(' expr ')' . TK_THEN command TK_ELSE command  (74)
+
+	TK_THEN  shift 129
+	.  error
 
 
 state 108
-	if : TK_IF '(' expr ')' . TK_THEN command  (74)
-	if : TK_IF '(' expr ')' . TK_THEN command TK_ELSE command  (75)
+	for : TK_FOR '(' TK_IDENTIFIER '=' . expr TK_TO expr ')' command  (76)
 
-	TK_THEN  shift 130
-	.  error
-
-
-state 109
-	for : TK_FOR '(' TK_IDENTIFIER '=' . expr TK_TO expr ')' command  (77)
-
-	TK_IDENTIFIER  shift 67
+	TK_IDENTIFIER  shift 66
 	LIT_INTEGER  shift 18
 	LIT_REAL  shift 19
 	LIT_CHAR  shift 20
-	LIT_STRING  shift 21
-	'#'  shift 68
-	'('  shift 69
-	'&'  shift 70
+	'#'  shift 67
+	'('  shift 68
+	'&'  shift 69
 	.  error
 
-	lit  goto 71
-	expr  goto 131
-	func_call  goto 73
+	lit  goto 70
+	expr  goto 130
+	func_call  goto 72
+
+
+state 109
+	expr : TK_IDENTIFIER '[' expr . ']'  (47)
+	expr : expr . '+' expr  (53)
+	expr : expr . '-' expr  (54)
+	expr : expr . '*' expr  (55)
+	expr : expr . '/' expr  (56)
+	expr : expr . '<' expr  (57)
+	expr : expr . '>' expr  (58)
+	expr : expr . '!' expr  (59)
+	expr : expr . OPERATOR_LE expr  (60)
+	expr : expr . OPERATOR_GE expr  (61)
+	expr : expr . OPERATOR_EQ expr  (62)
+	expr : expr . OPERATOR_NE expr  (63)
+	expr : expr . OPERATOR_AND expr  (64)
+	expr : expr . OPERATOR_OR expr  (65)
+
+	OPERATOR_LE  shift 88
+	OPERATOR_GE  shift 89
+	OPERATOR_EQ  shift 90
+	OPERATOR_NE  shift 91
+	OPERATOR_AND  shift 92
+	OPERATOR_OR  shift 93
+	']'  shift 131
+	'+'  shift 94
+	'-'  shift 95
+	'*'  shift 96
+	'/'  shift 97
+	'<'  shift 98
+	'>'  shift 99
+	'!'  shift 100
+	.  error
 
 
 state 110
-	expr : TK_IDENTIFIER '[' expr . ']'  (48)
-	expr : expr . '+' expr  (54)
-	expr : expr . '-' expr  (55)
-	expr : expr . '*' expr  (56)
-	expr : expr . '/' expr  (57)
-	expr : expr . '<' expr  (58)
-	expr : expr . '>' expr  (59)
-	expr : expr . '!' expr  (60)
-	expr : expr . OPERATOR_LE expr  (61)
-	expr : expr . OPERATOR_GE expr  (62)
-	expr : expr . OPERATOR_EQ expr  (63)
-	expr : expr . OPERATOR_NE expr  (64)
-	expr : expr . OPERATOR_AND expr  (65)
-	expr : expr . OPERATOR_OR expr  (66)
+	func_call : TK_IDENTIFIER '(' ')' .  (67)
 
-	OPERATOR_LE  shift 89
-	OPERATOR_GE  shift 90
-	OPERATOR_EQ  shift 91
-	OPERATOR_NE  shift 92
-	OPERATOR_AND  shift 93
-	OPERATOR_OR  shift 94
-	']'  shift 132
-	'+'  shift 95
-	'-'  shift 96
-	'*'  shift 97
-	'/'  shift 98
-	'<'  shift 99
-	'>'  shift 100
-	'!'  shift 101
-	.  error
+	.  reduce 67
 
 
 state 111
-	func_call : TK_IDENTIFIER '(' ')' .  (68)
+	expr : expr . '+' expr  (53)
+	expr : expr . '-' expr  (54)
+	expr : expr . '*' expr  (55)
+	expr : expr . '/' expr  (56)
+	expr : expr . '<' expr  (57)
+	expr : expr . '>' expr  (58)
+	expr : expr . '!' expr  (59)
+	expr : expr . OPERATOR_LE expr  (60)
+	expr : expr . OPERATOR_GE expr  (61)
+	expr : expr . OPERATOR_EQ expr  (62)
+	expr : expr . OPERATOR_NE expr  (63)
+	expr : expr . OPERATOR_AND expr  (64)
+	expr : expr . OPERATOR_OR expr  (65)
+	call_param_list : expr .  (68)
+	call_param_list : expr . ',' call_param_list  (69)
 
-	.  reduce 68
+	OPERATOR_LE  shift 88
+	OPERATOR_GE  shift 89
+	OPERATOR_EQ  shift 90
+	OPERATOR_NE  shift 91
+	OPERATOR_AND  shift 92
+	OPERATOR_OR  shift 93
+	','  shift 132
+	'+'  shift 94
+	'-'  shift 95
+	'*'  shift 96
+	'/'  shift 97
+	'<'  shift 98
+	'>'  shift 99
+	'!'  shift 100
+	')'  reduce 68
 
 
 state 112
-	expr : expr . '+' expr  (54)
-	expr : expr . '-' expr  (55)
-	expr : expr . '*' expr  (56)
-	expr : expr . '/' expr  (57)
-	expr : expr . '<' expr  (58)
-	expr : expr . '>' expr  (59)
-	expr : expr . '!' expr  (60)
-	expr : expr . OPERATOR_LE expr  (61)
-	expr : expr . OPERATOR_GE expr  (62)
-	expr : expr . OPERATOR_EQ expr  (63)
-	expr : expr . OPERATOR_NE expr  (64)
-	expr : expr . OPERATOR_AND expr  (65)
-	expr : expr . OPERATOR_OR expr  (66)
-	call_param_list : expr .  (69)
-	call_param_list : expr . ',' call_param_list  (70)
+	func_call : TK_IDENTIFIER '(' call_param_list . ')'  (66)
 
-	OPERATOR_LE  shift 89
-	OPERATOR_GE  shift 90
-	OPERATOR_EQ  shift 91
-	OPERATOR_NE  shift 92
-	OPERATOR_AND  shift 93
-	OPERATOR_OR  shift 94
-	','  shift 133
-	'+'  shift 95
-	'-'  shift 96
-	'*'  shift 97
-	'/'  shift 98
-	'<'  shift 99
-	'>'  shift 100
-	'!'  shift 101
-	')'  reduce 69
-
-
-state 113
-	func_call : TK_IDENTIFIER '(' call_param_list . ')'  (67)
-
-	')'  shift 134
+	')'  shift 133
 	.  error
 
 
+state 113
+	expr : '(' expr ')' .  (52)
+
+	.  reduce 52
+
+
+114: shift/reduce conflict (shift 88, reduce 60) on OPERATOR_LE
+114: shift/reduce conflict (shift 89, reduce 60) on OPERATOR_GE
+114: shift/reduce conflict (shift 90, reduce 60) on OPERATOR_EQ
+114: shift/reduce conflict (shift 91, reduce 60) on OPERATOR_NE
+114: shift/reduce conflict (shift 92, reduce 60) on OPERATOR_AND
+114: shift/reduce conflict (shift 93, reduce 60) on OPERATOR_OR
+114: shift/reduce conflict (shift 94, reduce 60) on '+'
+114: shift/reduce conflict (shift 95, reduce 60) on '-'
+114: shift/reduce conflict (shift 96, reduce 60) on '*'
+114: shift/reduce conflict (shift 97, reduce 60) on '/'
+114: shift/reduce conflict (shift 98, reduce 60) on '<'
+114: shift/reduce conflict (shift 99, reduce 60) on '>'
+114: shift/reduce conflict (shift 100, reduce 60) on '!'
 state 114
-	expr : '(' expr ')' .  (53)
+	expr : expr . '+' expr  (53)
+	expr : expr . '-' expr  (54)
+	expr : expr . '*' expr  (55)
+	expr : expr . '/' expr  (56)
+	expr : expr . '<' expr  (57)
+	expr : expr . '>' expr  (58)
+	expr : expr . '!' expr  (59)
+	expr : expr . OPERATOR_LE expr  (60)
+	expr : expr OPERATOR_LE expr .  (60)
+	expr : expr . OPERATOR_GE expr  (61)
+	expr : expr . OPERATOR_EQ expr  (62)
+	expr : expr . OPERATOR_NE expr  (63)
+	expr : expr . OPERATOR_AND expr  (64)
+	expr : expr . OPERATOR_OR expr  (65)
 
-	.  reduce 53
-
-
-115: shift/reduce conflict (shift 89, reduce 61) on OPERATOR_LE
-115: shift/reduce conflict (shift 90, reduce 61) on OPERATOR_GE
-115: shift/reduce conflict (shift 91, reduce 61) on OPERATOR_EQ
-115: shift/reduce conflict (shift 92, reduce 61) on OPERATOR_NE
-115: shift/reduce conflict (shift 93, reduce 61) on OPERATOR_AND
-115: shift/reduce conflict (shift 94, reduce 61) on OPERATOR_OR
-115: shift/reduce conflict (shift 95, reduce 61) on '+'
-115: shift/reduce conflict (shift 96, reduce 61) on '-'
-115: shift/reduce conflict (shift 97, reduce 61) on '*'
-115: shift/reduce conflict (shift 98, reduce 61) on '/'
-115: shift/reduce conflict (shift 99, reduce 61) on '<'
-115: shift/reduce conflict (shift 100, reduce 61) on '>'
-115: shift/reduce conflict (shift 101, reduce 61) on '!'
-state 115
-	expr : expr . '+' expr  (54)
-	expr : expr . '-' expr  (55)
-	expr : expr . '*' expr  (56)
-	expr : expr . '/' expr  (57)
-	expr : expr . '<' expr  (58)
-	expr : expr . '>' expr  (59)
-	expr : expr . '!' expr  (60)
-	expr : expr . OPERATOR_LE expr  (61)
-	expr : expr OPERATOR_LE expr .  (61)
-	expr : expr . OPERATOR_GE expr  (62)
-	expr : expr . OPERATOR_EQ expr  (63)
-	expr : expr . OPERATOR_NE expr  (64)
-	expr : expr . OPERATOR_AND expr  (65)
-	expr : expr . OPERATOR_OR expr  (66)
-
-	OPERATOR_LE  shift 89
-	OPERATOR_GE  shift 90
-	OPERATOR_EQ  shift 91
-	OPERATOR_NE  shift 92
-	OPERATOR_AND  shift 93
-	OPERATOR_OR  shift 94
-	'+'  shift 95
-	'-'  shift 96
-	'*'  shift 97
-	'/'  shift 98
-	'<'  shift 99
-	'>'  shift 100
-	'!'  shift 101
-	TK_ELSE  reduce 61
-	TK_TO  reduce 61
-	TK_IDENTIFIER  reduce 61
-	LIT_INTEGER  reduce 61
-	LIT_REAL  reduce 61
-	LIT_CHAR  reduce 61
-	LIT_STRING  reduce 61
-	';'  reduce 61
-	'#'  reduce 61
-	']'  reduce 61
-	'('  reduce 61
-	')'  reduce 61
-	','  reduce 61
-	'}'  reduce 61
-	'&'  reduce 61
-
-
-116: shift/reduce conflict (shift 89, reduce 62) on OPERATOR_LE
-116: shift/reduce conflict (shift 90, reduce 62) on OPERATOR_GE
-116: shift/reduce conflict (shift 91, reduce 62) on OPERATOR_EQ
-116: shift/reduce conflict (shift 92, reduce 62) on OPERATOR_NE
-116: shift/reduce conflict (shift 93, reduce 62) on OPERATOR_AND
-116: shift/reduce conflict (shift 94, reduce 62) on OPERATOR_OR
-116: shift/reduce conflict (shift 95, reduce 62) on '+'
-116: shift/reduce conflict (shift 96, reduce 62) on '-'
-116: shift/reduce conflict (shift 97, reduce 62) on '*'
-116: shift/reduce conflict (shift 98, reduce 62) on '/'
-116: shift/reduce conflict (shift 99, reduce 62) on '<'
-116: shift/reduce conflict (shift 100, reduce 62) on '>'
-116: shift/reduce conflict (shift 101, reduce 62) on '!'
-state 116
-	expr : expr . '+' expr  (54)
-	expr : expr . '-' expr  (55)
-	expr : expr . '*' expr  (56)
-	expr : expr . '/' expr  (57)
-	expr : expr . '<' expr  (58)
-	expr : expr . '>' expr  (59)
-	expr : expr . '!' expr  (60)
-	expr : expr . OPERATOR_LE expr  (61)
-	expr : expr . OPERATOR_GE expr  (62)
-	expr : expr OPERATOR_GE expr .  (62)
-	expr : expr . OPERATOR_EQ expr  (63)
-	expr : expr . OPERATOR_NE expr  (64)
-	expr : expr . OPERATOR_AND expr  (65)
-	expr : expr . OPERATOR_OR expr  (66)
-
-	OPERATOR_LE  shift 89
-	OPERATOR_GE  shift 90
-	OPERATOR_EQ  shift 91
-	OPERATOR_NE  shift 92
-	OPERATOR_AND  shift 93
-	OPERATOR_OR  shift 94
-	'+'  shift 95
-	'-'  shift 96
-	'*'  shift 97
-	'/'  shift 98
-	'<'  shift 99
-	'>'  shift 100
-	'!'  shift 101
-	TK_ELSE  reduce 62
-	TK_TO  reduce 62
-	TK_IDENTIFIER  reduce 62
-	LIT_INTEGER  reduce 62
-	LIT_REAL  reduce 62
-	LIT_CHAR  reduce 62
-	LIT_STRING  reduce 62
-	';'  reduce 62
-	'#'  reduce 62
-	']'  reduce 62
-	'('  reduce 62
-	')'  reduce 62
-	','  reduce 62
-	'}'  reduce 62
-	'&'  reduce 62
-
-
-117: shift/reduce conflict (shift 89, reduce 63) on OPERATOR_LE
-117: shift/reduce conflict (shift 90, reduce 63) on OPERATOR_GE
-117: shift/reduce conflict (shift 91, reduce 63) on OPERATOR_EQ
-117: shift/reduce conflict (shift 92, reduce 63) on OPERATOR_NE
-117: shift/reduce conflict (shift 93, reduce 63) on OPERATOR_AND
-117: shift/reduce conflict (shift 94, reduce 63) on OPERATOR_OR
-117: shift/reduce conflict (shift 95, reduce 63) on '+'
-117: shift/reduce conflict (shift 96, reduce 63) on '-'
-117: shift/reduce conflict (shift 97, reduce 63) on '*'
-117: shift/reduce conflict (shift 98, reduce 63) on '/'
-117: shift/reduce conflict (shift 99, reduce 63) on '<'
-117: shift/reduce conflict (shift 100, reduce 63) on '>'
-117: shift/reduce conflict (shift 101, reduce 63) on '!'
-state 117
-	expr : expr . '+' expr  (54)
-	expr : expr . '-' expr  (55)
-	expr : expr . '*' expr  (56)
-	expr : expr . '/' expr  (57)
-	expr : expr . '<' expr  (58)
-	expr : expr . '>' expr  (59)
-	expr : expr . '!' expr  (60)
-	expr : expr . OPERATOR_LE expr  (61)
-	expr : expr . OPERATOR_GE expr  (62)
-	expr : expr . OPERATOR_EQ expr  (63)
-	expr : expr OPERATOR_EQ expr .  (63)
-	expr : expr . OPERATOR_NE expr  (64)
-	expr : expr . OPERATOR_AND expr  (65)
-	expr : expr . OPERATOR_OR expr  (66)
-
-	OPERATOR_LE  shift 89
-	OPERATOR_GE  shift 90
-	OPERATOR_EQ  shift 91
-	OPERATOR_NE  shift 92
-	OPERATOR_AND  shift 93
-	OPERATOR_OR  shift 94
-	'+'  shift 95
-	'-'  shift 96
-	'*'  shift 97
-	'/'  shift 98
-	'<'  shift 99
-	'>'  shift 100
-	'!'  shift 101
-	TK_ELSE  reduce 63
-	TK_TO  reduce 63
-	TK_IDENTIFIER  reduce 63
-	LIT_INTEGER  reduce 63
-	LIT_REAL  reduce 63
-	LIT_CHAR  reduce 63
-	LIT_STRING  reduce 63
-	';'  reduce 63
-	'#'  reduce 63
-	']'  reduce 63
-	'('  reduce 63
-	')'  reduce 63
-	','  reduce 63
-	'}'  reduce 63
-	'&'  reduce 63
-
-
-118: shift/reduce conflict (shift 89, reduce 64) on OPERATOR_LE
-118: shift/reduce conflict (shift 90, reduce 64) on OPERATOR_GE
-118: shift/reduce conflict (shift 91, reduce 64) on OPERATOR_EQ
-118: shift/reduce conflict (shift 92, reduce 64) on OPERATOR_NE
-118: shift/reduce conflict (shift 93, reduce 64) on OPERATOR_AND
-118: shift/reduce conflict (shift 94, reduce 64) on OPERATOR_OR
-118: shift/reduce conflict (shift 95, reduce 64) on '+'
-118: shift/reduce conflict (shift 96, reduce 64) on '-'
-118: shift/reduce conflict (shift 97, reduce 64) on '*'
-118: shift/reduce conflict (shift 98, reduce 64) on '/'
-118: shift/reduce conflict (shift 99, reduce 64) on '<'
-118: shift/reduce conflict (shift 100, reduce 64) on '>'
-118: shift/reduce conflict (shift 101, reduce 64) on '!'
-state 118
-	expr : expr . '+' expr  (54)
-	expr : expr . '-' expr  (55)
-	expr : expr . '*' expr  (56)
-	expr : expr . '/' expr  (57)
-	expr : expr . '<' expr  (58)
-	expr : expr . '>' expr  (59)
-	expr : expr . '!' expr  (60)
-	expr : expr . OPERATOR_LE expr  (61)
-	expr : expr . OPERATOR_GE expr  (62)
-	expr : expr . OPERATOR_EQ expr  (63)
-	expr : expr . OPERATOR_NE expr  (64)
-	expr : expr OPERATOR_NE expr .  (64)
-	expr : expr . OPERATOR_AND expr  (65)
-	expr : expr . OPERATOR_OR expr  (66)
-
-	OPERATOR_LE  shift 89
-	OPERATOR_GE  shift 90
-	OPERATOR_EQ  shift 91
-	OPERATOR_NE  shift 92
-	OPERATOR_AND  shift 93
-	OPERATOR_OR  shift 94
-	'+'  shift 95
-	'-'  shift 96
-	'*'  shift 97
-	'/'  shift 98
-	'<'  shift 99
-	'>'  shift 100
-	'!'  shift 101
-	TK_ELSE  reduce 64
-	TK_TO  reduce 64
-	TK_IDENTIFIER  reduce 64
-	LIT_INTEGER  reduce 64
-	LIT_REAL  reduce 64
-	LIT_CHAR  reduce 64
-	LIT_STRING  reduce 64
-	';'  reduce 64
-	'#'  reduce 64
-	']'  reduce 64
-	'('  reduce 64
-	')'  reduce 64
-	','  reduce 64
-	'}'  reduce 64
-	'&'  reduce 64
-
-
-119: shift/reduce conflict (shift 89, reduce 65) on OPERATOR_LE
-119: shift/reduce conflict (shift 90, reduce 65) on OPERATOR_GE
-119: shift/reduce conflict (shift 91, reduce 65) on OPERATOR_EQ
-119: shift/reduce conflict (shift 92, reduce 65) on OPERATOR_NE
-119: shift/reduce conflict (shift 93, reduce 65) on OPERATOR_AND
-119: shift/reduce conflict (shift 94, reduce 65) on OPERATOR_OR
-119: shift/reduce conflict (shift 95, reduce 65) on '+'
-119: shift/reduce conflict (shift 96, reduce 65) on '-'
-119: shift/reduce conflict (shift 97, reduce 65) on '*'
-119: shift/reduce conflict (shift 98, reduce 65) on '/'
-119: shift/reduce conflict (shift 99, reduce 65) on '<'
-119: shift/reduce conflict (shift 100, reduce 65) on '>'
-119: shift/reduce conflict (shift 101, reduce 65) on '!'
-state 119
-	expr : expr . '+' expr  (54)
-	expr : expr . '-' expr  (55)
-	expr : expr . '*' expr  (56)
-	expr : expr . '/' expr  (57)
-	expr : expr . '<' expr  (58)
-	expr : expr . '>' expr  (59)
-	expr : expr . '!' expr  (60)
-	expr : expr . OPERATOR_LE expr  (61)
-	expr : expr . OPERATOR_GE expr  (62)
-	expr : expr . OPERATOR_EQ expr  (63)
-	expr : expr . OPERATOR_NE expr  (64)
-	expr : expr . OPERATOR_AND expr  (65)
-	expr : expr OPERATOR_AND expr .  (65)
-	expr : expr . OPERATOR_OR expr  (66)
-
-	OPERATOR_LE  shift 89
-	OPERATOR_GE  shift 90
-	OPERATOR_EQ  shift 91
-	OPERATOR_NE  shift 92
-	OPERATOR_AND  shift 93
-	OPERATOR_OR  shift 94
-	'+'  shift 95
-	'-'  shift 96
-	'*'  shift 97
-	'/'  shift 98
-	'<'  shift 99
-	'>'  shift 100
-	'!'  shift 101
-	TK_ELSE  reduce 65
-	TK_TO  reduce 65
-	TK_IDENTIFIER  reduce 65
-	LIT_INTEGER  reduce 65
-	LIT_REAL  reduce 65
-	LIT_CHAR  reduce 65
-	LIT_STRING  reduce 65
-	';'  reduce 65
-	'#'  reduce 65
-	']'  reduce 65
-	'('  reduce 65
-	')'  reduce 65
-	','  reduce 65
-	'}'  reduce 65
-	'&'  reduce 65
-
-
-120: shift/reduce conflict (shift 89, reduce 66) on OPERATOR_LE
-120: shift/reduce conflict (shift 90, reduce 66) on OPERATOR_GE
-120: shift/reduce conflict (shift 91, reduce 66) on OPERATOR_EQ
-120: shift/reduce conflict (shift 92, reduce 66) on OPERATOR_NE
-120: shift/reduce conflict (shift 93, reduce 66) on OPERATOR_AND
-120: shift/reduce conflict (shift 94, reduce 66) on OPERATOR_OR
-120: shift/reduce conflict (shift 95, reduce 66) on '+'
-120: shift/reduce conflict (shift 96, reduce 66) on '-'
-120: shift/reduce conflict (shift 97, reduce 66) on '*'
-120: shift/reduce conflict (shift 98, reduce 66) on '/'
-120: shift/reduce conflict (shift 99, reduce 66) on '<'
-120: shift/reduce conflict (shift 100, reduce 66) on '>'
-120: shift/reduce conflict (shift 101, reduce 66) on '!'
-state 120
-	expr : expr . '+' expr  (54)
-	expr : expr . '-' expr  (55)
-	expr : expr . '*' expr  (56)
-	expr : expr . '/' expr  (57)
-	expr : expr . '<' expr  (58)
-	expr : expr . '>' expr  (59)
-	expr : expr . '!' expr  (60)
-	expr : expr . OPERATOR_LE expr  (61)
-	expr : expr . OPERATOR_GE expr  (62)
-	expr : expr . OPERATOR_EQ expr  (63)
-	expr : expr . OPERATOR_NE expr  (64)
-	expr : expr . OPERATOR_AND expr  (65)
-	expr : expr . OPERATOR_OR expr  (66)
-	expr : expr OPERATOR_OR expr .  (66)
-
-	OPERATOR_LE  shift 89
-	OPERATOR_GE  shift 90
-	OPERATOR_EQ  shift 91
-	OPERATOR_NE  shift 92
-	OPERATOR_AND  shift 93
-	OPERATOR_OR  shift 94
-	'+'  shift 95
-	'-'  shift 96
-	'*'  shift 97
-	'/'  shift 98
-	'<'  shift 99
-	'>'  shift 100
-	'!'  shift 101
-	TK_ELSE  reduce 66
-	TK_TO  reduce 66
-	TK_IDENTIFIER  reduce 66
-	LIT_INTEGER  reduce 66
-	LIT_REAL  reduce 66
-	LIT_CHAR  reduce 66
-	LIT_STRING  reduce 66
-	';'  reduce 66
-	'#'  reduce 66
-	']'  reduce 66
-	'('  reduce 66
-	')'  reduce 66
-	','  reduce 66
-	'}'  reduce 66
-	'&'  reduce 66
-
-
-121: shift/reduce conflict (shift 89, reduce 54) on OPERATOR_LE
-121: shift/reduce conflict (shift 90, reduce 54) on OPERATOR_GE
-121: shift/reduce conflict (shift 91, reduce 54) on OPERATOR_EQ
-121: shift/reduce conflict (shift 92, reduce 54) on OPERATOR_NE
-121: shift/reduce conflict (shift 93, reduce 54) on OPERATOR_AND
-121: shift/reduce conflict (shift 94, reduce 54) on OPERATOR_OR
-121: shift/reduce conflict (shift 95, reduce 54) on '+'
-121: shift/reduce conflict (shift 96, reduce 54) on '-'
-121: shift/reduce conflict (shift 97, reduce 54) on '*'
-121: shift/reduce conflict (shift 98, reduce 54) on '/'
-121: shift/reduce conflict (shift 99, reduce 54) on '<'
-121: shift/reduce conflict (shift 100, reduce 54) on '>'
-121: shift/reduce conflict (shift 101, reduce 54) on '!'
-state 121
-	expr : expr . '+' expr  (54)
-	expr : expr '+' expr .  (54)
-	expr : expr . '-' expr  (55)
-	expr : expr . '*' expr  (56)
-	expr : expr . '/' expr  (57)
-	expr : expr . '<' expr  (58)
-	expr : expr . '>' expr  (59)
-	expr : expr . '!' expr  (60)
-	expr : expr . OPERATOR_LE expr  (61)
-	expr : expr . OPERATOR_GE expr  (62)
-	expr : expr . OPERATOR_EQ expr  (63)
-	expr : expr . OPERATOR_NE expr  (64)
-	expr : expr . OPERATOR_AND expr  (65)
-	expr : expr . OPERATOR_OR expr  (66)
-
-	OPERATOR_LE  shift 89
-	OPERATOR_GE  shift 90
-	OPERATOR_EQ  shift 91
-	OPERATOR_NE  shift 92
-	OPERATOR_AND  shift 93
-	OPERATOR_OR  shift 94
-	'+'  shift 95
-	'-'  shift 96
-	'*'  shift 97
-	'/'  shift 98
-	'<'  shift 99
-	'>'  shift 100
-	'!'  shift 101
-	TK_ELSE  reduce 54
-	TK_TO  reduce 54
-	TK_IDENTIFIER  reduce 54
-	LIT_INTEGER  reduce 54
-	LIT_REAL  reduce 54
-	LIT_CHAR  reduce 54
-	LIT_STRING  reduce 54
-	';'  reduce 54
-	'#'  reduce 54
-	']'  reduce 54
-	'('  reduce 54
-	')'  reduce 54
-	','  reduce 54
-	'}'  reduce 54
-	'&'  reduce 54
-
-
-122: shift/reduce conflict (shift 89, reduce 55) on OPERATOR_LE
-122: shift/reduce conflict (shift 90, reduce 55) on OPERATOR_GE
-122: shift/reduce conflict (shift 91, reduce 55) on OPERATOR_EQ
-122: shift/reduce conflict (shift 92, reduce 55) on OPERATOR_NE
-122: shift/reduce conflict (shift 93, reduce 55) on OPERATOR_AND
-122: shift/reduce conflict (shift 94, reduce 55) on OPERATOR_OR
-122: shift/reduce conflict (shift 95, reduce 55) on '+'
-122: shift/reduce conflict (shift 96, reduce 55) on '-'
-122: shift/reduce conflict (shift 97, reduce 55) on '*'
-122: shift/reduce conflict (shift 98, reduce 55) on '/'
-122: shift/reduce conflict (shift 99, reduce 55) on '<'
-122: shift/reduce conflict (shift 100, reduce 55) on '>'
-122: shift/reduce conflict (shift 101, reduce 55) on '!'
-state 122
-	expr : expr . '+' expr  (54)
-	expr : expr . '-' expr  (55)
-	expr : expr '-' expr .  (55)
-	expr : expr . '*' expr  (56)
-	expr : expr . '/' expr  (57)
-	expr : expr . '<' expr  (58)
-	expr : expr . '>' expr  (59)
-	expr : expr . '!' expr  (60)
-	expr : expr . OPERATOR_LE expr  (61)
-	expr : expr . OPERATOR_GE expr  (62)
-	expr : expr . OPERATOR_EQ expr  (63)
-	expr : expr . OPERATOR_NE expr  (64)
-	expr : expr . OPERATOR_AND expr  (65)
-	expr : expr . OPERATOR_OR expr  (66)
-
-	OPERATOR_LE  shift 89
-	OPERATOR_GE  shift 90
-	OPERATOR_EQ  shift 91
-	OPERATOR_NE  shift 92
-	OPERATOR_AND  shift 93
-	OPERATOR_OR  shift 94
-	'+'  shift 95
-	'-'  shift 96
-	'*'  shift 97
-	'/'  shift 98
-	'<'  shift 99
-	'>'  shift 100
-	'!'  shift 101
-	TK_ELSE  reduce 55
-	TK_TO  reduce 55
-	TK_IDENTIFIER  reduce 55
-	LIT_INTEGER  reduce 55
-	LIT_REAL  reduce 55
-	LIT_CHAR  reduce 55
-	LIT_STRING  reduce 55
-	';'  reduce 55
-	'#'  reduce 55
-	']'  reduce 55
-	'('  reduce 55
-	')'  reduce 55
-	','  reduce 55
-	'}'  reduce 55
-	'&'  reduce 55
-
-
-123: shift/reduce conflict (shift 89, reduce 56) on OPERATOR_LE
-123: shift/reduce conflict (shift 90, reduce 56) on OPERATOR_GE
-123: shift/reduce conflict (shift 91, reduce 56) on OPERATOR_EQ
-123: shift/reduce conflict (shift 92, reduce 56) on OPERATOR_NE
-123: shift/reduce conflict (shift 93, reduce 56) on OPERATOR_AND
-123: shift/reduce conflict (shift 94, reduce 56) on OPERATOR_OR
-123: shift/reduce conflict (shift 95, reduce 56) on '+'
-123: shift/reduce conflict (shift 96, reduce 56) on '-'
-123: shift/reduce conflict (shift 97, reduce 56) on '*'
-123: shift/reduce conflict (shift 98, reduce 56) on '/'
-123: shift/reduce conflict (shift 99, reduce 56) on '<'
-123: shift/reduce conflict (shift 100, reduce 56) on '>'
-123: shift/reduce conflict (shift 101, reduce 56) on '!'
-state 123
-	expr : expr . '+' expr  (54)
-	expr : expr . '-' expr  (55)
-	expr : expr . '*' expr  (56)
-	expr : expr '*' expr .  (56)
-	expr : expr . '/' expr  (57)
-	expr : expr . '<' expr  (58)
-	expr : expr . '>' expr  (59)
-	expr : expr . '!' expr  (60)
-	expr : expr . OPERATOR_LE expr  (61)
-	expr : expr . OPERATOR_GE expr  (62)
-	expr : expr . OPERATOR_EQ expr  (63)
-	expr : expr . OPERATOR_NE expr  (64)
-	expr : expr . OPERATOR_AND expr  (65)
-	expr : expr . OPERATOR_OR expr  (66)
-
-	OPERATOR_LE  shift 89
-	OPERATOR_GE  shift 90
-	OPERATOR_EQ  shift 91
-	OPERATOR_NE  shift 92
-	OPERATOR_AND  shift 93
-	OPERATOR_OR  shift 94
-	'+'  shift 95
-	'-'  shift 96
-	'*'  shift 97
-	'/'  shift 98
-	'<'  shift 99
-	'>'  shift 100
-	'!'  shift 101
-	TK_ELSE  reduce 56
-	TK_TO  reduce 56
-	TK_IDENTIFIER  reduce 56
-	LIT_INTEGER  reduce 56
-	LIT_REAL  reduce 56
-	LIT_CHAR  reduce 56
-	LIT_STRING  reduce 56
-	';'  reduce 56
-	'#'  reduce 56
-	']'  reduce 56
-	'('  reduce 56
-	')'  reduce 56
-	','  reduce 56
-	'}'  reduce 56
-	'&'  reduce 56
-
-
-124: shift/reduce conflict (shift 89, reduce 57) on OPERATOR_LE
-124: shift/reduce conflict (shift 90, reduce 57) on OPERATOR_GE
-124: shift/reduce conflict (shift 91, reduce 57) on OPERATOR_EQ
-124: shift/reduce conflict (shift 92, reduce 57) on OPERATOR_NE
-124: shift/reduce conflict (shift 93, reduce 57) on OPERATOR_AND
-124: shift/reduce conflict (shift 94, reduce 57) on OPERATOR_OR
-124: shift/reduce conflict (shift 95, reduce 57) on '+'
-124: shift/reduce conflict (shift 96, reduce 57) on '-'
-124: shift/reduce conflict (shift 97, reduce 57) on '*'
-124: shift/reduce conflict (shift 98, reduce 57) on '/'
-124: shift/reduce conflict (shift 99, reduce 57) on '<'
-124: shift/reduce conflict (shift 100, reduce 57) on '>'
-124: shift/reduce conflict (shift 101, reduce 57) on '!'
-state 124
-	expr : expr . '+' expr  (54)
-	expr : expr . '-' expr  (55)
-	expr : expr . '*' expr  (56)
-	expr : expr . '/' expr  (57)
-	expr : expr '/' expr .  (57)
-	expr : expr . '<' expr  (58)
-	expr : expr . '>' expr  (59)
-	expr : expr . '!' expr  (60)
-	expr : expr . OPERATOR_LE expr  (61)
-	expr : expr . OPERATOR_GE expr  (62)
-	expr : expr . OPERATOR_EQ expr  (63)
-	expr : expr . OPERATOR_NE expr  (64)
-	expr : expr . OPERATOR_AND expr  (65)
-	expr : expr . OPERATOR_OR expr  (66)
-
-	OPERATOR_LE  shift 89
-	OPERATOR_GE  shift 90
-	OPERATOR_EQ  shift 91
-	OPERATOR_NE  shift 92
-	OPERATOR_AND  shift 93
-	OPERATOR_OR  shift 94
-	'+'  shift 95
-	'-'  shift 96
-	'*'  shift 97
-	'/'  shift 98
-	'<'  shift 99
-	'>'  shift 100
-	'!'  shift 101
-	TK_ELSE  reduce 57
-	TK_TO  reduce 57
-	TK_IDENTIFIER  reduce 57
-	LIT_INTEGER  reduce 57
-	LIT_REAL  reduce 57
-	LIT_CHAR  reduce 57
-	LIT_STRING  reduce 57
-	';'  reduce 57
-	'#'  reduce 57
-	']'  reduce 57
-	'('  reduce 57
-	')'  reduce 57
-	','  reduce 57
-	'}'  reduce 57
-	'&'  reduce 57
-
-
-125: shift/reduce conflict (shift 89, reduce 58) on OPERATOR_LE
-125: shift/reduce conflict (shift 90, reduce 58) on OPERATOR_GE
-125: shift/reduce conflict (shift 91, reduce 58) on OPERATOR_EQ
-125: shift/reduce conflict (shift 92, reduce 58) on OPERATOR_NE
-125: shift/reduce conflict (shift 93, reduce 58) on OPERATOR_AND
-125: shift/reduce conflict (shift 94, reduce 58) on OPERATOR_OR
-125: shift/reduce conflict (shift 95, reduce 58) on '+'
-125: shift/reduce conflict (shift 96, reduce 58) on '-'
-125: shift/reduce conflict (shift 97, reduce 58) on '*'
-125: shift/reduce conflict (shift 98, reduce 58) on '/'
-125: shift/reduce conflict (shift 99, reduce 58) on '<'
-125: shift/reduce conflict (shift 100, reduce 58) on '>'
-125: shift/reduce conflict (shift 101, reduce 58) on '!'
-state 125
-	expr : expr . '+' expr  (54)
-	expr : expr . '-' expr  (55)
-	expr : expr . '*' expr  (56)
-	expr : expr . '/' expr  (57)
-	expr : expr . '<' expr  (58)
-	expr : expr '<' expr .  (58)
-	expr : expr . '>' expr  (59)
-	expr : expr . '!' expr  (60)
-	expr : expr . OPERATOR_LE expr  (61)
-	expr : expr . OPERATOR_GE expr  (62)
-	expr : expr . OPERATOR_EQ expr  (63)
-	expr : expr . OPERATOR_NE expr  (64)
-	expr : expr . OPERATOR_AND expr  (65)
-	expr : expr . OPERATOR_OR expr  (66)
-
-	OPERATOR_LE  shift 89
-	OPERATOR_GE  shift 90
-	OPERATOR_EQ  shift 91
-	OPERATOR_NE  shift 92
-	OPERATOR_AND  shift 93
-	OPERATOR_OR  shift 94
-	'+'  shift 95
-	'-'  shift 96
-	'*'  shift 97
-	'/'  shift 98
-	'<'  shift 99
-	'>'  shift 100
-	'!'  shift 101
-	TK_ELSE  reduce 58
-	TK_TO  reduce 58
-	TK_IDENTIFIER  reduce 58
-	LIT_INTEGER  reduce 58
-	LIT_REAL  reduce 58
-	LIT_CHAR  reduce 58
-	LIT_STRING  reduce 58
-	';'  reduce 58
-	'#'  reduce 58
-	']'  reduce 58
-	'('  reduce 58
-	')'  reduce 58
-	','  reduce 58
-	'}'  reduce 58
-	'&'  reduce 58
-
-
-126: shift/reduce conflict (shift 89, reduce 59) on OPERATOR_LE
-126: shift/reduce conflict (shift 90, reduce 59) on OPERATOR_GE
-126: shift/reduce conflict (shift 91, reduce 59) on OPERATOR_EQ
-126: shift/reduce conflict (shift 92, reduce 59) on OPERATOR_NE
-126: shift/reduce conflict (shift 93, reduce 59) on OPERATOR_AND
-126: shift/reduce conflict (shift 94, reduce 59) on OPERATOR_OR
-126: shift/reduce conflict (shift 95, reduce 59) on '+'
-126: shift/reduce conflict (shift 96, reduce 59) on '-'
-126: shift/reduce conflict (shift 97, reduce 59) on '*'
-126: shift/reduce conflict (shift 98, reduce 59) on '/'
-126: shift/reduce conflict (shift 99, reduce 59) on '<'
-126: shift/reduce conflict (shift 100, reduce 59) on '>'
-126: shift/reduce conflict (shift 101, reduce 59) on '!'
-state 126
-	expr : expr . '+' expr  (54)
-	expr : expr . '-' expr  (55)
-	expr : expr . '*' expr  (56)
-	expr : expr . '/' expr  (57)
-	expr : expr . '<' expr  (58)
-	expr : expr . '>' expr  (59)
-	expr : expr '>' expr .  (59)
-	expr : expr . '!' expr  (60)
-	expr : expr . OPERATOR_LE expr  (61)
-	expr : expr . OPERATOR_GE expr  (62)
-	expr : expr . OPERATOR_EQ expr  (63)
-	expr : expr . OPERATOR_NE expr  (64)
-	expr : expr . OPERATOR_AND expr  (65)
-	expr : expr . OPERATOR_OR expr  (66)
-
-	OPERATOR_LE  shift 89
-	OPERATOR_GE  shift 90
-	OPERATOR_EQ  shift 91
-	OPERATOR_NE  shift 92
-	OPERATOR_AND  shift 93
-	OPERATOR_OR  shift 94
-	'+'  shift 95
-	'-'  shift 96
-	'*'  shift 97
-	'/'  shift 98
-	'<'  shift 99
-	'>'  shift 100
-	'!'  shift 101
-	TK_ELSE  reduce 59
-	TK_TO  reduce 59
-	TK_IDENTIFIER  reduce 59
-	LIT_INTEGER  reduce 59
-	LIT_REAL  reduce 59
-	LIT_CHAR  reduce 59
-	LIT_STRING  reduce 59
-	';'  reduce 59
-	'#'  reduce 59
-	']'  reduce 59
-	'('  reduce 59
-	')'  reduce 59
-	','  reduce 59
-	'}'  reduce 59
-	'&'  reduce 59
-
-
-127: shift/reduce conflict (shift 89, reduce 60) on OPERATOR_LE
-127: shift/reduce conflict (shift 90, reduce 60) on OPERATOR_GE
-127: shift/reduce conflict (shift 91, reduce 60) on OPERATOR_EQ
-127: shift/reduce conflict (shift 92, reduce 60) on OPERATOR_NE
-127: shift/reduce conflict (shift 93, reduce 60) on OPERATOR_AND
-127: shift/reduce conflict (shift 94, reduce 60) on OPERATOR_OR
-127: shift/reduce conflict (shift 95, reduce 60) on '+'
-127: shift/reduce conflict (shift 96, reduce 60) on '-'
-127: shift/reduce conflict (shift 97, reduce 60) on '*'
-127: shift/reduce conflict (shift 98, reduce 60) on '/'
-127: shift/reduce conflict (shift 99, reduce 60) on '<'
-127: shift/reduce conflict (shift 100, reduce 60) on '>'
-127: shift/reduce conflict (shift 101, reduce 60) on '!'
-state 127
-	expr : expr . '+' expr  (54)
-	expr : expr . '-' expr  (55)
-	expr : expr . '*' expr  (56)
-	expr : expr . '/' expr  (57)
-	expr : expr . '<' expr  (58)
-	expr : expr . '>' expr  (59)
-	expr : expr . '!' expr  (60)
-	expr : expr '!' expr .  (60)
-	expr : expr . OPERATOR_LE expr  (61)
-	expr : expr . OPERATOR_GE expr  (62)
-	expr : expr . OPERATOR_EQ expr  (63)
-	expr : expr . OPERATOR_NE expr  (64)
-	expr : expr . OPERATOR_AND expr  (65)
-	expr : expr . OPERATOR_OR expr  (66)
-
-	OPERATOR_LE  shift 89
-	OPERATOR_GE  shift 90
-	OPERATOR_EQ  shift 91
-	OPERATOR_NE  shift 92
-	OPERATOR_AND  shift 93
-	OPERATOR_OR  shift 94
-	'+'  shift 95
-	'-'  shift 96
-	'*'  shift 97
-	'/'  shift 98
-	'<'  shift 99
-	'>'  shift 100
-	'!'  shift 101
+	OPERATOR_LE  shift 88
+	OPERATOR_GE  shift 89
+	OPERATOR_EQ  shift 90
+	OPERATOR_NE  shift 91
+	OPERATOR_AND  shift 92
+	OPERATOR_OR  shift 93
+	'+'  shift 94
+	'-'  shift 95
+	'*'  shift 96
+	'/'  shift 97
+	'<'  shift 98
+	'>'  shift 99
+	'!'  shift 100
 	TK_ELSE  reduce 60
 	TK_TO  reduce 60
 	TK_IDENTIFIER  reduce 60
@@ -2373,308 +1607,1009 @@ state 127
 	'&'  reduce 60
 
 
+115: shift/reduce conflict (shift 88, reduce 61) on OPERATOR_LE
+115: shift/reduce conflict (shift 89, reduce 61) on OPERATOR_GE
+115: shift/reduce conflict (shift 90, reduce 61) on OPERATOR_EQ
+115: shift/reduce conflict (shift 91, reduce 61) on OPERATOR_NE
+115: shift/reduce conflict (shift 92, reduce 61) on OPERATOR_AND
+115: shift/reduce conflict (shift 93, reduce 61) on OPERATOR_OR
+115: shift/reduce conflict (shift 94, reduce 61) on '+'
+115: shift/reduce conflict (shift 95, reduce 61) on '-'
+115: shift/reduce conflict (shift 96, reduce 61) on '*'
+115: shift/reduce conflict (shift 97, reduce 61) on '/'
+115: shift/reduce conflict (shift 98, reduce 61) on '<'
+115: shift/reduce conflict (shift 99, reduce 61) on '>'
+115: shift/reduce conflict (shift 100, reduce 61) on '!'
+state 115
+	expr : expr . '+' expr  (53)
+	expr : expr . '-' expr  (54)
+	expr : expr . '*' expr  (55)
+	expr : expr . '/' expr  (56)
+	expr : expr . '<' expr  (57)
+	expr : expr . '>' expr  (58)
+	expr : expr . '!' expr  (59)
+	expr : expr . OPERATOR_LE expr  (60)
+	expr : expr . OPERATOR_GE expr  (61)
+	expr : expr OPERATOR_GE expr .  (61)
+	expr : expr . OPERATOR_EQ expr  (62)
+	expr : expr . OPERATOR_NE expr  (63)
+	expr : expr . OPERATOR_AND expr  (64)
+	expr : expr . OPERATOR_OR expr  (65)
+
+	OPERATOR_LE  shift 88
+	OPERATOR_GE  shift 89
+	OPERATOR_EQ  shift 90
+	OPERATOR_NE  shift 91
+	OPERATOR_AND  shift 92
+	OPERATOR_OR  shift 93
+	'+'  shift 94
+	'-'  shift 95
+	'*'  shift 96
+	'/'  shift 97
+	'<'  shift 98
+	'>'  shift 99
+	'!'  shift 100
+	TK_ELSE  reduce 61
+	TK_TO  reduce 61
+	TK_IDENTIFIER  reduce 61
+	LIT_INTEGER  reduce 61
+	LIT_REAL  reduce 61
+	LIT_CHAR  reduce 61
+	LIT_STRING  reduce 61
+	';'  reduce 61
+	'#'  reduce 61
+	']'  reduce 61
+	'('  reduce 61
+	')'  reduce 61
+	','  reduce 61
+	'}'  reduce 61
+	'&'  reduce 61
+
+
+116: shift/reduce conflict (shift 88, reduce 62) on OPERATOR_LE
+116: shift/reduce conflict (shift 89, reduce 62) on OPERATOR_GE
+116: shift/reduce conflict (shift 90, reduce 62) on OPERATOR_EQ
+116: shift/reduce conflict (shift 91, reduce 62) on OPERATOR_NE
+116: shift/reduce conflict (shift 92, reduce 62) on OPERATOR_AND
+116: shift/reduce conflict (shift 93, reduce 62) on OPERATOR_OR
+116: shift/reduce conflict (shift 94, reduce 62) on '+'
+116: shift/reduce conflict (shift 95, reduce 62) on '-'
+116: shift/reduce conflict (shift 96, reduce 62) on '*'
+116: shift/reduce conflict (shift 97, reduce 62) on '/'
+116: shift/reduce conflict (shift 98, reduce 62) on '<'
+116: shift/reduce conflict (shift 99, reduce 62) on '>'
+116: shift/reduce conflict (shift 100, reduce 62) on '!'
+state 116
+	expr : expr . '+' expr  (53)
+	expr : expr . '-' expr  (54)
+	expr : expr . '*' expr  (55)
+	expr : expr . '/' expr  (56)
+	expr : expr . '<' expr  (57)
+	expr : expr . '>' expr  (58)
+	expr : expr . '!' expr  (59)
+	expr : expr . OPERATOR_LE expr  (60)
+	expr : expr . OPERATOR_GE expr  (61)
+	expr : expr . OPERATOR_EQ expr  (62)
+	expr : expr OPERATOR_EQ expr .  (62)
+	expr : expr . OPERATOR_NE expr  (63)
+	expr : expr . OPERATOR_AND expr  (64)
+	expr : expr . OPERATOR_OR expr  (65)
+
+	OPERATOR_LE  shift 88
+	OPERATOR_GE  shift 89
+	OPERATOR_EQ  shift 90
+	OPERATOR_NE  shift 91
+	OPERATOR_AND  shift 92
+	OPERATOR_OR  shift 93
+	'+'  shift 94
+	'-'  shift 95
+	'*'  shift 96
+	'/'  shift 97
+	'<'  shift 98
+	'>'  shift 99
+	'!'  shift 100
+	TK_ELSE  reduce 62
+	TK_TO  reduce 62
+	TK_IDENTIFIER  reduce 62
+	LIT_INTEGER  reduce 62
+	LIT_REAL  reduce 62
+	LIT_CHAR  reduce 62
+	LIT_STRING  reduce 62
+	';'  reduce 62
+	'#'  reduce 62
+	']'  reduce 62
+	'('  reduce 62
+	')'  reduce 62
+	','  reduce 62
+	'}'  reduce 62
+	'&'  reduce 62
+
+
+117: shift/reduce conflict (shift 88, reduce 63) on OPERATOR_LE
+117: shift/reduce conflict (shift 89, reduce 63) on OPERATOR_GE
+117: shift/reduce conflict (shift 90, reduce 63) on OPERATOR_EQ
+117: shift/reduce conflict (shift 91, reduce 63) on OPERATOR_NE
+117: shift/reduce conflict (shift 92, reduce 63) on OPERATOR_AND
+117: shift/reduce conflict (shift 93, reduce 63) on OPERATOR_OR
+117: shift/reduce conflict (shift 94, reduce 63) on '+'
+117: shift/reduce conflict (shift 95, reduce 63) on '-'
+117: shift/reduce conflict (shift 96, reduce 63) on '*'
+117: shift/reduce conflict (shift 97, reduce 63) on '/'
+117: shift/reduce conflict (shift 98, reduce 63) on '<'
+117: shift/reduce conflict (shift 99, reduce 63) on '>'
+117: shift/reduce conflict (shift 100, reduce 63) on '!'
+state 117
+	expr : expr . '+' expr  (53)
+	expr : expr . '-' expr  (54)
+	expr : expr . '*' expr  (55)
+	expr : expr . '/' expr  (56)
+	expr : expr . '<' expr  (57)
+	expr : expr . '>' expr  (58)
+	expr : expr . '!' expr  (59)
+	expr : expr . OPERATOR_LE expr  (60)
+	expr : expr . OPERATOR_GE expr  (61)
+	expr : expr . OPERATOR_EQ expr  (62)
+	expr : expr . OPERATOR_NE expr  (63)
+	expr : expr OPERATOR_NE expr .  (63)
+	expr : expr . OPERATOR_AND expr  (64)
+	expr : expr . OPERATOR_OR expr  (65)
+
+	OPERATOR_LE  shift 88
+	OPERATOR_GE  shift 89
+	OPERATOR_EQ  shift 90
+	OPERATOR_NE  shift 91
+	OPERATOR_AND  shift 92
+	OPERATOR_OR  shift 93
+	'+'  shift 94
+	'-'  shift 95
+	'*'  shift 96
+	'/'  shift 97
+	'<'  shift 98
+	'>'  shift 99
+	'!'  shift 100
+	TK_ELSE  reduce 63
+	TK_TO  reduce 63
+	TK_IDENTIFIER  reduce 63
+	LIT_INTEGER  reduce 63
+	LIT_REAL  reduce 63
+	LIT_CHAR  reduce 63
+	LIT_STRING  reduce 63
+	';'  reduce 63
+	'#'  reduce 63
+	']'  reduce 63
+	'('  reduce 63
+	')'  reduce 63
+	','  reduce 63
+	'}'  reduce 63
+	'&'  reduce 63
+
+
+118: shift/reduce conflict (shift 88, reduce 64) on OPERATOR_LE
+118: shift/reduce conflict (shift 89, reduce 64) on OPERATOR_GE
+118: shift/reduce conflict (shift 90, reduce 64) on OPERATOR_EQ
+118: shift/reduce conflict (shift 91, reduce 64) on OPERATOR_NE
+118: shift/reduce conflict (shift 92, reduce 64) on OPERATOR_AND
+118: shift/reduce conflict (shift 93, reduce 64) on OPERATOR_OR
+118: shift/reduce conflict (shift 94, reduce 64) on '+'
+118: shift/reduce conflict (shift 95, reduce 64) on '-'
+118: shift/reduce conflict (shift 96, reduce 64) on '*'
+118: shift/reduce conflict (shift 97, reduce 64) on '/'
+118: shift/reduce conflict (shift 98, reduce 64) on '<'
+118: shift/reduce conflict (shift 99, reduce 64) on '>'
+118: shift/reduce conflict (shift 100, reduce 64) on '!'
+state 118
+	expr : expr . '+' expr  (53)
+	expr : expr . '-' expr  (54)
+	expr : expr . '*' expr  (55)
+	expr : expr . '/' expr  (56)
+	expr : expr . '<' expr  (57)
+	expr : expr . '>' expr  (58)
+	expr : expr . '!' expr  (59)
+	expr : expr . OPERATOR_LE expr  (60)
+	expr : expr . OPERATOR_GE expr  (61)
+	expr : expr . OPERATOR_EQ expr  (62)
+	expr : expr . OPERATOR_NE expr  (63)
+	expr : expr . OPERATOR_AND expr  (64)
+	expr : expr OPERATOR_AND expr .  (64)
+	expr : expr . OPERATOR_OR expr  (65)
+
+	OPERATOR_LE  shift 88
+	OPERATOR_GE  shift 89
+	OPERATOR_EQ  shift 90
+	OPERATOR_NE  shift 91
+	OPERATOR_AND  shift 92
+	OPERATOR_OR  shift 93
+	'+'  shift 94
+	'-'  shift 95
+	'*'  shift 96
+	'/'  shift 97
+	'<'  shift 98
+	'>'  shift 99
+	'!'  shift 100
+	TK_ELSE  reduce 64
+	TK_TO  reduce 64
+	TK_IDENTIFIER  reduce 64
+	LIT_INTEGER  reduce 64
+	LIT_REAL  reduce 64
+	LIT_CHAR  reduce 64
+	LIT_STRING  reduce 64
+	';'  reduce 64
+	'#'  reduce 64
+	']'  reduce 64
+	'('  reduce 64
+	')'  reduce 64
+	','  reduce 64
+	'}'  reduce 64
+	'&'  reduce 64
+
+
+119: shift/reduce conflict (shift 88, reduce 65) on OPERATOR_LE
+119: shift/reduce conflict (shift 89, reduce 65) on OPERATOR_GE
+119: shift/reduce conflict (shift 90, reduce 65) on OPERATOR_EQ
+119: shift/reduce conflict (shift 91, reduce 65) on OPERATOR_NE
+119: shift/reduce conflict (shift 92, reduce 65) on OPERATOR_AND
+119: shift/reduce conflict (shift 93, reduce 65) on OPERATOR_OR
+119: shift/reduce conflict (shift 94, reduce 65) on '+'
+119: shift/reduce conflict (shift 95, reduce 65) on '-'
+119: shift/reduce conflict (shift 96, reduce 65) on '*'
+119: shift/reduce conflict (shift 97, reduce 65) on '/'
+119: shift/reduce conflict (shift 98, reduce 65) on '<'
+119: shift/reduce conflict (shift 99, reduce 65) on '>'
+119: shift/reduce conflict (shift 100, reduce 65) on '!'
+state 119
+	expr : expr . '+' expr  (53)
+	expr : expr . '-' expr  (54)
+	expr : expr . '*' expr  (55)
+	expr : expr . '/' expr  (56)
+	expr : expr . '<' expr  (57)
+	expr : expr . '>' expr  (58)
+	expr : expr . '!' expr  (59)
+	expr : expr . OPERATOR_LE expr  (60)
+	expr : expr . OPERATOR_GE expr  (61)
+	expr : expr . OPERATOR_EQ expr  (62)
+	expr : expr . OPERATOR_NE expr  (63)
+	expr : expr . OPERATOR_AND expr  (64)
+	expr : expr . OPERATOR_OR expr  (65)
+	expr : expr OPERATOR_OR expr .  (65)
+
+	OPERATOR_LE  shift 88
+	OPERATOR_GE  shift 89
+	OPERATOR_EQ  shift 90
+	OPERATOR_NE  shift 91
+	OPERATOR_AND  shift 92
+	OPERATOR_OR  shift 93
+	'+'  shift 94
+	'-'  shift 95
+	'*'  shift 96
+	'/'  shift 97
+	'<'  shift 98
+	'>'  shift 99
+	'!'  shift 100
+	TK_ELSE  reduce 65
+	TK_TO  reduce 65
+	TK_IDENTIFIER  reduce 65
+	LIT_INTEGER  reduce 65
+	LIT_REAL  reduce 65
+	LIT_CHAR  reduce 65
+	LIT_STRING  reduce 65
+	';'  reduce 65
+	'#'  reduce 65
+	']'  reduce 65
+	'('  reduce 65
+	')'  reduce 65
+	','  reduce 65
+	'}'  reduce 65
+	'&'  reduce 65
+
+
+120: shift/reduce conflict (shift 88, reduce 53) on OPERATOR_LE
+120: shift/reduce conflict (shift 89, reduce 53) on OPERATOR_GE
+120: shift/reduce conflict (shift 90, reduce 53) on OPERATOR_EQ
+120: shift/reduce conflict (shift 91, reduce 53) on OPERATOR_NE
+120: shift/reduce conflict (shift 92, reduce 53) on OPERATOR_AND
+120: shift/reduce conflict (shift 93, reduce 53) on OPERATOR_OR
+120: shift/reduce conflict (shift 94, reduce 53) on '+'
+120: shift/reduce conflict (shift 95, reduce 53) on '-'
+120: shift/reduce conflict (shift 96, reduce 53) on '*'
+120: shift/reduce conflict (shift 97, reduce 53) on '/'
+120: shift/reduce conflict (shift 98, reduce 53) on '<'
+120: shift/reduce conflict (shift 99, reduce 53) on '>'
+120: shift/reduce conflict (shift 100, reduce 53) on '!'
+state 120
+	expr : expr . '+' expr  (53)
+	expr : expr '+' expr .  (53)
+	expr : expr . '-' expr  (54)
+	expr : expr . '*' expr  (55)
+	expr : expr . '/' expr  (56)
+	expr : expr . '<' expr  (57)
+	expr : expr . '>' expr  (58)
+	expr : expr . '!' expr  (59)
+	expr : expr . OPERATOR_LE expr  (60)
+	expr : expr . OPERATOR_GE expr  (61)
+	expr : expr . OPERATOR_EQ expr  (62)
+	expr : expr . OPERATOR_NE expr  (63)
+	expr : expr . OPERATOR_AND expr  (64)
+	expr : expr . OPERATOR_OR expr  (65)
+
+	OPERATOR_LE  shift 88
+	OPERATOR_GE  shift 89
+	OPERATOR_EQ  shift 90
+	OPERATOR_NE  shift 91
+	OPERATOR_AND  shift 92
+	OPERATOR_OR  shift 93
+	'+'  shift 94
+	'-'  shift 95
+	'*'  shift 96
+	'/'  shift 97
+	'<'  shift 98
+	'>'  shift 99
+	'!'  shift 100
+	TK_ELSE  reduce 53
+	TK_TO  reduce 53
+	TK_IDENTIFIER  reduce 53
+	LIT_INTEGER  reduce 53
+	LIT_REAL  reduce 53
+	LIT_CHAR  reduce 53
+	LIT_STRING  reduce 53
+	';'  reduce 53
+	'#'  reduce 53
+	']'  reduce 53
+	'('  reduce 53
+	')'  reduce 53
+	','  reduce 53
+	'}'  reduce 53
+	'&'  reduce 53
+
+
+121: shift/reduce conflict (shift 88, reduce 54) on OPERATOR_LE
+121: shift/reduce conflict (shift 89, reduce 54) on OPERATOR_GE
+121: shift/reduce conflict (shift 90, reduce 54) on OPERATOR_EQ
+121: shift/reduce conflict (shift 91, reduce 54) on OPERATOR_NE
+121: shift/reduce conflict (shift 92, reduce 54) on OPERATOR_AND
+121: shift/reduce conflict (shift 93, reduce 54) on OPERATOR_OR
+121: shift/reduce conflict (shift 94, reduce 54) on '+'
+121: shift/reduce conflict (shift 95, reduce 54) on '-'
+121: shift/reduce conflict (shift 96, reduce 54) on '*'
+121: shift/reduce conflict (shift 97, reduce 54) on '/'
+121: shift/reduce conflict (shift 98, reduce 54) on '<'
+121: shift/reduce conflict (shift 99, reduce 54) on '>'
+121: shift/reduce conflict (shift 100, reduce 54) on '!'
+state 121
+	expr : expr . '+' expr  (53)
+	expr : expr . '-' expr  (54)
+	expr : expr '-' expr .  (54)
+	expr : expr . '*' expr  (55)
+	expr : expr . '/' expr  (56)
+	expr : expr . '<' expr  (57)
+	expr : expr . '>' expr  (58)
+	expr : expr . '!' expr  (59)
+	expr : expr . OPERATOR_LE expr  (60)
+	expr : expr . OPERATOR_GE expr  (61)
+	expr : expr . OPERATOR_EQ expr  (62)
+	expr : expr . OPERATOR_NE expr  (63)
+	expr : expr . OPERATOR_AND expr  (64)
+	expr : expr . OPERATOR_OR expr  (65)
+
+	OPERATOR_LE  shift 88
+	OPERATOR_GE  shift 89
+	OPERATOR_EQ  shift 90
+	OPERATOR_NE  shift 91
+	OPERATOR_AND  shift 92
+	OPERATOR_OR  shift 93
+	'+'  shift 94
+	'-'  shift 95
+	'*'  shift 96
+	'/'  shift 97
+	'<'  shift 98
+	'>'  shift 99
+	'!'  shift 100
+	TK_ELSE  reduce 54
+	TK_TO  reduce 54
+	TK_IDENTIFIER  reduce 54
+	LIT_INTEGER  reduce 54
+	LIT_REAL  reduce 54
+	LIT_CHAR  reduce 54
+	LIT_STRING  reduce 54
+	';'  reduce 54
+	'#'  reduce 54
+	']'  reduce 54
+	'('  reduce 54
+	')'  reduce 54
+	','  reduce 54
+	'}'  reduce 54
+	'&'  reduce 54
+
+
+122: shift/reduce conflict (shift 88, reduce 55) on OPERATOR_LE
+122: shift/reduce conflict (shift 89, reduce 55) on OPERATOR_GE
+122: shift/reduce conflict (shift 90, reduce 55) on OPERATOR_EQ
+122: shift/reduce conflict (shift 91, reduce 55) on OPERATOR_NE
+122: shift/reduce conflict (shift 92, reduce 55) on OPERATOR_AND
+122: shift/reduce conflict (shift 93, reduce 55) on OPERATOR_OR
+122: shift/reduce conflict (shift 94, reduce 55) on '+'
+122: shift/reduce conflict (shift 95, reduce 55) on '-'
+122: shift/reduce conflict (shift 96, reduce 55) on '*'
+122: shift/reduce conflict (shift 97, reduce 55) on '/'
+122: shift/reduce conflict (shift 98, reduce 55) on '<'
+122: shift/reduce conflict (shift 99, reduce 55) on '>'
+122: shift/reduce conflict (shift 100, reduce 55) on '!'
+state 122
+	expr : expr . '+' expr  (53)
+	expr : expr . '-' expr  (54)
+	expr : expr . '*' expr  (55)
+	expr : expr '*' expr .  (55)
+	expr : expr . '/' expr  (56)
+	expr : expr . '<' expr  (57)
+	expr : expr . '>' expr  (58)
+	expr : expr . '!' expr  (59)
+	expr : expr . OPERATOR_LE expr  (60)
+	expr : expr . OPERATOR_GE expr  (61)
+	expr : expr . OPERATOR_EQ expr  (62)
+	expr : expr . OPERATOR_NE expr  (63)
+	expr : expr . OPERATOR_AND expr  (64)
+	expr : expr . OPERATOR_OR expr  (65)
+
+	OPERATOR_LE  shift 88
+	OPERATOR_GE  shift 89
+	OPERATOR_EQ  shift 90
+	OPERATOR_NE  shift 91
+	OPERATOR_AND  shift 92
+	OPERATOR_OR  shift 93
+	'+'  shift 94
+	'-'  shift 95
+	'*'  shift 96
+	'/'  shift 97
+	'<'  shift 98
+	'>'  shift 99
+	'!'  shift 100
+	TK_ELSE  reduce 55
+	TK_TO  reduce 55
+	TK_IDENTIFIER  reduce 55
+	LIT_INTEGER  reduce 55
+	LIT_REAL  reduce 55
+	LIT_CHAR  reduce 55
+	LIT_STRING  reduce 55
+	';'  reduce 55
+	'#'  reduce 55
+	']'  reduce 55
+	'('  reduce 55
+	')'  reduce 55
+	','  reduce 55
+	'}'  reduce 55
+	'&'  reduce 55
+
+
+123: shift/reduce conflict (shift 88, reduce 56) on OPERATOR_LE
+123: shift/reduce conflict (shift 89, reduce 56) on OPERATOR_GE
+123: shift/reduce conflict (shift 90, reduce 56) on OPERATOR_EQ
+123: shift/reduce conflict (shift 91, reduce 56) on OPERATOR_NE
+123: shift/reduce conflict (shift 92, reduce 56) on OPERATOR_AND
+123: shift/reduce conflict (shift 93, reduce 56) on OPERATOR_OR
+123: shift/reduce conflict (shift 94, reduce 56) on '+'
+123: shift/reduce conflict (shift 95, reduce 56) on '-'
+123: shift/reduce conflict (shift 96, reduce 56) on '*'
+123: shift/reduce conflict (shift 97, reduce 56) on '/'
+123: shift/reduce conflict (shift 98, reduce 56) on '<'
+123: shift/reduce conflict (shift 99, reduce 56) on '>'
+123: shift/reduce conflict (shift 100, reduce 56) on '!'
+state 123
+	expr : expr . '+' expr  (53)
+	expr : expr . '-' expr  (54)
+	expr : expr . '*' expr  (55)
+	expr : expr . '/' expr  (56)
+	expr : expr '/' expr .  (56)
+	expr : expr . '<' expr  (57)
+	expr : expr . '>' expr  (58)
+	expr : expr . '!' expr  (59)
+	expr : expr . OPERATOR_LE expr  (60)
+	expr : expr . OPERATOR_GE expr  (61)
+	expr : expr . OPERATOR_EQ expr  (62)
+	expr : expr . OPERATOR_NE expr  (63)
+	expr : expr . OPERATOR_AND expr  (64)
+	expr : expr . OPERATOR_OR expr  (65)
+
+	OPERATOR_LE  shift 88
+	OPERATOR_GE  shift 89
+	OPERATOR_EQ  shift 90
+	OPERATOR_NE  shift 91
+	OPERATOR_AND  shift 92
+	OPERATOR_OR  shift 93
+	'+'  shift 94
+	'-'  shift 95
+	'*'  shift 96
+	'/'  shift 97
+	'<'  shift 98
+	'>'  shift 99
+	'!'  shift 100
+	TK_ELSE  reduce 56
+	TK_TO  reduce 56
+	TK_IDENTIFIER  reduce 56
+	LIT_INTEGER  reduce 56
+	LIT_REAL  reduce 56
+	LIT_CHAR  reduce 56
+	LIT_STRING  reduce 56
+	';'  reduce 56
+	'#'  reduce 56
+	']'  reduce 56
+	'('  reduce 56
+	')'  reduce 56
+	','  reduce 56
+	'}'  reduce 56
+	'&'  reduce 56
+
+
+124: shift/reduce conflict (shift 88, reduce 57) on OPERATOR_LE
+124: shift/reduce conflict (shift 89, reduce 57) on OPERATOR_GE
+124: shift/reduce conflict (shift 90, reduce 57) on OPERATOR_EQ
+124: shift/reduce conflict (shift 91, reduce 57) on OPERATOR_NE
+124: shift/reduce conflict (shift 92, reduce 57) on OPERATOR_AND
+124: shift/reduce conflict (shift 93, reduce 57) on OPERATOR_OR
+124: shift/reduce conflict (shift 94, reduce 57) on '+'
+124: shift/reduce conflict (shift 95, reduce 57) on '-'
+124: shift/reduce conflict (shift 96, reduce 57) on '*'
+124: shift/reduce conflict (shift 97, reduce 57) on '/'
+124: shift/reduce conflict (shift 98, reduce 57) on '<'
+124: shift/reduce conflict (shift 99, reduce 57) on '>'
+124: shift/reduce conflict (shift 100, reduce 57) on '!'
+state 124
+	expr : expr . '+' expr  (53)
+	expr : expr . '-' expr  (54)
+	expr : expr . '*' expr  (55)
+	expr : expr . '/' expr  (56)
+	expr : expr . '<' expr  (57)
+	expr : expr '<' expr .  (57)
+	expr : expr . '>' expr  (58)
+	expr : expr . '!' expr  (59)
+	expr : expr . OPERATOR_LE expr  (60)
+	expr : expr . OPERATOR_GE expr  (61)
+	expr : expr . OPERATOR_EQ expr  (62)
+	expr : expr . OPERATOR_NE expr  (63)
+	expr : expr . OPERATOR_AND expr  (64)
+	expr : expr . OPERATOR_OR expr  (65)
+
+	OPERATOR_LE  shift 88
+	OPERATOR_GE  shift 89
+	OPERATOR_EQ  shift 90
+	OPERATOR_NE  shift 91
+	OPERATOR_AND  shift 92
+	OPERATOR_OR  shift 93
+	'+'  shift 94
+	'-'  shift 95
+	'*'  shift 96
+	'/'  shift 97
+	'<'  shift 98
+	'>'  shift 99
+	'!'  shift 100
+	TK_ELSE  reduce 57
+	TK_TO  reduce 57
+	TK_IDENTIFIER  reduce 57
+	LIT_INTEGER  reduce 57
+	LIT_REAL  reduce 57
+	LIT_CHAR  reduce 57
+	LIT_STRING  reduce 57
+	';'  reduce 57
+	'#'  reduce 57
+	']'  reduce 57
+	'('  reduce 57
+	')'  reduce 57
+	','  reduce 57
+	'}'  reduce 57
+	'&'  reduce 57
+
+
+125: shift/reduce conflict (shift 88, reduce 58) on OPERATOR_LE
+125: shift/reduce conflict (shift 89, reduce 58) on OPERATOR_GE
+125: shift/reduce conflict (shift 90, reduce 58) on OPERATOR_EQ
+125: shift/reduce conflict (shift 91, reduce 58) on OPERATOR_NE
+125: shift/reduce conflict (shift 92, reduce 58) on OPERATOR_AND
+125: shift/reduce conflict (shift 93, reduce 58) on OPERATOR_OR
+125: shift/reduce conflict (shift 94, reduce 58) on '+'
+125: shift/reduce conflict (shift 95, reduce 58) on '-'
+125: shift/reduce conflict (shift 96, reduce 58) on '*'
+125: shift/reduce conflict (shift 97, reduce 58) on '/'
+125: shift/reduce conflict (shift 98, reduce 58) on '<'
+125: shift/reduce conflict (shift 99, reduce 58) on '>'
+125: shift/reduce conflict (shift 100, reduce 58) on '!'
+state 125
+	expr : expr . '+' expr  (53)
+	expr : expr . '-' expr  (54)
+	expr : expr . '*' expr  (55)
+	expr : expr . '/' expr  (56)
+	expr : expr . '<' expr  (57)
+	expr : expr . '>' expr  (58)
+	expr : expr '>' expr .  (58)
+	expr : expr . '!' expr  (59)
+	expr : expr . OPERATOR_LE expr  (60)
+	expr : expr . OPERATOR_GE expr  (61)
+	expr : expr . OPERATOR_EQ expr  (62)
+	expr : expr . OPERATOR_NE expr  (63)
+	expr : expr . OPERATOR_AND expr  (64)
+	expr : expr . OPERATOR_OR expr  (65)
+
+	OPERATOR_LE  shift 88
+	OPERATOR_GE  shift 89
+	OPERATOR_EQ  shift 90
+	OPERATOR_NE  shift 91
+	OPERATOR_AND  shift 92
+	OPERATOR_OR  shift 93
+	'+'  shift 94
+	'-'  shift 95
+	'*'  shift 96
+	'/'  shift 97
+	'<'  shift 98
+	'>'  shift 99
+	'!'  shift 100
+	TK_ELSE  reduce 58
+	TK_TO  reduce 58
+	TK_IDENTIFIER  reduce 58
+	LIT_INTEGER  reduce 58
+	LIT_REAL  reduce 58
+	LIT_CHAR  reduce 58
+	LIT_STRING  reduce 58
+	';'  reduce 58
+	'#'  reduce 58
+	']'  reduce 58
+	'('  reduce 58
+	')'  reduce 58
+	','  reduce 58
+	'}'  reduce 58
+	'&'  reduce 58
+
+
+126: shift/reduce conflict (shift 88, reduce 59) on OPERATOR_LE
+126: shift/reduce conflict (shift 89, reduce 59) on OPERATOR_GE
+126: shift/reduce conflict (shift 90, reduce 59) on OPERATOR_EQ
+126: shift/reduce conflict (shift 91, reduce 59) on OPERATOR_NE
+126: shift/reduce conflict (shift 92, reduce 59) on OPERATOR_AND
+126: shift/reduce conflict (shift 93, reduce 59) on OPERATOR_OR
+126: shift/reduce conflict (shift 94, reduce 59) on '+'
+126: shift/reduce conflict (shift 95, reduce 59) on '-'
+126: shift/reduce conflict (shift 96, reduce 59) on '*'
+126: shift/reduce conflict (shift 97, reduce 59) on '/'
+126: shift/reduce conflict (shift 98, reduce 59) on '<'
+126: shift/reduce conflict (shift 99, reduce 59) on '>'
+126: shift/reduce conflict (shift 100, reduce 59) on '!'
+state 126
+	expr : expr . '+' expr  (53)
+	expr : expr . '-' expr  (54)
+	expr : expr . '*' expr  (55)
+	expr : expr . '/' expr  (56)
+	expr : expr . '<' expr  (57)
+	expr : expr . '>' expr  (58)
+	expr : expr . '!' expr  (59)
+	expr : expr '!' expr .  (59)
+	expr : expr . OPERATOR_LE expr  (60)
+	expr : expr . OPERATOR_GE expr  (61)
+	expr : expr . OPERATOR_EQ expr  (62)
+	expr : expr . OPERATOR_NE expr  (63)
+	expr : expr . OPERATOR_AND expr  (64)
+	expr : expr . OPERATOR_OR expr  (65)
+
+	OPERATOR_LE  shift 88
+	OPERATOR_GE  shift 89
+	OPERATOR_EQ  shift 90
+	OPERATOR_NE  shift 91
+	OPERATOR_AND  shift 92
+	OPERATOR_OR  shift 93
+	'+'  shift 94
+	'-'  shift 95
+	'*'  shift 96
+	'/'  shift 97
+	'<'  shift 98
+	'>'  shift 99
+	'!'  shift 100
+	TK_ELSE  reduce 59
+	TK_TO  reduce 59
+	TK_IDENTIFIER  reduce 59
+	LIT_INTEGER  reduce 59
+	LIT_REAL  reduce 59
+	LIT_CHAR  reduce 59
+	LIT_STRING  reduce 59
+	';'  reduce 59
+	'#'  reduce 59
+	']'  reduce 59
+	'('  reduce 59
+	')'  reduce 59
+	','  reduce 59
+	'}'  reduce 59
+	'&'  reduce 59
+
+
+state 127
+	attribution : TK_IDENTIFIER '[' expr ']' . '=' expr  (38)
+
+	'='  shift 134
+	.  error
+
+
 state 128
-	attribution : TK_IDENTIFIER '[' expr ']' . '=' expr  (39)
-
-	'='  shift 135
-	.  error
-
-
-state 129
-	while : TK_WHILE '(' expr ')' command .  (76)
-
-	.  reduce 76
-
-
-state 130
-	if : TK_IF '(' expr ')' TK_THEN . command  (74)
-	if : TK_IF '(' expr ')' TK_THEN . command TK_ELSE command  (75)
-	command : .  (37)
-
-	TK_WHILE  shift 43
-	TK_IF  shift 44
-	TK_FOR  shift 45
-	TK_READ  shift 46
-	TK_RETURN  shift 47
-	TK_PRINT  shift 48
-	TK_IDENTIFIER  shift 49
-	'{'  shift 37
-	TK_ELSE  reduce 37
-	';'  reduce 37
-	'}'  reduce 37
-
-	block  goto 50
-	command  goto 136
-	attribution  goto 53
-	read  goto 54
-	print  goto 55
-	return  goto 56
-	control  goto 57
-	if  goto 58
-	while  goto 59
-	for  goto 60
-
-
-state 131
-	expr : expr . '+' expr  (54)
-	expr : expr . '-' expr  (55)
-	expr : expr . '*' expr  (56)
-	expr : expr . '/' expr  (57)
-	expr : expr . '<' expr  (58)
-	expr : expr . '>' expr  (59)
-	expr : expr . '!' expr  (60)
-	expr : expr . OPERATOR_LE expr  (61)
-	expr : expr . OPERATOR_GE expr  (62)
-	expr : expr . OPERATOR_EQ expr  (63)
-	expr : expr . OPERATOR_NE expr  (64)
-	expr : expr . OPERATOR_AND expr  (65)
-	expr : expr . OPERATOR_OR expr  (66)
-	for : TK_FOR '(' TK_IDENTIFIER '=' expr . TK_TO expr ')' command  (77)
-
-	TK_TO  shift 137
-	OPERATOR_LE  shift 89
-	OPERATOR_GE  shift 90
-	OPERATOR_EQ  shift 91
-	OPERATOR_NE  shift 92
-	OPERATOR_AND  shift 93
-	OPERATOR_OR  shift 94
-	'+'  shift 95
-	'-'  shift 96
-	'*'  shift 97
-	'/'  shift 98
-	'<'  shift 99
-	'>'  shift 100
-	'!'  shift 101
-	.  error
-
-
-state 132
-	expr : TK_IDENTIFIER '[' expr ']' .  (48)
-
-	.  reduce 48
-
-
-state 133
-	call_param_list : expr ',' . call_param_list  (70)
-
-	TK_IDENTIFIER  shift 67
-	LIT_INTEGER  shift 18
-	LIT_REAL  shift 19
-	LIT_CHAR  shift 20
-	LIT_STRING  shift 21
-	'#'  shift 68
-	'('  shift 69
-	'&'  shift 70
-	.  error
-
-	lit  goto 71
-	expr  goto 112
-	func_call  goto 73
-	call_param_list  goto 138
-
-
-state 134
-	func_call : TK_IDENTIFIER '(' call_param_list ')' .  (67)
-
-	.  reduce 67
-
-
-state 135
-	attribution : TK_IDENTIFIER '[' expr ']' '=' . expr  (39)
-
-	TK_IDENTIFIER  shift 67
-	LIT_INTEGER  shift 18
-	LIT_REAL  shift 19
-	LIT_CHAR  shift 20
-	LIT_STRING  shift 21
-	'#'  shift 68
-	'('  shift 69
-	'&'  shift 70
-	.  error
-
-	lit  goto 71
-	expr  goto 139
-	func_call  goto 73
-
-
-136: shift/reduce conflict (shift 140, reduce 74) on TK_ELSE
-state 136
-	if : TK_IF '(' expr ')' TK_THEN command .  (74)
-	if : TK_IF '(' expr ')' TK_THEN command . TK_ELSE command  (75)
-
-	TK_ELSE  shift 140
-	';'  reduce 74
-	'}'  reduce 74
-
-
-state 137
-	for : TK_FOR '(' TK_IDENTIFIER '=' expr TK_TO . expr ')' command  (77)
-
-	TK_IDENTIFIER  shift 67
-	LIT_INTEGER  shift 18
-	LIT_REAL  shift 19
-	LIT_CHAR  shift 20
-	LIT_STRING  shift 21
-	'#'  shift 68
-	'('  shift 69
-	'&'  shift 70
-	.  error
-
-	lit  goto 71
-	expr  goto 141
-	func_call  goto 73
-
-
-state 138
-	call_param_list : expr ',' call_param_list .  (70)
-
-	.  reduce 70
-
-
-state 139
-	attribution : TK_IDENTIFIER '[' expr ']' '=' expr .  (39)
-	expr : expr . '+' expr  (54)
-	expr : expr . '-' expr  (55)
-	expr : expr . '*' expr  (56)
-	expr : expr . '/' expr  (57)
-	expr : expr . '<' expr  (58)
-	expr : expr . '>' expr  (59)
-	expr : expr . '!' expr  (60)
-	expr : expr . OPERATOR_LE expr  (61)
-	expr : expr . OPERATOR_GE expr  (62)
-	expr : expr . OPERATOR_EQ expr  (63)
-	expr : expr . OPERATOR_NE expr  (64)
-	expr : expr . OPERATOR_AND expr  (65)
-	expr : expr . OPERATOR_OR expr  (66)
-
-	OPERATOR_LE  shift 89
-	OPERATOR_GE  shift 90
-	OPERATOR_EQ  shift 91
-	OPERATOR_NE  shift 92
-	OPERATOR_AND  shift 93
-	OPERATOR_OR  shift 94
-	'+'  shift 95
-	'-'  shift 96
-	'*'  shift 97
-	'/'  shift 98
-	'<'  shift 99
-	'>'  shift 100
-	'!'  shift 101
-	TK_ELSE  reduce 39
-	';'  reduce 39
-	'}'  reduce 39
-
-
-state 140
-	if : TK_IF '(' expr ')' TK_THEN command TK_ELSE . command  (75)
-	command : .  (37)
-
-	TK_WHILE  shift 43
-	TK_IF  shift 44
-	TK_FOR  shift 45
-	TK_READ  shift 46
-	TK_RETURN  shift 47
-	TK_PRINT  shift 48
-	TK_IDENTIFIER  shift 49
-	'{'  shift 37
-	TK_ELSE  reduce 37
-	';'  reduce 37
-	'}'  reduce 37
-
-	block  goto 50
-	command  goto 142
-	attribution  goto 53
-	read  goto 54
-	print  goto 55
-	return  goto 56
-	control  goto 57
-	if  goto 58
-	while  goto 59
-	for  goto 60
-
-
-state 141
-	expr : expr . '+' expr  (54)
-	expr : expr . '-' expr  (55)
-	expr : expr . '*' expr  (56)
-	expr : expr . '/' expr  (57)
-	expr : expr . '<' expr  (58)
-	expr : expr . '>' expr  (59)
-	expr : expr . '!' expr  (60)
-	expr : expr . OPERATOR_LE expr  (61)
-	expr : expr . OPERATOR_GE expr  (62)
-	expr : expr . OPERATOR_EQ expr  (63)
-	expr : expr . OPERATOR_NE expr  (64)
-	expr : expr . OPERATOR_AND expr  (65)
-	expr : expr . OPERATOR_OR expr  (66)
-	for : TK_FOR '(' TK_IDENTIFIER '=' expr TK_TO expr . ')' command  (77)
-
-	OPERATOR_LE  shift 89
-	OPERATOR_GE  shift 90
-	OPERATOR_EQ  shift 91
-	OPERATOR_NE  shift 92
-	OPERATOR_AND  shift 93
-	OPERATOR_OR  shift 94
-	')'  shift 143
-	'+'  shift 95
-	'-'  shift 96
-	'*'  shift 97
-	'/'  shift 98
-	'<'  shift 99
-	'>'  shift 100
-	'!'  shift 101
-	.  error
-
-
-state 142
-	if : TK_IF '(' expr ')' TK_THEN command TK_ELSE command .  (75)
+	while : TK_WHILE '(' expr ')' command .  (75)
 
 	.  reduce 75
 
 
+state 129
+	if : TK_IF '(' expr ')' TK_THEN . command  (73)
+	if : TK_IF '(' expr ')' TK_THEN . command TK_ELSE command  (74)
+	command : .  (36)
+
+	TK_WHILE  shift 42
+	TK_IF  shift 43
+	TK_FOR  shift 44
+	TK_READ  shift 45
+	TK_RETURN  shift 46
+	TK_PRINT  shift 47
+	TK_IDENTIFIER  shift 48
+	'{'  shift 36
+	TK_ELSE  reduce 36
+	';'  reduce 36
+	'}'  reduce 36
+
+	block  goto 49
+	command  goto 135
+	attribution  goto 52
+	read  goto 53
+	print  goto 54
+	return  goto 55
+	control  goto 56
+	if  goto 57
+	while  goto 58
+	for  goto 59
+
+
+state 130
+	expr : expr . '+' expr  (53)
+	expr : expr . '-' expr  (54)
+	expr : expr . '*' expr  (55)
+	expr : expr . '/' expr  (56)
+	expr : expr . '<' expr  (57)
+	expr : expr . '>' expr  (58)
+	expr : expr . '!' expr  (59)
+	expr : expr . OPERATOR_LE expr  (60)
+	expr : expr . OPERATOR_GE expr  (61)
+	expr : expr . OPERATOR_EQ expr  (62)
+	expr : expr . OPERATOR_NE expr  (63)
+	expr : expr . OPERATOR_AND expr  (64)
+	expr : expr . OPERATOR_OR expr  (65)
+	for : TK_FOR '(' TK_IDENTIFIER '=' expr . TK_TO expr ')' command  (76)
+
+	TK_TO  shift 136
+	OPERATOR_LE  shift 88
+	OPERATOR_GE  shift 89
+	OPERATOR_EQ  shift 90
+	OPERATOR_NE  shift 91
+	OPERATOR_AND  shift 92
+	OPERATOR_OR  shift 93
+	'+'  shift 94
+	'-'  shift 95
+	'*'  shift 96
+	'/'  shift 97
+	'<'  shift 98
+	'>'  shift 99
+	'!'  shift 100
+	.  error
+
+
+state 131
+	expr : TK_IDENTIFIER '[' expr ']' .  (47)
+
+	.  reduce 47
+
+
+state 132
+	call_param_list : expr ',' . call_param_list  (69)
+
+	TK_IDENTIFIER  shift 66
+	LIT_INTEGER  shift 18
+	LIT_REAL  shift 19
+	LIT_CHAR  shift 20
+	'#'  shift 67
+	'('  shift 68
+	'&'  shift 69
+	.  error
+
+	lit  goto 70
+	expr  goto 111
+	func_call  goto 72
+	call_param_list  goto 137
+
+
+state 133
+	func_call : TK_IDENTIFIER '(' call_param_list ')' .  (66)
+
+	.  reduce 66
+
+
+state 134
+	attribution : TK_IDENTIFIER '[' expr ']' '=' . expr  (38)
+
+	TK_IDENTIFIER  shift 66
+	LIT_INTEGER  shift 18
+	LIT_REAL  shift 19
+	LIT_CHAR  shift 20
+	'#'  shift 67
+	'('  shift 68
+	'&'  shift 69
+	.  error
+
+	lit  goto 70
+	expr  goto 138
+	func_call  goto 72
+
+
+135: shift/reduce conflict (shift 139, reduce 73) on TK_ELSE
+state 135
+	if : TK_IF '(' expr ')' TK_THEN command .  (73)
+	if : TK_IF '(' expr ')' TK_THEN command . TK_ELSE command  (74)
+
+	TK_ELSE  shift 139
+	';'  reduce 73
+	'}'  reduce 73
+
+
+state 136
+	for : TK_FOR '(' TK_IDENTIFIER '=' expr TK_TO . expr ')' command  (76)
+
+	TK_IDENTIFIER  shift 66
+	LIT_INTEGER  shift 18
+	LIT_REAL  shift 19
+	LIT_CHAR  shift 20
+	'#'  shift 67
+	'('  shift 68
+	'&'  shift 69
+	.  error
+
+	lit  goto 70
+	expr  goto 140
+	func_call  goto 72
+
+
+state 137
+	call_param_list : expr ',' call_param_list .  (69)
+
+	.  reduce 69
+
+
+state 138
+	attribution : TK_IDENTIFIER '[' expr ']' '=' expr .  (38)
+	expr : expr . '+' expr  (53)
+	expr : expr . '-' expr  (54)
+	expr : expr . '*' expr  (55)
+	expr : expr . '/' expr  (56)
+	expr : expr . '<' expr  (57)
+	expr : expr . '>' expr  (58)
+	expr : expr . '!' expr  (59)
+	expr : expr . OPERATOR_LE expr  (60)
+	expr : expr . OPERATOR_GE expr  (61)
+	expr : expr . OPERATOR_EQ expr  (62)
+	expr : expr . OPERATOR_NE expr  (63)
+	expr : expr . OPERATOR_AND expr  (64)
+	expr : expr . OPERATOR_OR expr  (65)
+
+	OPERATOR_LE  shift 88
+	OPERATOR_GE  shift 89
+	OPERATOR_EQ  shift 90
+	OPERATOR_NE  shift 91
+	OPERATOR_AND  shift 92
+	OPERATOR_OR  shift 93
+	'+'  shift 94
+	'-'  shift 95
+	'*'  shift 96
+	'/'  shift 97
+	'<'  shift 98
+	'>'  shift 99
+	'!'  shift 100
+	TK_ELSE  reduce 38
+	';'  reduce 38
+	'}'  reduce 38
+
+
+state 139
+	if : TK_IF '(' expr ')' TK_THEN command TK_ELSE . command  (74)
+	command : .  (36)
+
+	TK_WHILE  shift 42
+	TK_IF  shift 43
+	TK_FOR  shift 44
+	TK_READ  shift 45
+	TK_RETURN  shift 46
+	TK_PRINT  shift 47
+	TK_IDENTIFIER  shift 48
+	'{'  shift 36
+	TK_ELSE  reduce 36
+	';'  reduce 36
+	'}'  reduce 36
+
+	block  goto 49
+	command  goto 141
+	attribution  goto 52
+	read  goto 53
+	print  goto 54
+	return  goto 55
+	control  goto 56
+	if  goto 57
+	while  goto 58
+	for  goto 59
+
+
+state 140
+	expr : expr . '+' expr  (53)
+	expr : expr . '-' expr  (54)
+	expr : expr . '*' expr  (55)
+	expr : expr . '/' expr  (56)
+	expr : expr . '<' expr  (57)
+	expr : expr . '>' expr  (58)
+	expr : expr . '!' expr  (59)
+	expr : expr . OPERATOR_LE expr  (60)
+	expr : expr . OPERATOR_GE expr  (61)
+	expr : expr . OPERATOR_EQ expr  (62)
+	expr : expr . OPERATOR_NE expr  (63)
+	expr : expr . OPERATOR_AND expr  (64)
+	expr : expr . OPERATOR_OR expr  (65)
+	for : TK_FOR '(' TK_IDENTIFIER '=' expr TK_TO expr . ')' command  (76)
+
+	OPERATOR_LE  shift 88
+	OPERATOR_GE  shift 89
+	OPERATOR_EQ  shift 90
+	OPERATOR_NE  shift 91
+	OPERATOR_AND  shift 92
+	OPERATOR_OR  shift 93
+	')'  shift 142
+	'+'  shift 94
+	'-'  shift 95
+	'*'  shift 96
+	'/'  shift 97
+	'<'  shift 98
+	'>'  shift 99
+	'!'  shift 100
+	.  error
+
+
+state 141
+	if : TK_IF '(' expr ')' TK_THEN command TK_ELSE command .  (74)
+
+	.  reduce 74
+
+
+state 142
+	for : TK_FOR '(' TK_IDENTIFIER '=' expr TK_TO expr ')' . command  (76)
+	command : .  (36)
+
+	TK_WHILE  shift 42
+	TK_IF  shift 43
+	TK_FOR  shift 44
+	TK_READ  shift 45
+	TK_RETURN  shift 46
+	TK_PRINT  shift 47
+	TK_IDENTIFIER  shift 48
+	'{'  shift 36
+	TK_ELSE  reduce 36
+	';'  reduce 36
+	'}'  reduce 36
+
+	block  goto 49
+	command  goto 143
+	attribution  goto 52
+	read  goto 53
+	print  goto 54
+	return  goto 55
+	control  goto 56
+	if  goto 57
+	while  goto 58
+	for  goto 59
+
+
 state 143
-	for : TK_FOR '(' TK_IDENTIFIER '=' expr TK_TO expr ')' . command  (77)
-	command : .  (37)
+	for : TK_FOR '(' TK_IDENTIFIER '=' expr TK_TO expr ')' command .  (76)
 
-	TK_WHILE  shift 43
-	TK_IF  shift 44
-	TK_FOR  shift 45
-	TK_READ  shift 46
-	TK_RETURN  shift 47
-	TK_PRINT  shift 48
-	TK_IDENTIFIER  shift 49
-	'{'  shift 37
-	TK_ELSE  reduce 37
-	';'  reduce 37
-	'}'  reduce 37
-
-	block  goto 50
-	command  goto 144
-	attribution  goto 53
-	read  goto 54
-	print  goto 55
-	return  goto 56
-	control  goto 57
-	if  goto 58
-	while  goto 59
-	for  goto 60
+	.  reduce 76
 
 
-state 144
-	for : TK_FOR '(' TK_IDENTIFIER '=' expr TK_TO expr ')' command .  (77)
-
-	.  reduce 77
-
-
-Rules never reduced:
-	print_list : LIT_STRING  (42)
-
-
-State 26 contains 1 reduce/reduce conflict.
-State 37 contains 1 reduce/reduce conflict.
-State 67 contains 1 shift/reduce conflict.
-State 74 contains 8 shift/reduce conflicts, 3 reduce/reduce conflicts.
-State 80 contains 1 reduce/reduce conflict.
+State 25 contains 1 reduce/reduce conflict.
+State 36 contains 1 reduce/reduce conflict.
+State 66 contains 1 shift/reduce conflict.
+State 79 contains 1 reduce/reduce conflict.
+State 114 contains 13 shift/reduce conflicts.
 State 115 contains 13 shift/reduce conflicts.
 State 116 contains 13 shift/reduce conflicts.
 State 117 contains 13 shift/reduce conflicts.
@@ -2687,9 +2622,8 @@ State 123 contains 13 shift/reduce conflicts.
 State 124 contains 13 shift/reduce conflicts.
 State 125 contains 13 shift/reduce conflicts.
 State 126 contains 13 shift/reduce conflicts.
-State 127 contains 13 shift/reduce conflicts.
-State 136 contains 1 shift/reduce conflict.
+State 135 contains 1 shift/reduce conflict.
 
 
 45 terminals, 27 nonterminals
-78 grammar rules, 145 states
+77 grammar rules, 144 states

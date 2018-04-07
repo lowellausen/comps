@@ -48,7 +48,7 @@ var_type: TK_CHAR | TK_FLOAT | TK_INT
 vec_dec : '[' LIT_INTEGER ']' | '[' LIT_INTEGER ']' ':' lit_list |
 	;  
 
-lit: LIT_INTEGER | LIT_REAL | LIT_CHAR | LIT_STRING 
+lit: LIT_INTEGER | LIT_REAL | LIT_CHAR
 	;
 
 lit_list : lit lit_list |
