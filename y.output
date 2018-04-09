@@ -3,23 +3,7 @@ Terminals unused in grammar
    TOKEN_ERROR
 
 
-State 25 conflicts: 1 reduce/reduce
-State 38 conflicts: 1 reduce/reduce
 State 67 conflicts: 1 shift/reduce
-State 80 conflicts: 1 reduce/reduce
-State 115 conflicts: 13 shift/reduce
-State 116 conflicts: 13 shift/reduce
-State 117 conflicts: 13 shift/reduce
-State 118 conflicts: 13 shift/reduce
-State 119 conflicts: 13 shift/reduce
-State 120 conflicts: 13 shift/reduce
-State 121 conflicts: 13 shift/reduce
-State 122 conflicts: 13 shift/reduce
-State 123 conflicts: 13 shift/reduce
-State 124 conflicts: 13 shift/reduce
-State 125 conflicts: 13 shift/reduce
-State 126 conflicts: 13 shift/reduce
-State 127 conflicts: 13 shift/reduce
 State 136 conflicts: 1 shift/reduce
 
 
@@ -56,126 +40,124 @@ Grammar
 
    20 param: var_type TK_IDENTIFIER
 
-   21 param_list: param
-   22           | param aux_param_list
-   23           | %empty
+   21 param_list: param aux_param_list
+   22           | %empty
 
-   24 aux_param_list: ',' param aux_param_list
-   25               | %empty
+   23 aux_param_list: ',' param aux_param_list
+   24               | %empty
 
-   26 block: '{' command_list '}'
+   25 block: '{' command_list '}'
 
-   27 command_list: command ';' command_list
-   28             | command
-   29             | %empty
+   26 command_list: command ';' command_list
+   27             | command
 
-   30 command: attribution
-   31        | read
-   32        | print
-   33        | return
-   34        | block
-   35        | control
-   36        | %empty
+   28 command: attribution
+   29        | read
+   30        | print
+   31        | return
+   32        | block
+   33        | control
+   34        | %empty
 
-   37 attribution: TK_IDENTIFIER '=' expr
-   38            | TK_IDENTIFIER '[' expr ']' '=' expr
+   35 attribution: TK_IDENTIFIER '=' expr
+   36            | TK_IDENTIFIER '[' expr ']' '=' expr
 
-   39 read: TK_READ TK_IDENTIFIER
+   37 read: TK_READ TK_IDENTIFIER
 
-   40 print: TK_PRINT print_list
+   38 print: TK_PRINT print_list
 
-   41 print_list: LIT_STRING
-   42           | expr
-   43           | LIT_STRING print_list
-   44           | expr print_list
+   39 print_list: LIT_STRING
+   40           | expr
+   41           | LIT_STRING print_list
+   42           | expr print_list
 
-   45 return: TK_RETURN expr
+   43 return: TK_RETURN expr
 
-   46 expr: TK_IDENTIFIER
-   47     | TK_IDENTIFIER '[' expr ']'
-   48     | lit
-   49     | func_call
-   50     | '#' TK_IDENTIFIER
-   51     | '&' TK_IDENTIFIER
-   52     | '(' expr ')'
-   53     | expr '+' expr
-   54     | expr '-' expr
-   55     | expr '*' expr
-   56     | expr '/' expr
-   57     | expr '<' expr
-   58     | expr '>' expr
-   59     | expr '!' expr
-   60     | expr OPERATOR_LE expr
-   61     | expr OPERATOR_GE expr
-   62     | expr OPERATOR_EQ expr
-   63     | expr OPERATOR_NE expr
-   64     | expr OPERATOR_AND expr
-   65     | expr OPERATOR_OR expr
+   44 expr: TK_IDENTIFIER
+   45     | TK_IDENTIFIER '[' expr ']'
+   46     | lit
+   47     | func_call
+   48     | '#' TK_IDENTIFIER
+   49     | '&' TK_IDENTIFIER
+   50     | '(' expr ')'
+   51     | expr '+' expr
+   52     | expr '-' expr
+   53     | expr '*' expr
+   54     | expr '/' expr
+   55     | expr '<' expr
+   56     | expr '>' expr
+   57     | expr '!' expr
+   58     | expr OPERATOR_LE expr
+   59     | expr OPERATOR_GE expr
+   60     | expr OPERATOR_EQ expr
+   61     | expr OPERATOR_NE expr
+   62     | expr OPERATOR_AND expr
+   63     | expr OPERATOR_OR expr
 
-   66 func_call: TK_IDENTIFIER '(' call_param_list ')'
-   67          | TK_IDENTIFIER '(' ')'
+   64 func_call: TK_IDENTIFIER '(' call_param_list ')'
+   65          | TK_IDENTIFIER '(' ')'
 
-   68 call_param_list: expr
-   69                | expr ',' call_param_list
+   66 call_param_list: expr
+   67                | expr ',' call_param_list
 
-   70 control: if
-   71        | while
-   72        | for
+   68 control: if
+   69        | while
+   70        | for
 
-   73 if: TK_IF '(' expr ')' TK_THEN command
-   74   | TK_IF '(' expr ')' TK_THEN command TK_ELSE command
+   71 if: TK_IF '(' expr ')' TK_THEN command
+   72   | TK_IF '(' expr ')' TK_THEN command TK_ELSE command
 
-   75 while: TK_WHILE '(' expr ')' command
+   73 while: TK_WHILE '(' expr ')' command
 
-   76 for: TK_FOR '(' TK_IDENTIFIER '=' expr TK_TO expr ')' command
+   74 for: TK_FOR '(' TK_IDENTIFIER '=' expr TK_TO expr ')' command
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
-'!' (33) 59
-'#' (35) 6 50
-'&' (38) 51
-'(' (40) 19 52 66 67 73 74 75 76
-')' (41) 19 52 66 67 73 74 75 76
-'*' (42) 55
-'+' (43) 53
-',' (44) 24 69
-'-' (45) 54
-'/' (47) 56
+'!' (33) 57
+'#' (35) 6 48
+'&' (38) 49
+'(' (40) 19 50 64 65 71 72 73 74
+')' (41) 19 50 64 65 71 72 73 74
+'*' (42) 53
+'+' (43) 51
+',' (44) 23 67
+'-' (45) 52
+'/' (47) 54
 ':' (58) 12
-';' (59) 5 6 7 27
-'<' (60) 57
-'=' (61) 5 6 37 38 76
-'>' (62) 58
-'[' (91) 11 12 38 47
-']' (93) 11 12 38 47
-'{' (123) 26
-'}' (125) 26
+';' (59) 5 6 7 26
+'<' (60) 55
+'=' (61) 5 6 35 36 74
+'>' (62) 56
+'[' (91) 11 12 36 45
+']' (93) 11 12 36 45
+'{' (123) 25
+'}' (125) 25
 error (256)
-TK_WHILE (258) 75
+TK_WHILE (258) 73
 TK_CHAR (259) 8
 TK_INT (260) 10
 TK_FLOAT (261) 9
-TK_IF (262) 73 74
-TK_THEN (263) 73 74
-TK_ELSE (264) 74
-TK_FOR (265) 76
-TK_TO (266) 76
-TK_READ (267) 39
-TK_RETURN (268) 45
-TK_PRINT (269) 40
-OPERATOR_LE (270) 60
-OPERATOR_GE (271) 61
-OPERATOR_EQ (272) 62
-OPERATOR_NE (273) 63
-OPERATOR_AND (274) 64
-OPERATOR_OR (275) 65
-TK_IDENTIFIER (276) 5 6 7 19 20 37 38 39 46 47 50 51 66 67 76
+TK_IF (262) 71 72
+TK_THEN (263) 71 72
+TK_ELSE (264) 72
+TK_FOR (265) 74
+TK_TO (266) 74
+TK_READ (267) 37
+TK_RETURN (268) 43
+TK_PRINT (269) 38
+OPERATOR_LE (270) 58
+OPERATOR_GE (271) 59
+OPERATOR_EQ (272) 60
+OPERATOR_NE (273) 61
+OPERATOR_AND (274) 62
+OPERATOR_OR (275) 63
+TK_IDENTIFIER (276) 5 6 7 19 20 35 36 37 44 45 48 49 64 65 74
 LIT_INTEGER (277) 11 12 14
 LIT_REAL (278) 15
 LIT_CHAR (279) 16
-LIT_STRING (280) 41 43
+LIT_STRING (280) 39 41
 TOKEN_ERROR (281)
 
 
@@ -194,49 +176,49 @@ var_type (50)
 vec_dec (51)
     on left: 11 12 13, on right: 7
 lit (52)
-    on left: 14 15 16, on right: 5 6 17 48
+    on left: 14 15 16, on right: 5 6 17 46
 lit_list (53)
     on left: 17 18, on right: 12 17
 func (54)
     on left: 19, on right: 3
 param (55)
-    on left: 20, on right: 21 22 24
+    on left: 20, on right: 21 23
 param_list (56)
-    on left: 21 22 23, on right: 19
+    on left: 21 22, on right: 19
 aux_param_list (57)
-    on left: 24 25, on right: 22 24
+    on left: 23 24, on right: 21 23
 block (58)
-    on left: 26, on right: 19 34
+    on left: 25, on right: 19 32
 command_list (59)
-    on left: 27 28 29, on right: 26 27
+    on left: 26 27, on right: 25 26
 command (60)
-    on left: 30 31 32 33 34 35 36, on right: 27 28 73 74 75 76
+    on left: 28 29 30 31 32 33 34, on right: 26 27 71 72 73 74
 attribution (61)
-    on left: 37 38, on right: 30
+    on left: 35 36, on right: 28
 read (62)
-    on left: 39, on right: 31
+    on left: 37, on right: 29
 print (63)
-    on left: 40, on right: 32
+    on left: 38, on right: 30
 print_list (64)
-    on left: 41 42 43 44, on right: 40 43 44
+    on left: 39 40 41 42, on right: 38 41 42
 return (65)
-    on left: 45, on right: 33
+    on left: 43, on right: 31
 expr (66)
-    on left: 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63
-    64 65, on right: 37 38 42 44 45 47 52 53 54 55 56 57 58 59 60 61
-    62 63 64 65 68 69 73 74 75 76
+    on left: 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61
+    62 63, on right: 35 36 40 42 43 45 50 51 52 53 54 55 56 57 58 59
+    60 61 62 63 66 67 71 72 73 74
 func_call (67)
-    on left: 66 67, on right: 49
+    on left: 64 65, on right: 47
 call_param_list (68)
-    on left: 68 69, on right: 66 69
+    on left: 66 67, on right: 64 67
 control (69)
-    on left: 70 71 72, on right: 35
+    on left: 68 69 70, on right: 33
 if (70)
-    on left: 73 74, on right: 70
+    on left: 71 72, on right: 68
 while (71)
-    on left: 75, on right: 71
+    on left: 73, on right: 69
 for (72)
-    on left: 76, on right: 72
+    on left: 74, on right: 70
 
 
 State 0
@@ -404,7 +386,7 @@ State 16
     TK_INT    shift, and go to state 2
     TK_FLOAT  shift, and go to state 3
 
-    $default  reduce using rule 23 (param_list)
+    $default  reduce using rule 22 (param_list)
 
     var_type    go to state 24
     param       go to state 25
@@ -470,14 +452,11 @@ State 24
 
 State 25
 
-   21 param_list: param .
-   22           | param . aux_param_list
+   21 param_list: param . aux_param_list
 
     ','  shift, and go to state 32
 
-    ')'       reduce using rule 21 (param_list)
-    ')'       [reduce using rule 25 (aux_param_list)]
-    $default  reduce using rule 21 (param_list)
+    $default  reduce using rule 24 (aux_param_list)
 
     aux_param_list  go to state 33
 
@@ -533,7 +512,7 @@ State 31
 
 State 32
 
-   24 aux_param_list: ',' . param aux_param_list
+   23 aux_param_list: ',' . param aux_param_list
 
     TK_CHAR   shift, and go to state 1
     TK_INT    shift, and go to state 2
@@ -545,9 +524,9 @@ State 32
 
 State 33
 
-   22 param_list: param aux_param_list .
+   21 param_list: param aux_param_list .
 
-    $default  reduce using rule 22 (param_list)
+    $default  reduce using rule 21 (param_list)
 
 
 State 34
@@ -582,18 +561,18 @@ State 36
 
 State 37
 
-   24 aux_param_list: ',' param . aux_param_list
+   23 aux_param_list: ',' param . aux_param_list
 
     ','  shift, and go to state 32
 
-    $default  reduce using rule 25 (aux_param_list)
+    $default  reduce using rule 24 (aux_param_list)
 
     aux_param_list  go to state 43
 
 
 State 38
 
-   26 block: '{' . command_list '}'
+   25 block: '{' . command_list '}'
 
     TK_WHILE       shift, and go to state 44
     TK_IF          shift, and go to state 45
@@ -604,10 +583,7 @@ State 38
     TK_IDENTIFIER  shift, and go to state 50
     '{'            shift, and go to state 38
 
-    ';'       reduce using rule 36 (command)
-    '}'       reduce using rule 29 (command_list)
-    '}'       [reduce using rule 36 (command)]
-    $default  reduce using rule 29 (command_list)
+    $default  reduce using rule 34 (command)
 
     block         go to state 51
     command_list  go to state 52
@@ -659,51 +635,51 @@ State 42
 
 State 43
 
-   24 aux_param_list: ',' param aux_param_list .
+   23 aux_param_list: ',' param aux_param_list .
 
-    $default  reduce using rule 24 (aux_param_list)
+    $default  reduce using rule 23 (aux_param_list)
 
 
 State 44
 
-   75 while: TK_WHILE . '(' expr ')' command
+   73 while: TK_WHILE . '(' expr ')' command
 
     '('  shift, and go to state 63
 
 
 State 45
 
-   73 if: TK_IF . '(' expr ')' TK_THEN command
-   74   | TK_IF . '(' expr ')' TK_THEN command TK_ELSE command
+   71 if: TK_IF . '(' expr ')' TK_THEN command
+   72   | TK_IF . '(' expr ')' TK_THEN command TK_ELSE command
 
     '('  shift, and go to state 64
 
 
 State 46
 
-   76 for: TK_FOR . '(' TK_IDENTIFIER '=' expr TK_TO expr ')' command
+   74 for: TK_FOR . '(' TK_IDENTIFIER '=' expr TK_TO expr ')' command
 
     '('  shift, and go to state 65
 
 
 State 47
 
-   39 read: TK_READ . TK_IDENTIFIER
+   37 read: TK_READ . TK_IDENTIFIER
 
     TK_IDENTIFIER  shift, and go to state 66
 
 
 State 48
 
-   45 return: TK_RETURN . expr
+   43 return: TK_RETURN . expr
 
     TK_IDENTIFIER  shift, and go to state 67
     LIT_INTEGER    shift, and go to state 19
     LIT_REAL       shift, and go to state 20
     LIT_CHAR       shift, and go to state 21
     '#'            shift, and go to state 68
-    '('            shift, and go to state 69
-    '&'            shift, and go to state 70
+    '&'            shift, and go to state 69
+    '('            shift, and go to state 70
 
     lit        go to state 71
     expr       go to state 72
@@ -712,7 +688,7 @@ State 48
 
 State 49
 
-   40 print: TK_PRINT . print_list
+   38 print: TK_PRINT . print_list
 
     TK_IDENTIFIER  shift, and go to state 67
     LIT_INTEGER    shift, and go to state 19
@@ -720,8 +696,8 @@ State 49
     LIT_CHAR       shift, and go to state 21
     LIT_STRING     shift, and go to state 74
     '#'            shift, and go to state 68
-    '('            shift, and go to state 69
-    '&'            shift, and go to state 70
+    '&'            shift, and go to state 69
+    '('            shift, and go to state 70
 
     lit         go to state 71
     print_list  go to state 75
@@ -731,8 +707,8 @@ State 49
 
 State 50
 
-   37 attribution: TK_IDENTIFIER . '=' expr
-   38            | TK_IDENTIFIER . '[' expr ']' '=' expr
+   35 attribution: TK_IDENTIFIER . '=' expr
+   36            | TK_IDENTIFIER . '[' expr ']' '=' expr
 
     '='  shift, and go to state 77
     '['  shift, and go to state 78
@@ -740,82 +716,82 @@ State 50
 
 State 51
 
-   34 command: block .
+   32 command: block .
 
-    $default  reduce using rule 34 (command)
+    $default  reduce using rule 32 (command)
 
 
 State 52
 
-   26 block: '{' command_list . '}'
+   25 block: '{' command_list . '}'
 
     '}'  shift, and go to state 79
 
 
 State 53
 
-   27 command_list: command . ';' command_list
-   28             | command .
+   26 command_list: command . ';' command_list
+   27             | command .
 
     ';'  shift, and go to state 80
 
-    $default  reduce using rule 28 (command_list)
+    $default  reduce using rule 27 (command_list)
 
 
 State 54
 
-   30 command: attribution .
+   28 command: attribution .
 
-    $default  reduce using rule 30 (command)
+    $default  reduce using rule 28 (command)
 
 
 State 55
 
-   31 command: read .
+   29 command: read .
 
-    $default  reduce using rule 31 (command)
+    $default  reduce using rule 29 (command)
 
 
 State 56
 
-   32 command: print .
+   30 command: print .
 
-    $default  reduce using rule 32 (command)
+    $default  reduce using rule 30 (command)
 
 
 State 57
 
-   33 command: return .
+   31 command: return .
 
-    $default  reduce using rule 33 (command)
+    $default  reduce using rule 31 (command)
 
 
 State 58
 
-   35 command: control .
+   33 command: control .
 
-    $default  reduce using rule 35 (command)
+    $default  reduce using rule 33 (command)
 
 
 State 59
 
-   70 control: if .
+   68 control: if .
 
-    $default  reduce using rule 70 (control)
+    $default  reduce using rule 68 (control)
 
 
 State 60
 
-   71 control: while .
+   69 control: while .
 
-    $default  reduce using rule 71 (control)
+    $default  reduce using rule 69 (control)
 
 
 State 61
 
-   72 control: for .
+   70 control: for .
 
-    $default  reduce using rule 72 (control)
+    $default  reduce using rule 70 (control)
 
 
 State 62
@@ -827,15 +803,15 @@ State 62
 
 State 63
 
-   75 while: TK_WHILE '(' . expr ')' command
+   73 while: TK_WHILE '(' . expr ')' command
 
     TK_IDENTIFIER  shift, and go to state 67
     LIT_INTEGER    shift, and go to state 19
     LIT_REAL       shift, and go to state 20
     LIT_CHAR       shift, and go to state 21
     '#'            shift, and go to state 68
-    '('            shift, and go to state 69
-    '&'            shift, and go to state 70
+    '&'            shift, and go to state 69
+    '('            shift, and go to state 70
 
     lit        go to state 71
     expr       go to state 81
@@ -844,16 +820,16 @@ State 63
 
 State 64
 
-   73 if: TK_IF '(' . expr ')' TK_THEN command
-   74   | TK_IF '(' . expr ')' TK_THEN command TK_ELSE command
+   71 if: TK_IF '(' . expr ')' TK_THEN command
+   72   | TK_IF '(' . expr ')' TK_THEN command TK_ELSE command
 
     TK_IDENTIFIER  shift, and go to state 67
     LIT_INTEGER    shift, and go to state 19
     LIT_REAL       shift, and go to state 20
     LIT_CHAR       shift, and go to state 21
     '#'            shift, and go to state 68
-    '('            shift, and go to state 69
-    '&'            shift, and go to state 70
+    '&'            shift, and go to state 69
+    '('            shift, and go to state 70
 
     lit        go to state 71
     expr       go to state 82
@@ -862,86 +838,86 @@ State 64
 
 State 65
 
-   76 for: TK_FOR '(' . TK_IDENTIFIER '=' expr TK_TO expr ')' command
+   74 for: TK_FOR '(' . TK_IDENTIFIER '=' expr TK_TO expr ')' command
 
     TK_IDENTIFIER  shift, and go to state 83
 
 
 State 66
 
-   39 read: TK_READ TK_IDENTIFIER .
+   37 read: TK_READ TK_IDENTIFIER .
 
-    $default  reduce using rule 39 (read)
+    $default  reduce using rule 37 (read)
 
 
 State 67
 
-   46 expr: TK_IDENTIFIER .
-   47     | TK_IDENTIFIER . '[' expr ']'
-   66 func_call: TK_IDENTIFIER . '(' call_param_list ')'
-   67          | TK_IDENTIFIER . '(' ')'
+   44 expr: TK_IDENTIFIER .
+   45     | TK_IDENTIFIER . '[' expr ']'
+   64 func_call: TK_IDENTIFIER . '(' call_param_list ')'
+   65          | TK_IDENTIFIER . '(' ')'
 
     '['  shift, and go to state 84
     '('  shift, and go to state 85
 
-    '('       [reduce using rule 46 (expr)]
-    $default  reduce using rule 46 (expr)
+    '('       [reduce using rule 44 (expr)]
+    $default  reduce using rule 44 (expr)
 
 
 State 68
 
-   50 expr: '#' . TK_IDENTIFIER
+   48 expr: '#' . TK_IDENTIFIER
 
     TK_IDENTIFIER  shift, and go to state 86
 
 
 State 69
 
-   52 expr: '(' . expr ')'
+   49 expr: '&' . TK_IDENTIFIER
+
+    TK_IDENTIFIER  shift, and go to state 87
+
+
+State 70
+
+   50 expr: '(' . expr ')'
 
     TK_IDENTIFIER  shift, and go to state 67
     LIT_INTEGER    shift, and go to state 19
     LIT_REAL       shift, and go to state 20
     LIT_CHAR       shift, and go to state 21
     '#'            shift, and go to state 68
-    '('            shift, and go to state 69
-    '&'            shift, and go to state 70
+    '&'            shift, and go to state 69
+    '('            shift, and go to state 70
 
     lit        go to state 71
-    expr       go to state 87
+    expr       go to state 88
     func_call  go to state 73
-
-
-State 70
-
-   51 expr: '&' . TK_IDENTIFIER
-
-    TK_IDENTIFIER  shift, and go to state 88
 
 
 State 71
 
-   48 expr: lit .
+   46 expr: lit .
 
-    $default  reduce using rule 48 (expr)
+    $default  reduce using rule 46 (expr)
 
 
 State 72
 
-   45 return: TK_RETURN expr .
-   53 expr: expr . '+' expr
-   54     | expr . '-' expr
-   55     | expr . '*' expr
-   56     | expr . '/' expr
-   57     | expr . '<' expr
-   58     | expr . '>' expr
-   59     | expr . '!' expr
-   60     | expr . OPERATOR_LE expr
-   61     | expr . OPERATOR_GE expr
-   62     | expr . OPERATOR_EQ expr
-   63     | expr . OPERATOR_NE expr
-   64     | expr . OPERATOR_AND expr
-   65     | expr . OPERATOR_OR expr
+   43 return: TK_RETURN expr .
+   51 expr: expr . '+' expr
+   52     | expr . '-' expr
+   53     | expr . '*' expr
+   54     | expr . '/' expr
+   55     | expr . '<' expr
+   56     | expr . '>' expr
+   57     | expr . '!' expr
+   58     | expr . OPERATOR_LE expr
+   59     | expr . OPERATOR_GE expr
+   60     | expr . OPERATOR_EQ expr
+   61     | expr . OPERATOR_NE expr
+   62     | expr . OPERATOR_AND expr
+   63     | expr . OPERATOR_OR expr
 
     OPERATOR_LE   shift, and go to state 89
     OPERATOR_GE   shift, and go to state 90
@@ -953,24 +929,24 @@ State 72
     '-'           shift, and go to state 96
     '*'           shift, and go to state 97
     '/'           shift, and go to state 98
-    '<'           shift, and go to state 99
-    '>'           shift, and go to state 100
-    '!'           shift, and go to state 101
+    '!'           shift, and go to state 99
+    '<'           shift, and go to state 100
+    '>'           shift, and go to state 101
 
-    $default  reduce using rule 45 (return)
+    $default  reduce using rule 43 (return)
 
 
 State 73
 
-   49 expr: func_call .
+   47 expr: func_call .
 
-    $default  reduce using rule 49 (expr)
+    $default  reduce using rule 47 (expr)
 
 
 State 74
 
-   41 print_list: LIT_STRING .
-   43           | LIT_STRING . print_list
+   39 print_list: LIT_STRING .
+   41           | LIT_STRING . print_list
 
     TK_IDENTIFIER  shift, and go to state 67
     LIT_INTEGER    shift, and go to state 19
@@ -978,10 +954,10 @@ State 74
     LIT_CHAR       shift, and go to state 21
     LIT_STRING     shift, and go to state 74
     '#'            shift, and go to state 68
-    '('            shift, and go to state 69
-    '&'            shift, and go to state 70
+    '&'            shift, and go to state 69
+    '('            shift, and go to state 70
 
-    $default  reduce using rule 41 (print_list)
+    $default  reduce using rule 39 (print_list)
 
     lit         go to state 71
     print_list  go to state 102
@@ -991,28 +967,28 @@ State 74
 
 State 75
 
-   40 print: TK_PRINT print_list .
+   38 print: TK_PRINT print_list .
 
-    $default  reduce using rule 40 (print)
+    $default  reduce using rule 38 (print)
 
 
 State 76
 
-   42 print_list: expr .
-   44           | expr . print_list
-   53 expr: expr . '+' expr
-   54     | expr . '-' expr
-   55     | expr . '*' expr
-   56     | expr . '/' expr
-   57     | expr . '<' expr
-   58     | expr . '>' expr
-   59     | expr . '!' expr
-   60     | expr . OPERATOR_LE expr
-   61     | expr . OPERATOR_GE expr
-   62     | expr . OPERATOR_EQ expr
-   63     | expr . OPERATOR_NE expr
-   64     | expr . OPERATOR_AND expr
-   65     | expr . OPERATOR_OR expr
+   40 print_list: expr .
+   42           | expr . print_list
+   51 expr: expr . '+' expr
+   52     | expr . '-' expr
+   53     | expr . '*' expr
+   54     | expr . '/' expr
+   55     | expr . '<' expr
+   56     | expr . '>' expr
+   57     | expr . '!' expr
+   58     | expr . OPERATOR_LE expr
+   59     | expr . OPERATOR_GE expr
+   60     | expr . OPERATOR_EQ expr
+   61     | expr . OPERATOR_NE expr
+   62     | expr . OPERATOR_AND expr
+   63     | expr . OPERATOR_OR expr
 
     OPERATOR_LE    shift, and go to state 89
     OPERATOR_GE    shift, and go to state 90
@@ -1025,18 +1001,18 @@ State 76
     LIT_REAL       shift, and go to state 20
     LIT_CHAR       shift, and go to state 21
     LIT_STRING     shift, and go to state 74
-    '#'            shift, and go to state 68
-    '('            shift, and go to state 69
-    '&'            shift, and go to state 70
     '+'            shift, and go to state 95
     '-'            shift, and go to state 96
     '*'            shift, and go to state 97
     '/'            shift, and go to state 98
-    '<'            shift, and go to state 99
-    '>'            shift, and go to state 100
-    '!'            shift, and go to state 101
+    '#'            shift, and go to state 68
+    '&'            shift, and go to state 69
+    '!'            shift, and go to state 99
+    '<'            shift, and go to state 100
+    '>'            shift, and go to state 101
+    '('            shift, and go to state 70
 
-    $default  reduce using rule 42 (print_list)
+    $default  reduce using rule 40 (print_list)
 
     lit         go to state 71
     print_list  go to state 103
@@ -1046,15 +1022,15 @@ State 76
 
 State 77
 
-   37 attribution: TK_IDENTIFIER '=' . expr
+   35 attribution: TK_IDENTIFIER '=' . expr
 
     TK_IDENTIFIER  shift, and go to state 67
     LIT_INTEGER    shift, and go to state 19
     LIT_REAL       shift, and go to state 20
     LIT_CHAR       shift, and go to state 21
     '#'            shift, and go to state 68
-    '('            shift, and go to state 69
-    '&'            shift, and go to state 70
+    '&'            shift, and go to state 69
+    '('            shift, and go to state 70
 
     lit        go to state 71
     expr       go to state 104
@@ -1063,15 +1039,15 @@ State 77
 
 State 78
 
-   38 attribution: TK_IDENTIFIER '[' . expr ']' '=' expr
+   36 attribution: TK_IDENTIFIER '[' . expr ']' '=' expr
 
     TK_IDENTIFIER  shift, and go to state 67
     LIT_INTEGER    shift, and go to state 19
     LIT_REAL       shift, and go to state 20
     LIT_CHAR       shift, and go to state 21
     '#'            shift, and go to state 68
-    '('            shift, and go to state 69
-    '&'            shift, and go to state 70
+    '&'            shift, and go to state 69
+    '('            shift, and go to state 70
 
     lit        go to state 71
     expr       go to state 105
@@ -1080,14 +1056,14 @@ State 78
 
 State 79
 
-   26 block: '{' command_list '}' .
+   25 block: '{' command_list '}' .
 
-    $default  reduce using rule 26 (block)
+    $default  reduce using rule 25 (block)
 
 
 State 80
 
-   27 command_list: command ';' . command_list
+   26 command_list: command ';' . command_list
 
     TK_WHILE       shift, and go to state 44
     TK_IF          shift, and go to state 45
@@ -1098,10 +1074,7 @@ State 80
     TK_IDENTIFIER  shift, and go to state 50
     '{'            shift, and go to state 38
 
-    ';'       reduce using rule 36 (command)
-    '}'       reduce using rule 29 (command_list)
-    '}'       [reduce using rule 36 (command)]
-    $default  reduce using rule 29 (command_list)
+    $default  reduce using rule 34 (command)
 
     block         go to state 51
     command_list  go to state 106
@@ -1118,20 +1091,20 @@ State 80
 
 State 81
 
-   53 expr: expr . '+' expr
-   54     | expr . '-' expr
-   55     | expr . '*' expr
-   56     | expr . '/' expr
-   57     | expr . '<' expr
-   58     | expr . '>' expr
-   59     | expr . '!' expr
-   60     | expr . OPERATOR_LE expr
-   61     | expr . OPERATOR_GE expr
-   62     | expr . OPERATOR_EQ expr
-   63     | expr . OPERATOR_NE expr
-   64     | expr . OPERATOR_AND expr
-   65     | expr . OPERATOR_OR expr
-   75 while: TK_WHILE '(' expr . ')' command
+   51 expr: expr . '+' expr
+   52     | expr . '-' expr
+   53     | expr . '*' expr
+   54     | expr . '/' expr
+   55     | expr . '<' expr
+   56     | expr . '>' expr
+   57     | expr . '!' expr
+   58     | expr . OPERATOR_LE expr
+   59     | expr . OPERATOR_GE expr
+   60     | expr . OPERATOR_EQ expr
+   61     | expr . OPERATOR_NE expr
+   62     | expr . OPERATOR_AND expr
+   63     | expr . OPERATOR_OR expr
+   73 while: TK_WHILE '(' expr . ')' command
 
     OPERATOR_LE   shift, and go to state 89
     OPERATOR_GE   shift, and go to state 90
@@ -1139,33 +1112,33 @@ State 81
     OPERATOR_NE   shift, and go to state 92
     OPERATOR_AND  shift, and go to state 93
     OPERATOR_OR   shift, and go to state 94
-    ')'           shift, and go to state 107
     '+'           shift, and go to state 95
     '-'           shift, and go to state 96
     '*'           shift, and go to state 97
     '/'           shift, and go to state 98
-    '<'           shift, and go to state 99
-    '>'           shift, and go to state 100
-    '!'           shift, and go to state 101
+    '!'           shift, and go to state 99
+    '<'           shift, and go to state 100
+    '>'           shift, and go to state 101
+    ')'           shift, and go to state 107
 
 
 State 82
 
-   53 expr: expr . '+' expr
-   54     | expr . '-' expr
-   55     | expr . '*' expr
-   56     | expr . '/' expr
-   57     | expr . '<' expr
-   58     | expr . '>' expr
-   59     | expr . '!' expr
-   60     | expr . OPERATOR_LE expr
-   61     | expr . OPERATOR_GE expr
-   62     | expr . OPERATOR_EQ expr
-   63     | expr . OPERATOR_NE expr
-   64     | expr . OPERATOR_AND expr
-   65     | expr . OPERATOR_OR expr
-   73 if: TK_IF '(' expr . ')' TK_THEN command
-   74   | TK_IF '(' expr . ')' TK_THEN command TK_ELSE command
+   51 expr: expr . '+' expr
+   52     | expr . '-' expr
+   53     | expr . '*' expr
+   54     | expr . '/' expr
+   55     | expr . '<' expr
+   56     | expr . '>' expr
+   57     | expr . '!' expr
+   58     | expr . OPERATOR_LE expr
+   59     | expr . OPERATOR_GE expr
+   60     | expr . OPERATOR_EQ expr
+   61     | expr . OPERATOR_NE expr
+   62     | expr . OPERATOR_AND expr
+   63     | expr . OPERATOR_OR expr
+   71 if: TK_IF '(' expr . ')' TK_THEN command
+   72   | TK_IF '(' expr . ')' TK_THEN command TK_ELSE command
 
     OPERATOR_LE   shift, and go to state 89
     OPERATOR_GE   shift, and go to state 90
@@ -1173,34 +1146,34 @@ State 82
     OPERATOR_NE   shift, and go to state 92
     OPERATOR_AND  shift, and go to state 93
     OPERATOR_OR   shift, and go to state 94
-    ')'           shift, and go to state 108
     '+'           shift, and go to state 95
     '-'           shift, and go to state 96
     '*'           shift, and go to state 97
     '/'           shift, and go to state 98
-    '<'           shift, and go to state 99
-    '>'           shift, and go to state 100
-    '!'           shift, and go to state 101
+    '!'           shift, and go to state 99
+    '<'           shift, and go to state 100
+    '>'           shift, and go to state 101
+    ')'           shift, and go to state 108
 
 
 State 83
 
-   76 for: TK_FOR '(' TK_IDENTIFIER . '=' expr TK_TO expr ')' command
+   74 for: TK_FOR '(' TK_IDENTIFIER . '=' expr TK_TO expr ')' command
 
     '='  shift, and go to state 109
 
 
 State 84
 
-   47 expr: TK_IDENTIFIER '[' . expr ']'
+   45 expr: TK_IDENTIFIER '[' . expr ']'
 
     TK_IDENTIFIER  shift, and go to state 67
     LIT_INTEGER    shift, and go to state 19
     LIT_REAL       shift, and go to state 20
     LIT_CHAR       shift, and go to state 21
     '#'            shift, and go to state 68
-    '('            shift, and go to state 69
-    '&'            shift, and go to state 70
+    '&'            shift, and go to state 69
+    '('            shift, and go to state 70
 
     lit        go to state 71
     expr       go to state 110
@@ -1209,17 +1182,17 @@ State 84
 
 State 85
 
-   66 func_call: TK_IDENTIFIER '(' . call_param_list ')'
-   67          | TK_IDENTIFIER '(' . ')'
+   64 func_call: TK_IDENTIFIER '(' . call_param_list ')'
+   65          | TK_IDENTIFIER '(' . ')'
 
     TK_IDENTIFIER  shift, and go to state 67
     LIT_INTEGER    shift, and go to state 19
     LIT_REAL       shift, and go to state 20
     LIT_CHAR       shift, and go to state 21
     '#'            shift, and go to state 68
-    '('            shift, and go to state 69
+    '&'            shift, and go to state 69
+    '('            shift, and go to state 70
     ')'            shift, and go to state 111
-    '&'            shift, and go to state 70
 
     lit              go to state 71
     expr             go to state 112
@@ -1229,27 +1202,34 @@ State 85
 
 State 86
 
-   50 expr: '#' TK_IDENTIFIER .
+   48 expr: '#' TK_IDENTIFIER .
 
-    $default  reduce using rule 50 (expr)
+    $default  reduce using rule 48 (expr)
 
 
 State 87
 
-   52 expr: '(' expr . ')'
-   53     | expr . '+' expr
-   54     | expr . '-' expr
-   55     | expr . '*' expr
-   56     | expr . '/' expr
-   57     | expr . '<' expr
-   58     | expr . '>' expr
-   59     | expr . '!' expr
-   60     | expr . OPERATOR_LE expr
-   61     | expr . OPERATOR_GE expr
-   62     | expr . OPERATOR_EQ expr
-   63     | expr . OPERATOR_NE expr
-   64     | expr . OPERATOR_AND expr
-   65     | expr . OPERATOR_OR expr
+   49 expr: '&' TK_IDENTIFIER .
+
+    $default  reduce using rule 49 (expr)
+
+
+State 88
+
+   50 expr: '(' expr . ')'
+   51     | expr . '+' expr
+   52     | expr . '-' expr
+   53     | expr . '*' expr
+   54     | expr . '/' expr
+   55     | expr . '<' expr
+   56     | expr . '>' expr
+   57     | expr . '!' expr
+   58     | expr . OPERATOR_LE expr
+   59     | expr . OPERATOR_GE expr
+   60     | expr . OPERATOR_EQ expr
+   61     | expr . OPERATOR_NE expr
+   62     | expr . OPERATOR_AND expr
+   63     | expr . OPERATOR_OR expr
 
     OPERATOR_LE   shift, and go to state 89
     OPERATOR_GE   shift, and go to state 90
@@ -1257,34 +1237,27 @@ State 87
     OPERATOR_NE   shift, and go to state 92
     OPERATOR_AND  shift, and go to state 93
     OPERATOR_OR   shift, and go to state 94
-    ')'           shift, and go to state 114
     '+'           shift, and go to state 95
     '-'           shift, and go to state 96
     '*'           shift, and go to state 97
     '/'           shift, and go to state 98
-    '<'           shift, and go to state 99
-    '>'           shift, and go to state 100
-    '!'           shift, and go to state 101
-
-
-State 88
-
-   51 expr: '&' TK_IDENTIFIER .
-
-    $default  reduce using rule 51 (expr)
+    '!'           shift, and go to state 99
+    '<'           shift, and go to state 100
+    '>'           shift, and go to state 101
+    ')'           shift, and go to state 114
 
 
 State 89
 
-   60 expr: expr OPERATOR_LE . expr
+   58 expr: expr OPERATOR_LE . expr
 
     TK_IDENTIFIER  shift, and go to state 67
     LIT_INTEGER    shift, and go to state 19
     LIT_REAL       shift, and go to state 20
     LIT_CHAR       shift, and go to state 21
     '#'            shift, and go to state 68
-    '('            shift, and go to state 69
-    '&'            shift, and go to state 70
+    '&'            shift, and go to state 69
+    '('            shift, and go to state 70
 
     lit        go to state 71
     expr       go to state 115
@@ -1293,15 +1266,15 @@ State 89
 
 State 90
 
-   61 expr: expr OPERATOR_GE . expr
+   59 expr: expr OPERATOR_GE . expr
 
     TK_IDENTIFIER  shift, and go to state 67
     LIT_INTEGER    shift, and go to state 19
     LIT_REAL       shift, and go to state 20
     LIT_CHAR       shift, and go to state 21
     '#'            shift, and go to state 68
-    '('            shift, and go to state 69
-    '&'            shift, and go to state 70
+    '&'            shift, and go to state 69
+    '('            shift, and go to state 70
 
     lit        go to state 71
     expr       go to state 116
@@ -1310,15 +1283,15 @@ State 90
 
 State 91
 
-   62 expr: expr OPERATOR_EQ . expr
+   60 expr: expr OPERATOR_EQ . expr
 
     TK_IDENTIFIER  shift, and go to state 67
     LIT_INTEGER    shift, and go to state 19
     LIT_REAL       shift, and go to state 20
     LIT_CHAR       shift, and go to state 21
     '#'            shift, and go to state 68
-    '('            shift, and go to state 69
-    '&'            shift, and go to state 70
+    '&'            shift, and go to state 69
+    '('            shift, and go to state 70
 
     lit        go to state 71
     expr       go to state 117
@@ -1327,15 +1300,15 @@ State 91
 
 State 92
 
-   63 expr: expr OPERATOR_NE . expr
+   61 expr: expr OPERATOR_NE . expr
 
     TK_IDENTIFIER  shift, and go to state 67
     LIT_INTEGER    shift, and go to state 19
     LIT_REAL       shift, and go to state 20
     LIT_CHAR       shift, and go to state 21
     '#'            shift, and go to state 68
-    '('            shift, and go to state 69
-    '&'            shift, and go to state 70
+    '&'            shift, and go to state 69
+    '('            shift, and go to state 70
 
     lit        go to state 71
     expr       go to state 118
@@ -1344,15 +1317,15 @@ State 92
 
 State 93
 
-   64 expr: expr OPERATOR_AND . expr
+   62 expr: expr OPERATOR_AND . expr
 
     TK_IDENTIFIER  shift, and go to state 67
     LIT_INTEGER    shift, and go to state 19
     LIT_REAL       shift, and go to state 20
     LIT_CHAR       shift, and go to state 21
     '#'            shift, and go to state 68
-    '('            shift, and go to state 69
-    '&'            shift, and go to state 70
+    '&'            shift, and go to state 69
+    '('            shift, and go to state 70
 
     lit        go to state 71
     expr       go to state 119
@@ -1361,15 +1334,15 @@ State 93
 
 State 94
 
-   65 expr: expr OPERATOR_OR . expr
+   63 expr: expr OPERATOR_OR . expr
 
     TK_IDENTIFIER  shift, and go to state 67
     LIT_INTEGER    shift, and go to state 19
     LIT_REAL       shift, and go to state 20
     LIT_CHAR       shift, and go to state 21
     '#'            shift, and go to state 68
-    '('            shift, and go to state 69
-    '&'            shift, and go to state 70
+    '&'            shift, and go to state 69
+    '('            shift, and go to state 70
 
     lit        go to state 71
     expr       go to state 120
@@ -1378,15 +1351,15 @@ State 94
 
 State 95
 
-   53 expr: expr '+' . expr
+   51 expr: expr '+' . expr
 
     TK_IDENTIFIER  shift, and go to state 67
     LIT_INTEGER    shift, and go to state 19
     LIT_REAL       shift, and go to state 20
     LIT_CHAR       shift, and go to state 21
     '#'            shift, and go to state 68
-    '('            shift, and go to state 69
-    '&'            shift, and go to state 70
+    '&'            shift, and go to state 69
+    '('            shift, and go to state 70
 
     lit        go to state 71
     expr       go to state 121
@@ -1395,15 +1368,15 @@ State 95
 
 State 96
 
-   54 expr: expr '-' . expr
+   52 expr: expr '-' . expr
 
     TK_IDENTIFIER  shift, and go to state 67
     LIT_INTEGER    shift, and go to state 19
     LIT_REAL       shift, and go to state 20
     LIT_CHAR       shift, and go to state 21
     '#'            shift, and go to state 68
-    '('            shift, and go to state 69
-    '&'            shift, and go to state 70
+    '&'            shift, and go to state 69
+    '('            shift, and go to state 70
 
     lit        go to state 71
     expr       go to state 122
@@ -1412,15 +1385,15 @@ State 96
 
 State 97
 
-   55 expr: expr '*' . expr
+   53 expr: expr '*' . expr
 
     TK_IDENTIFIER  shift, and go to state 67
     LIT_INTEGER    shift, and go to state 19
     LIT_REAL       shift, and go to state 20
     LIT_CHAR       shift, and go to state 21
     '#'            shift, and go to state 68
-    '('            shift, and go to state 69
-    '&'            shift, and go to state 70
+    '&'            shift, and go to state 69
+    '('            shift, and go to state 70
 
     lit        go to state 71
     expr       go to state 123
@@ -1429,15 +1402,15 @@ State 97
 
 State 98
 
-   56 expr: expr '/' . expr
+   54 expr: expr '/' . expr
 
     TK_IDENTIFIER  shift, and go to state 67
     LIT_INTEGER    shift, and go to state 19
     LIT_REAL       shift, and go to state 20
     LIT_CHAR       shift, and go to state 21
     '#'            shift, and go to state 68
-    '('            shift, and go to state 69
-    '&'            shift, and go to state 70
+    '&'            shift, and go to state 69
+    '('            shift, and go to state 70
 
     lit        go to state 71
     expr       go to state 124
@@ -1446,15 +1419,15 @@ State 98
 
 State 99
 
-   57 expr: expr '<' . expr
+   57 expr: expr '!' . expr
 
     TK_IDENTIFIER  shift, and go to state 67
     LIT_INTEGER    shift, and go to state 19
     LIT_REAL       shift, and go to state 20
     LIT_CHAR       shift, and go to state 21
     '#'            shift, and go to state 68
-    '('            shift, and go to state 69
-    '&'            shift, and go to state 70
+    '&'            shift, and go to state 69
+    '('            shift, and go to state 70
 
     lit        go to state 71
     expr       go to state 125
@@ -1463,15 +1436,15 @@ State 99
 
 State 100
 
-   58 expr: expr '>' . expr
+   55 expr: expr '<' . expr
 
     TK_IDENTIFIER  shift, and go to state 67
     LIT_INTEGER    shift, and go to state 19
     LIT_REAL       shift, and go to state 20
     LIT_CHAR       shift, and go to state 21
     '#'            shift, and go to state 68
-    '('            shift, and go to state 69
-    '&'            shift, and go to state 70
+    '&'            shift, and go to state 69
+    '('            shift, and go to state 70
 
     lit        go to state 71
     expr       go to state 126
@@ -1480,15 +1453,15 @@ State 100
 
 State 101
 
-   59 expr: expr '!' . expr
+   56 expr: expr '>' . expr
 
     TK_IDENTIFIER  shift, and go to state 67
     LIT_INTEGER    shift, and go to state 19
     LIT_REAL       shift, and go to state 20
     LIT_CHAR       shift, and go to state 21
     '#'            shift, and go to state 68
-    '('            shift, and go to state 69
-    '&'            shift, and go to state 70
+    '&'            shift, and go to state 69
+    '('            shift, and go to state 70
 
     lit        go to state 71
     expr       go to state 127
@@ -1497,34 +1470,34 @@ State 101
 
 State 102
 
-   43 print_list: LIT_STRING print_list .
+   41 print_list: LIT_STRING print_list .
 
-    $default  reduce using rule 43 (print_list)
+    $default  reduce using rule 41 (print_list)
 
 
 State 103
 
-   44 print_list: expr print_list .
+   42 print_list: expr print_list .
 
-    $default  reduce using rule 44 (print_list)
+    $default  reduce using rule 42 (print_list)
 
 
 State 104
 
-   37 attribution: TK_IDENTIFIER '=' expr .
-   53 expr: expr . '+' expr
-   54     | expr . '-' expr
-   55     | expr . '*' expr
-   56     | expr . '/' expr
-   57     | expr . '<' expr
-   58     | expr . '>' expr
-   59     | expr . '!' expr
-   60     | expr . OPERATOR_LE expr
-   61     | expr . OPERATOR_GE expr
-   62     | expr . OPERATOR_EQ expr
-   63     | expr . OPERATOR_NE expr
-   64     | expr . OPERATOR_AND expr
-   65     | expr . OPERATOR_OR expr
+   35 attribution: TK_IDENTIFIER '=' expr .
+   51 expr: expr . '+' expr
+   52     | expr . '-' expr
+   53     | expr . '*' expr
+   54     | expr . '/' expr
+   55     | expr . '<' expr
+   56     | expr . '>' expr
+   57     | expr . '!' expr
+   58     | expr . OPERATOR_LE expr
+   59     | expr . OPERATOR_GE expr
+   60     | expr . OPERATOR_EQ expr
+   61     | expr . OPERATOR_NE expr
+   62     | expr . OPERATOR_AND expr
+   63     | expr . OPERATOR_OR expr
 
     OPERATOR_LE   shift, and go to state 89
     OPERATOR_GE   shift, and go to state 90
@@ -1536,29 +1509,29 @@ State 104
     '-'           shift, and go to state 96
     '*'           shift, and go to state 97
     '/'           shift, and go to state 98
-    '<'           shift, and go to state 99
-    '>'           shift, and go to state 100
-    '!'           shift, and go to state 101
+    '!'           shift, and go to state 99
+    '<'           shift, and go to state 100
+    '>'           shift, and go to state 101
 
-    $default  reduce using rule 37 (attribution)
+    $default  reduce using rule 35 (attribution)
 
 
 State 105
 
-   38 attribution: TK_IDENTIFIER '[' expr . ']' '=' expr
-   53 expr: expr . '+' expr
-   54     | expr . '-' expr
-   55     | expr . '*' expr
-   56     | expr . '/' expr
-   57     | expr . '<' expr
-   58     | expr . '>' expr
-   59     | expr . '!' expr
-   60     | expr . OPERATOR_LE expr
-   61     | expr . OPERATOR_GE expr
-   62     | expr . OPERATOR_EQ expr
-   63     | expr . OPERATOR_NE expr
-   64     | expr . OPERATOR_AND expr
-   65     | expr . OPERATOR_OR expr
+   36 attribution: TK_IDENTIFIER '[' expr . ']' '=' expr
+   51 expr: expr . '+' expr
+   52     | expr . '-' expr
+   53     | expr . '*' expr
+   54     | expr . '/' expr
+   55     | expr . '<' expr
+   56     | expr . '>' expr
+   57     | expr . '!' expr
+   58     | expr . OPERATOR_LE expr
+   59     | expr . OPERATOR_GE expr
+   60     | expr . OPERATOR_EQ expr
+   61     | expr . OPERATOR_NE expr
+   62     | expr . OPERATOR_AND expr
+   63     | expr . OPERATOR_OR expr
 
     OPERATOR_LE   shift, and go to state 89
     OPERATOR_GE   shift, and go to state 90
@@ -1566,26 +1539,26 @@ State 105
     OPERATOR_NE   shift, and go to state 92
     OPERATOR_AND  shift, and go to state 93
     OPERATOR_OR   shift, and go to state 94
-    ']'           shift, and go to state 128
     '+'           shift, and go to state 95
     '-'           shift, and go to state 96
     '*'           shift, and go to state 97
     '/'           shift, and go to state 98
-    '<'           shift, and go to state 99
-    '>'           shift, and go to state 100
-    '!'           shift, and go to state 101
+    '!'           shift, and go to state 99
+    '<'           shift, and go to state 100
+    '>'           shift, and go to state 101
+    ']'           shift, and go to state 128
 
 
 State 106
 
-   27 command_list: command ';' command_list .
+   26 command_list: command ';' command_list .
 
-    $default  reduce using rule 27 (command_list)
+    $default  reduce using rule 26 (command_list)
 
 
 State 107
 
-   75 while: TK_WHILE '(' expr ')' . command
+   73 while: TK_WHILE '(' expr ')' . command
 
     TK_WHILE       shift, and go to state 44
     TK_IF          shift, and go to state 45
@@ -1596,7 +1569,7 @@ State 107
     TK_IDENTIFIER  shift, and go to state 50
     '{'            shift, and go to state 38
 
-    $default  reduce using rule 36 (command)
+    $default  reduce using rule 34 (command)
 
     block        go to state 51
     command      go to state 129
@@ -1612,23 +1585,23 @@ State 107
 
 State 108
 
-   73 if: TK_IF '(' expr ')' . TK_THEN command
-   74   | TK_IF '(' expr ')' . TK_THEN command TK_ELSE command
+   71 if: TK_IF '(' expr ')' . TK_THEN command
+   72   | TK_IF '(' expr ')' . TK_THEN command TK_ELSE command
 
     TK_THEN  shift, and go to state 130
 
 
 State 109
 
-   76 for: TK_FOR '(' TK_IDENTIFIER '=' . expr TK_TO expr ')' command
+   74 for: TK_FOR '(' TK_IDENTIFIER '=' . expr TK_TO expr ')' command
 
     TK_IDENTIFIER  shift, and go to state 67
     LIT_INTEGER    shift, and go to state 19
     LIT_REAL       shift, and go to state 20
     LIT_CHAR       shift, and go to state 21
     '#'            shift, and go to state 68
-    '('            shift, and go to state 69
-    '&'            shift, and go to state 70
+    '&'            shift, and go to state 69
+    '('            shift, and go to state 70
 
     lit        go to state 71
     expr       go to state 131
@@ -1637,20 +1610,20 @@ State 109
 
 State 110
 
-   47 expr: TK_IDENTIFIER '[' expr . ']'
-   53     | expr . '+' expr
-   54     | expr . '-' expr
-   55     | expr . '*' expr
-   56     | expr . '/' expr
-   57     | expr . '<' expr
-   58     | expr . '>' expr
-   59     | expr . '!' expr
-   60     | expr . OPERATOR_LE expr
-   61     | expr . OPERATOR_GE expr
-   62     | expr . OPERATOR_EQ expr
-   63     | expr . OPERATOR_NE expr
-   64     | expr . OPERATOR_AND expr
-   65     | expr . OPERATOR_OR expr
+   45 expr: TK_IDENTIFIER '[' expr . ']'
+   51     | expr . '+' expr
+   52     | expr . '-' expr
+   53     | expr . '*' expr
+   54     | expr . '/' expr
+   55     | expr . '<' expr
+   56     | expr . '>' expr
+   57     | expr . '!' expr
+   58     | expr . OPERATOR_LE expr
+   59     | expr . OPERATOR_GE expr
+   60     | expr . OPERATOR_EQ expr
+   61     | expr . OPERATOR_NE expr
+   62     | expr . OPERATOR_AND expr
+   63     | expr . OPERATOR_OR expr
 
     OPERATOR_LE   shift, and go to state 89
     OPERATOR_GE   shift, and go to state 90
@@ -1658,40 +1631,40 @@ State 110
     OPERATOR_NE   shift, and go to state 92
     OPERATOR_AND  shift, and go to state 93
     OPERATOR_OR   shift, and go to state 94
-    ']'           shift, and go to state 132
     '+'           shift, and go to state 95
     '-'           shift, and go to state 96
     '*'           shift, and go to state 97
     '/'           shift, and go to state 98
-    '<'           shift, and go to state 99
-    '>'           shift, and go to state 100
-    '!'           shift, and go to state 101
+    '!'           shift, and go to state 99
+    '<'           shift, and go to state 100
+    '>'           shift, and go to state 101
+    ']'           shift, and go to state 132
 
 
 State 111
 
-   67 func_call: TK_IDENTIFIER '(' ')' .
+   65 func_call: TK_IDENTIFIER '(' ')' .
 
-    $default  reduce using rule 67 (func_call)
+    $default  reduce using rule 65 (func_call)
 
 
 State 112
 
-   53 expr: expr . '+' expr
-   54     | expr . '-' expr
-   55     | expr . '*' expr
-   56     | expr . '/' expr
-   57     | expr . '<' expr
-   58     | expr . '>' expr
-   59     | expr . '!' expr
-   60     | expr . OPERATOR_LE expr
-   61     | expr . OPERATOR_GE expr
-   62     | expr . OPERATOR_EQ expr
-   63     | expr . OPERATOR_NE expr
-   64     | expr . OPERATOR_AND expr
-   65     | expr . OPERATOR_OR expr
-   68 call_param_list: expr .
-   69                | expr . ',' call_param_list
+   51 expr: expr . '+' expr
+   52     | expr . '-' expr
+   53     | expr . '*' expr
+   54     | expr . '/' expr
+   55     | expr . '<' expr
+   56     | expr . '>' expr
+   57     | expr . '!' expr
+   58     | expr . OPERATOR_LE expr
+   59     | expr . OPERATOR_GE expr
+   60     | expr . OPERATOR_EQ expr
+   61     | expr . OPERATOR_NE expr
+   62     | expr . OPERATOR_AND expr
+   63     | expr . OPERATOR_OR expr
+   66 call_param_list: expr .
+   67                | expr . ',' call_param_list
 
     OPERATOR_LE   shift, and go to state 89
     OPERATOR_GE   shift, and go to state 90
@@ -1699,330 +1672,182 @@ State 112
     OPERATOR_NE   shift, and go to state 92
     OPERATOR_AND  shift, and go to state 93
     OPERATOR_OR   shift, and go to state 94
-    ','           shift, and go to state 133
     '+'           shift, and go to state 95
     '-'           shift, and go to state 96
     '*'           shift, and go to state 97
     '/'           shift, and go to state 98
-    '<'           shift, and go to state 99
-    '>'           shift, and go to state 100
-    '!'           shift, and go to state 101
+    '!'           shift, and go to state 99
+    '<'           shift, and go to state 100
+    '>'           shift, and go to state 101
+    ','           shift, and go to state 133
 
-    $default  reduce using rule 68 (call_param_list)
+    $default  reduce using rule 66 (call_param_list)
 
 
 State 113
 
-   66 func_call: TK_IDENTIFIER '(' call_param_list . ')'
+   64 func_call: TK_IDENTIFIER '(' call_param_list . ')'
 
     ')'  shift, and go to state 134
 
 
 State 114
 
-   52 expr: '(' expr ')' .
+   50 expr: '(' expr ')' .
 
-    $default  reduce using rule 52 (expr)
+    $default  reduce using rule 50 (expr)
 
 
 State 115
 
-   53 expr: expr . '+' expr
-   54     | expr . '-' expr
-   55     | expr . '*' expr
-   56     | expr . '/' expr
-   57     | expr . '<' expr
-   58     | expr . '>' expr
-   59     | expr . '!' expr
-   60     | expr . OPERATOR_LE expr
-   60     | expr OPERATOR_LE expr .
-   61     | expr . OPERATOR_GE expr
-   62     | expr . OPERATOR_EQ expr
-   63     | expr . OPERATOR_NE expr
-   64     | expr . OPERATOR_AND expr
-   65     | expr . OPERATOR_OR expr
+   51 expr: expr . '+' expr
+   52     | expr . '-' expr
+   53     | expr . '*' expr
+   54     | expr . '/' expr
+   55     | expr . '<' expr
+   56     | expr . '>' expr
+   57     | expr . '!' expr
+   58     | expr . OPERATOR_LE expr
+   58     | expr OPERATOR_LE expr .
+   59     | expr . OPERATOR_GE expr
+   60     | expr . OPERATOR_EQ expr
+   61     | expr . OPERATOR_NE expr
+   62     | expr . OPERATOR_AND expr
+   63     | expr . OPERATOR_OR expr
 
-    OPERATOR_LE   shift, and go to state 89
-    OPERATOR_GE   shift, and go to state 90
-    OPERATOR_EQ   shift, and go to state 91
-    OPERATOR_NE   shift, and go to state 92
-    OPERATOR_AND  shift, and go to state 93
-    OPERATOR_OR   shift, and go to state 94
-    '+'           shift, and go to state 95
-    '-'           shift, and go to state 96
-    '*'           shift, and go to state 97
-    '/'           shift, and go to state 98
-    '<'           shift, and go to state 99
-    '>'           shift, and go to state 100
-    '!'           shift, and go to state 101
-
-    OPERATOR_LE   [reduce using rule 60 (expr)]
-    OPERATOR_GE   [reduce using rule 60 (expr)]
-    OPERATOR_EQ   [reduce using rule 60 (expr)]
-    OPERATOR_NE   [reduce using rule 60 (expr)]
-    OPERATOR_AND  [reduce using rule 60 (expr)]
-    OPERATOR_OR   [reduce using rule 60 (expr)]
-    '+'           [reduce using rule 60 (expr)]
-    '-'           [reduce using rule 60 (expr)]
-    '*'           [reduce using rule 60 (expr)]
-    '/'           [reduce using rule 60 (expr)]
-    '<'           [reduce using rule 60 (expr)]
-    '>'           [reduce using rule 60 (expr)]
-    '!'           [reduce using rule 60 (expr)]
-    $default      reduce using rule 60 (expr)
+    $default  reduce using rule 58 (expr)
 
 
 State 116
 
-   53 expr: expr . '+' expr
-   54     | expr . '-' expr
-   55     | expr . '*' expr
-   56     | expr . '/' expr
-   57     | expr . '<' expr
-   58     | expr . '>' expr
-   59     | expr . '!' expr
-   60     | expr . OPERATOR_LE expr
-   61     | expr . OPERATOR_GE expr
-   61     | expr OPERATOR_GE expr .
-   62     | expr . OPERATOR_EQ expr
-   63     | expr . OPERATOR_NE expr
-   64     | expr . OPERATOR_AND expr
-   65     | expr . OPERATOR_OR expr
+   51 expr: expr . '+' expr
+   52     | expr . '-' expr
+   53     | expr . '*' expr
+   54     | expr . '/' expr
+   55     | expr . '<' expr
+   56     | expr . '>' expr
+   57     | expr . '!' expr
+   58     | expr . OPERATOR_LE expr
+   59     | expr . OPERATOR_GE expr
+   59     | expr OPERATOR_GE expr .
+   60     | expr . OPERATOR_EQ expr
+   61     | expr . OPERATOR_NE expr
+   62     | expr . OPERATOR_AND expr
+   63     | expr . OPERATOR_OR expr
 
-    OPERATOR_LE   shift, and go to state 89
-    OPERATOR_GE   shift, and go to state 90
-    OPERATOR_EQ   shift, and go to state 91
-    OPERATOR_NE   shift, and go to state 92
-    OPERATOR_AND  shift, and go to state 93
-    OPERATOR_OR   shift, and go to state 94
-    '+'           shift, and go to state 95
-    '-'           shift, and go to state 96
-    '*'           shift, and go to state 97
-    '/'           shift, and go to state 98
-    '<'           shift, and go to state 99
-    '>'           shift, and go to state 100
-    '!'           shift, and go to state 101
-
-    OPERATOR_LE   [reduce using rule 61 (expr)]
-    OPERATOR_GE   [reduce using rule 61 (expr)]
-    OPERATOR_EQ   [reduce using rule 61 (expr)]
-    OPERATOR_NE   [reduce using rule 61 (expr)]
-    OPERATOR_AND  [reduce using rule 61 (expr)]
-    OPERATOR_OR   [reduce using rule 61 (expr)]
-    '+'           [reduce using rule 61 (expr)]
-    '-'           [reduce using rule 61 (expr)]
-    '*'           [reduce using rule 61 (expr)]
-    '/'           [reduce using rule 61 (expr)]
-    '<'           [reduce using rule 61 (expr)]
-    '>'           [reduce using rule 61 (expr)]
-    '!'           [reduce using rule 61 (expr)]
-    $default      reduce using rule 61 (expr)
+    $default  reduce using rule 59 (expr)
 
 
 State 117
 
-   53 expr: expr . '+' expr
-   54     | expr . '-' expr
-   55     | expr . '*' expr
-   56     | expr . '/' expr
-   57     | expr . '<' expr
-   58     | expr . '>' expr
-   59     | expr . '!' expr
-   60     | expr . OPERATOR_LE expr
-   61     | expr . OPERATOR_GE expr
-   62     | expr . OPERATOR_EQ expr
-   62     | expr OPERATOR_EQ expr .
-   63     | expr . OPERATOR_NE expr
-   64     | expr . OPERATOR_AND expr
-   65     | expr . OPERATOR_OR expr
+   51 expr: expr . '+' expr
+   52     | expr . '-' expr
+   53     | expr . '*' expr
+   54     | expr . '/' expr
+   55     | expr . '<' expr
+   56     | expr . '>' expr
+   57     | expr . '!' expr
+   58     | expr . OPERATOR_LE expr
+   59     | expr . OPERATOR_GE expr
+   60     | expr . OPERATOR_EQ expr
+   60     | expr OPERATOR_EQ expr .
+   61     | expr . OPERATOR_NE expr
+   62     | expr . OPERATOR_AND expr
+   63     | expr . OPERATOR_OR expr
 
-    OPERATOR_LE   shift, and go to state 89
-    OPERATOR_GE   shift, and go to state 90
-    OPERATOR_EQ   shift, and go to state 91
-    OPERATOR_NE   shift, and go to state 92
-    OPERATOR_AND  shift, and go to state 93
-    OPERATOR_OR   shift, and go to state 94
-    '+'           shift, and go to state 95
-    '-'           shift, and go to state 96
-    '*'           shift, and go to state 97
-    '/'           shift, and go to state 98
-    '<'           shift, and go to state 99
-    '>'           shift, and go to state 100
-    '!'           shift, and go to state 101
-
-    OPERATOR_LE   [reduce using rule 62 (expr)]
-    OPERATOR_GE   [reduce using rule 62 (expr)]
-    OPERATOR_EQ   [reduce using rule 62 (expr)]
-    OPERATOR_NE   [reduce using rule 62 (expr)]
-    OPERATOR_AND  [reduce using rule 62 (expr)]
-    OPERATOR_OR   [reduce using rule 62 (expr)]
-    '+'           [reduce using rule 62 (expr)]
-    '-'           [reduce using rule 62 (expr)]
-    '*'           [reduce using rule 62 (expr)]
-    '/'           [reduce using rule 62 (expr)]
-    '<'           [reduce using rule 62 (expr)]
-    '>'           [reduce using rule 62 (expr)]
-    '!'           [reduce using rule 62 (expr)]
-    $default      reduce using rule 62 (expr)
+    $default  reduce using rule 60 (expr)
 
 
 State 118
 
-   53 expr: expr . '+' expr
-   54     | expr . '-' expr
-   55     | expr . '*' expr
-   56     | expr . '/' expr
-   57     | expr . '<' expr
-   58     | expr . '>' expr
-   59     | expr . '!' expr
-   60     | expr . OPERATOR_LE expr
-   61     | expr . OPERATOR_GE expr
-   62     | expr . OPERATOR_EQ expr
-   63     | expr . OPERATOR_NE expr
-   63     | expr OPERATOR_NE expr .
-   64     | expr . OPERATOR_AND expr
-   65     | expr . OPERATOR_OR expr
+   51 expr: expr . '+' expr
+   52     | expr . '-' expr
+   53     | expr . '*' expr
+   54     | expr . '/' expr
+   55     | expr . '<' expr
+   56     | expr . '>' expr
+   57     | expr . '!' expr
+   58     | expr . OPERATOR_LE expr
+   59     | expr . OPERATOR_GE expr
+   60     | expr . OPERATOR_EQ expr
+   61     | expr . OPERATOR_NE expr
+   61     | expr OPERATOR_NE expr .
+   62     | expr . OPERATOR_AND expr
+   63     | expr . OPERATOR_OR expr
 
-    OPERATOR_LE   shift, and go to state 89
-    OPERATOR_GE   shift, and go to state 90
-    OPERATOR_EQ   shift, and go to state 91
-    OPERATOR_NE   shift, and go to state 92
-    OPERATOR_AND  shift, and go to state 93
-    OPERATOR_OR   shift, and go to state 94
-    '+'           shift, and go to state 95
-    '-'           shift, and go to state 96
-    '*'           shift, and go to state 97
-    '/'           shift, and go to state 98
-    '<'           shift, and go to state 99
-    '>'           shift, and go to state 100
-    '!'           shift, and go to state 101
-
-    OPERATOR_LE   [reduce using rule 63 (expr)]
-    OPERATOR_GE   [reduce using rule 63 (expr)]
-    OPERATOR_EQ   [reduce using rule 63 (expr)]
-    OPERATOR_NE   [reduce using rule 63 (expr)]
-    OPERATOR_AND  [reduce using rule 63 (expr)]
-    OPERATOR_OR   [reduce using rule 63 (expr)]
-    '+'           [reduce using rule 63 (expr)]
-    '-'           [reduce using rule 63 (expr)]
-    '*'           [reduce using rule 63 (expr)]
-    '/'           [reduce using rule 63 (expr)]
-    '<'           [reduce using rule 63 (expr)]
-    '>'           [reduce using rule 63 (expr)]
-    '!'           [reduce using rule 63 (expr)]
-    $default      reduce using rule 63 (expr)
+    $default  reduce using rule 61 (expr)
 
 
 State 119
 
-   53 expr: expr . '+' expr
-   54     | expr . '-' expr
-   55     | expr . '*' expr
-   56     | expr . '/' expr
-   57     | expr . '<' expr
-   58     | expr . '>' expr
-   59     | expr . '!' expr
-   60     | expr . OPERATOR_LE expr
-   61     | expr . OPERATOR_GE expr
-   62     | expr . OPERATOR_EQ expr
-   63     | expr . OPERATOR_NE expr
-   64     | expr . OPERATOR_AND expr
-   64     | expr OPERATOR_AND expr .
-   65     | expr . OPERATOR_OR expr
+   51 expr: expr . '+' expr
+   52     | expr . '-' expr
+   53     | expr . '*' expr
+   54     | expr . '/' expr
+   55     | expr . '<' expr
+   56     | expr . '>' expr
+   57     | expr . '!' expr
+   58     | expr . OPERATOR_LE expr
+   59     | expr . OPERATOR_GE expr
+   60     | expr . OPERATOR_EQ expr
+   61     | expr . OPERATOR_NE expr
+   62     | expr . OPERATOR_AND expr
+   62     | expr OPERATOR_AND expr .
+   63     | expr . OPERATOR_OR expr
 
-    OPERATOR_LE   shift, and go to state 89
-    OPERATOR_GE   shift, and go to state 90
-    OPERATOR_EQ   shift, and go to state 91
-    OPERATOR_NE   shift, and go to state 92
-    OPERATOR_AND  shift, and go to state 93
-    OPERATOR_OR   shift, and go to state 94
-    '+'           shift, and go to state 95
-    '-'           shift, and go to state 96
-    '*'           shift, and go to state 97
-    '/'           shift, and go to state 98
-    '<'           shift, and go to state 99
-    '>'           shift, and go to state 100
-    '!'           shift, and go to state 101
+    OPERATOR_LE  shift, and go to state 89
+    OPERATOR_GE  shift, and go to state 90
+    OPERATOR_EQ  shift, and go to state 91
+    OPERATOR_NE  shift, and go to state 92
+    '<'          shift, and go to state 100
+    '>'          shift, and go to state 101
 
-    OPERATOR_LE   [reduce using rule 64 (expr)]
-    OPERATOR_GE   [reduce using rule 64 (expr)]
-    OPERATOR_EQ   [reduce using rule 64 (expr)]
-    OPERATOR_NE   [reduce using rule 64 (expr)]
-    OPERATOR_AND  [reduce using rule 64 (expr)]
-    OPERATOR_OR   [reduce using rule 64 (expr)]
-    '+'           [reduce using rule 64 (expr)]
-    '-'           [reduce using rule 64 (expr)]
-    '*'           [reduce using rule 64 (expr)]
-    '/'           [reduce using rule 64 (expr)]
-    '<'           [reduce using rule 64 (expr)]
-    '>'           [reduce using rule 64 (expr)]
-    '!'           [reduce using rule 64 (expr)]
-    $default      reduce using rule 64 (expr)
+    $default  reduce using rule 62 (expr)
 
 
 State 120
 
-   53 expr: expr . '+' expr
-   54     | expr . '-' expr
-   55     | expr . '*' expr
-   56     | expr . '/' expr
-   57     | expr . '<' expr
-   58     | expr . '>' expr
-   59     | expr . '!' expr
-   60     | expr . OPERATOR_LE expr
-   61     | expr . OPERATOR_GE expr
-   62     | expr . OPERATOR_EQ expr
-   63     | expr . OPERATOR_NE expr
-   64     | expr . OPERATOR_AND expr
-   65     | expr . OPERATOR_OR expr
-   65     | expr OPERATOR_OR expr .
+   51 expr: expr . '+' expr
+   52     | expr . '-' expr
+   53     | expr . '*' expr
+   54     | expr . '/' expr
+   55     | expr . '<' expr
+   56     | expr . '>' expr
+   57     | expr . '!' expr
+   58     | expr . OPERATOR_LE expr
+   59     | expr . OPERATOR_GE expr
+   60     | expr . OPERATOR_EQ expr
+   61     | expr . OPERATOR_NE expr
+   62     | expr . OPERATOR_AND expr
+   63     | expr . OPERATOR_OR expr
+   63     | expr OPERATOR_OR expr .
 
-    OPERATOR_LE   shift, and go to state 89
-    OPERATOR_GE   shift, and go to state 90
-    OPERATOR_EQ   shift, and go to state 91
-    OPERATOR_NE   shift, and go to state 92
-    OPERATOR_AND  shift, and go to state 93
-    OPERATOR_OR   shift, and go to state 94
-    '+'           shift, and go to state 95
-    '-'           shift, and go to state 96
-    '*'           shift, and go to state 97
-    '/'           shift, and go to state 98
-    '<'           shift, and go to state 99
-    '>'           shift, and go to state 100
-    '!'           shift, and go to state 101
+    OPERATOR_LE  shift, and go to state 89
+    OPERATOR_GE  shift, and go to state 90
+    OPERATOR_EQ  shift, and go to state 91
+    OPERATOR_NE  shift, and go to state 92
+    '<'          shift, and go to state 100
+    '>'          shift, and go to state 101
 
-    OPERATOR_LE   [reduce using rule 65 (expr)]
-    OPERATOR_GE   [reduce using rule 65 (expr)]
-    OPERATOR_EQ   [reduce using rule 65 (expr)]
-    OPERATOR_NE   [reduce using rule 65 (expr)]
-    OPERATOR_AND  [reduce using rule 65 (expr)]
-    OPERATOR_OR   [reduce using rule 65 (expr)]
-    '+'           [reduce using rule 65 (expr)]
-    '-'           [reduce using rule 65 (expr)]
-    '*'           [reduce using rule 65 (expr)]
-    '/'           [reduce using rule 65 (expr)]
-    '<'           [reduce using rule 65 (expr)]
-    '>'           [reduce using rule 65 (expr)]
-    '!'           [reduce using rule 65 (expr)]
-    $default      reduce using rule 65 (expr)
+    $default  reduce using rule 63 (expr)
 
 
 State 121
 
-   53 expr: expr . '+' expr
-   53     | expr '+' expr .
-   54     | expr . '-' expr
-   55     | expr . '*' expr
-   56     | expr . '/' expr
-   57     | expr . '<' expr
-   58     | expr . '>' expr
-   59     | expr . '!' expr
-   60     | expr . OPERATOR_LE expr
-   61     | expr . OPERATOR_GE expr
-   62     | expr . OPERATOR_EQ expr
-   63     | expr . OPERATOR_NE expr
-   64     | expr . OPERATOR_AND expr
-   65     | expr . OPERATOR_OR expr
+   51 expr: expr . '+' expr
+   51     | expr '+' expr .
+   52     | expr . '-' expr
+   53     | expr . '*' expr
+   54     | expr . '/' expr
+   55     | expr . '<' expr
+   56     | expr . '>' expr
+   57     | expr . '!' expr
+   58     | expr . OPERATOR_LE expr
+   59     | expr . OPERATOR_GE expr
+   60     | expr . OPERATOR_EQ expr
+   61     | expr . OPERATOR_NE expr
+   62     | expr . OPERATOR_AND expr
+   63     | expr . OPERATOR_OR expr
 
     OPERATOR_LE   shift, and go to state 89
     OPERATOR_GE   shift, and go to state 90
@@ -2030,46 +1855,31 @@ State 121
     OPERATOR_NE   shift, and go to state 92
     OPERATOR_AND  shift, and go to state 93
     OPERATOR_OR   shift, and go to state 94
-    '+'           shift, and go to state 95
-    '-'           shift, and go to state 96
     '*'           shift, and go to state 97
     '/'           shift, and go to state 98
-    '<'           shift, and go to state 99
-    '>'           shift, and go to state 100
-    '!'           shift, and go to state 101
+    '!'           shift, and go to state 99
+    '<'           shift, and go to state 100
+    '>'           shift, and go to state 101
 
-    OPERATOR_LE   [reduce using rule 53 (expr)]
-    OPERATOR_GE   [reduce using rule 53 (expr)]
-    OPERATOR_EQ   [reduce using rule 53 (expr)]
-    OPERATOR_NE   [reduce using rule 53 (expr)]
-    OPERATOR_AND  [reduce using rule 53 (expr)]
-    OPERATOR_OR   [reduce using rule 53 (expr)]
-    '+'           [reduce using rule 53 (expr)]
-    '-'           [reduce using rule 53 (expr)]
-    '*'           [reduce using rule 53 (expr)]
-    '/'           [reduce using rule 53 (expr)]
-    '<'           [reduce using rule 53 (expr)]
-    '>'           [reduce using rule 53 (expr)]
-    '!'           [reduce using rule 53 (expr)]
-    $default      reduce using rule 53 (expr)
+    $default  reduce using rule 51 (expr)
 
 
 State 122
 
-   53 expr: expr . '+' expr
-   54     | expr . '-' expr
-   54     | expr '-' expr .
-   55     | expr . '*' expr
-   56     | expr . '/' expr
-   57     | expr . '<' expr
-   58     | expr . '>' expr
-   59     | expr . '!' expr
-   60     | expr . OPERATOR_LE expr
-   61     | expr . OPERATOR_GE expr
-   62     | expr . OPERATOR_EQ expr
-   63     | expr . OPERATOR_NE expr
-   64     | expr . OPERATOR_AND expr
-   65     | expr . OPERATOR_OR expr
+   51 expr: expr . '+' expr
+   52     | expr . '-' expr
+   52     | expr '-' expr .
+   53     | expr . '*' expr
+   54     | expr . '/' expr
+   55     | expr . '<' expr
+   56     | expr . '>' expr
+   57     | expr . '!' expr
+   58     | expr . OPERATOR_LE expr
+   59     | expr . OPERATOR_GE expr
+   60     | expr . OPERATOR_EQ expr
+   61     | expr . OPERATOR_NE expr
+   62     | expr . OPERATOR_AND expr
+   63     | expr . OPERATOR_OR expr
 
     OPERATOR_LE   shift, and go to state 89
     OPERATOR_GE   shift, and go to state 90
@@ -2077,46 +1887,31 @@ State 122
     OPERATOR_NE   shift, and go to state 92
     OPERATOR_AND  shift, and go to state 93
     OPERATOR_OR   shift, and go to state 94
-    '+'           shift, and go to state 95
-    '-'           shift, and go to state 96
     '*'           shift, and go to state 97
     '/'           shift, and go to state 98
-    '<'           shift, and go to state 99
-    '>'           shift, and go to state 100
-    '!'           shift, and go to state 101
+    '!'           shift, and go to state 99
+    '<'           shift, and go to state 100
+    '>'           shift, and go to state 101
 
-    OPERATOR_LE   [reduce using rule 54 (expr)]
-    OPERATOR_GE   [reduce using rule 54 (expr)]
-    OPERATOR_EQ   [reduce using rule 54 (expr)]
-    OPERATOR_NE   [reduce using rule 54 (expr)]
-    OPERATOR_AND  [reduce using rule 54 (expr)]
-    OPERATOR_OR   [reduce using rule 54 (expr)]
-    '+'           [reduce using rule 54 (expr)]
-    '-'           [reduce using rule 54 (expr)]
-    '*'           [reduce using rule 54 (expr)]
-    '/'           [reduce using rule 54 (expr)]
-    '<'           [reduce using rule 54 (expr)]
-    '>'           [reduce using rule 54 (expr)]
-    '!'           [reduce using rule 54 (expr)]
-    $default      reduce using rule 54 (expr)
+    $default  reduce using rule 52 (expr)
 
 
 State 123
 
-   53 expr: expr . '+' expr
-   54     | expr . '-' expr
-   55     | expr . '*' expr
-   55     | expr '*' expr .
-   56     | expr . '/' expr
-   57     | expr . '<' expr
-   58     | expr . '>' expr
-   59     | expr . '!' expr
-   60     | expr . OPERATOR_LE expr
-   61     | expr . OPERATOR_GE expr
-   62     | expr . OPERATOR_EQ expr
-   63     | expr . OPERATOR_NE expr
-   64     | expr . OPERATOR_AND expr
-   65     | expr . OPERATOR_OR expr
+   51 expr: expr . '+' expr
+   52     | expr . '-' expr
+   53     | expr . '*' expr
+   53     | expr '*' expr .
+   54     | expr . '/' expr
+   55     | expr . '<' expr
+   56     | expr . '>' expr
+   57     | expr . '!' expr
+   58     | expr . OPERATOR_LE expr
+   59     | expr . OPERATOR_GE expr
+   60     | expr . OPERATOR_EQ expr
+   61     | expr . OPERATOR_NE expr
+   62     | expr . OPERATOR_AND expr
+   63     | expr . OPERATOR_OR expr
 
     OPERATOR_LE   shift, and go to state 89
     OPERATOR_GE   shift, and go to state 90
@@ -2124,46 +1919,29 @@ State 123
     OPERATOR_NE   shift, and go to state 92
     OPERATOR_AND  shift, and go to state 93
     OPERATOR_OR   shift, and go to state 94
-    '+'           shift, and go to state 95
-    '-'           shift, and go to state 96
-    '*'           shift, and go to state 97
-    '/'           shift, and go to state 98
-    '<'           shift, and go to state 99
-    '>'           shift, and go to state 100
-    '!'           shift, and go to state 101
+    '!'           shift, and go to state 99
+    '<'           shift, and go to state 100
+    '>'           shift, and go to state 101
 
-    OPERATOR_LE   [reduce using rule 55 (expr)]
-    OPERATOR_GE   [reduce using rule 55 (expr)]
-    OPERATOR_EQ   [reduce using rule 55 (expr)]
-    OPERATOR_NE   [reduce using rule 55 (expr)]
-    OPERATOR_AND  [reduce using rule 55 (expr)]
-    OPERATOR_OR   [reduce using rule 55 (expr)]
-    '+'           [reduce using rule 55 (expr)]
-    '-'           [reduce using rule 55 (expr)]
-    '*'           [reduce using rule 55 (expr)]
-    '/'           [reduce using rule 55 (expr)]
-    '<'           [reduce using rule 55 (expr)]
-    '>'           [reduce using rule 55 (expr)]
-    '!'           [reduce using rule 55 (expr)]
-    $default      reduce using rule 55 (expr)
+    $default  reduce using rule 53 (expr)
 
 
 State 124
 
-   53 expr: expr . '+' expr
-   54     | expr . '-' expr
-   55     | expr . '*' expr
-   56     | expr . '/' expr
-   56     | expr '/' expr .
-   57     | expr . '<' expr
-   58     | expr . '>' expr
-   59     | expr . '!' expr
-   60     | expr . OPERATOR_LE expr
-   61     | expr . OPERATOR_GE expr
-   62     | expr . OPERATOR_EQ expr
-   63     | expr . OPERATOR_NE expr
-   64     | expr . OPERATOR_AND expr
-   65     | expr . OPERATOR_OR expr
+   51 expr: expr . '+' expr
+   52     | expr . '-' expr
+   53     | expr . '*' expr
+   54     | expr . '/' expr
+   54     | expr '/' expr .
+   55     | expr . '<' expr
+   56     | expr . '>' expr
+   57     | expr . '!' expr
+   58     | expr . OPERATOR_LE expr
+   59     | expr . OPERATOR_GE expr
+   60     | expr . OPERATOR_EQ expr
+   61     | expr . OPERATOR_NE expr
+   62     | expr . OPERATOR_AND expr
+   63     | expr . OPERATOR_OR expr
 
     OPERATOR_LE   shift, and go to state 89
     OPERATOR_GE   shift, and go to state 90
@@ -2171,189 +1949,98 @@ State 124
     OPERATOR_NE   shift, and go to state 92
     OPERATOR_AND  shift, and go to state 93
     OPERATOR_OR   shift, and go to state 94
-    '+'           shift, and go to state 95
-    '-'           shift, and go to state 96
-    '*'           shift, and go to state 97
-    '/'           shift, and go to state 98
-    '<'           shift, and go to state 99
-    '>'           shift, and go to state 100
-    '!'           shift, and go to state 101
+    '!'           shift, and go to state 99
+    '<'           shift, and go to state 100
+    '>'           shift, and go to state 101
 
-    OPERATOR_LE   [reduce using rule 56 (expr)]
-    OPERATOR_GE   [reduce using rule 56 (expr)]
-    OPERATOR_EQ   [reduce using rule 56 (expr)]
-    OPERATOR_NE   [reduce using rule 56 (expr)]
-    OPERATOR_AND  [reduce using rule 56 (expr)]
-    OPERATOR_OR   [reduce using rule 56 (expr)]
-    '+'           [reduce using rule 56 (expr)]
-    '-'           [reduce using rule 56 (expr)]
-    '*'           [reduce using rule 56 (expr)]
-    '/'           [reduce using rule 56 (expr)]
-    '<'           [reduce using rule 56 (expr)]
-    '>'           [reduce using rule 56 (expr)]
-    '!'           [reduce using rule 56 (expr)]
-    $default      reduce using rule 56 (expr)
+    $default  reduce using rule 54 (expr)
 
 
 State 125
 
-   53 expr: expr . '+' expr
-   54     | expr . '-' expr
-   55     | expr . '*' expr
-   56     | expr . '/' expr
-   57     | expr . '<' expr
-   57     | expr '<' expr .
-   58     | expr . '>' expr
-   59     | expr . '!' expr
-   60     | expr . OPERATOR_LE expr
-   61     | expr . OPERATOR_GE expr
-   62     | expr . OPERATOR_EQ expr
-   63     | expr . OPERATOR_NE expr
-   64     | expr . OPERATOR_AND expr
-   65     | expr . OPERATOR_OR expr
+   51 expr: expr . '+' expr
+   52     | expr . '-' expr
+   53     | expr . '*' expr
+   54     | expr . '/' expr
+   55     | expr . '<' expr
+   56     | expr . '>' expr
+   57     | expr . '!' expr
+   57     | expr '!' expr .
+   58     | expr . OPERATOR_LE expr
+   59     | expr . OPERATOR_GE expr
+   60     | expr . OPERATOR_EQ expr
+   61     | expr . OPERATOR_NE expr
+   62     | expr . OPERATOR_AND expr
+   63     | expr . OPERATOR_OR expr
 
-    OPERATOR_LE   shift, and go to state 89
-    OPERATOR_GE   shift, and go to state 90
-    OPERATOR_EQ   shift, and go to state 91
-    OPERATOR_NE   shift, and go to state 92
-    OPERATOR_AND  shift, and go to state 93
-    OPERATOR_OR   shift, and go to state 94
-    '+'           shift, and go to state 95
-    '-'           shift, and go to state 96
-    '*'           shift, and go to state 97
-    '/'           shift, and go to state 98
-    '<'           shift, and go to state 99
-    '>'           shift, and go to state 100
-    '!'           shift, and go to state 101
+    OPERATOR_LE  shift, and go to state 89
+    OPERATOR_GE  shift, and go to state 90
+    OPERATOR_EQ  shift, and go to state 91
+    OPERATOR_NE  shift, and go to state 92
+    '<'          shift, and go to state 100
+    '>'          shift, and go to state 101
 
-    OPERATOR_LE   [reduce using rule 57 (expr)]
-    OPERATOR_GE   [reduce using rule 57 (expr)]
-    OPERATOR_EQ   [reduce using rule 57 (expr)]
-    OPERATOR_NE   [reduce using rule 57 (expr)]
-    OPERATOR_AND  [reduce using rule 57 (expr)]
-    OPERATOR_OR   [reduce using rule 57 (expr)]
-    '+'           [reduce using rule 57 (expr)]
-    '-'           [reduce using rule 57 (expr)]
-    '*'           [reduce using rule 57 (expr)]
-    '/'           [reduce using rule 57 (expr)]
-    '<'           [reduce using rule 57 (expr)]
-    '>'           [reduce using rule 57 (expr)]
-    '!'           [reduce using rule 57 (expr)]
-    $default      reduce using rule 57 (expr)
+    $default  reduce using rule 57 (expr)
 
 
 State 126
 
-   53 expr: expr . '+' expr
-   54     | expr . '-' expr
-   55     | expr . '*' expr
-   56     | expr . '/' expr
-   57     | expr . '<' expr
-   58     | expr . '>' expr
-   58     | expr '>' expr .
-   59     | expr . '!' expr
-   60     | expr . OPERATOR_LE expr
-   61     | expr . OPERATOR_GE expr
-   62     | expr . OPERATOR_EQ expr
-   63     | expr . OPERATOR_NE expr
-   64     | expr . OPERATOR_AND expr
-   65     | expr . OPERATOR_OR expr
+   51 expr: expr . '+' expr
+   52     | expr . '-' expr
+   53     | expr . '*' expr
+   54     | expr . '/' expr
+   55     | expr . '<' expr
+   55     | expr '<' expr .
+   56     | expr . '>' expr
+   57     | expr . '!' expr
+   58     | expr . OPERATOR_LE expr
+   59     | expr . OPERATOR_GE expr
+   60     | expr . OPERATOR_EQ expr
+   61     | expr . OPERATOR_NE expr
+   62     | expr . OPERATOR_AND expr
+   63     | expr . OPERATOR_OR expr
 
-    OPERATOR_LE   shift, and go to state 89
-    OPERATOR_GE   shift, and go to state 90
-    OPERATOR_EQ   shift, and go to state 91
-    OPERATOR_NE   shift, and go to state 92
-    OPERATOR_AND  shift, and go to state 93
-    OPERATOR_OR   shift, and go to state 94
-    '+'           shift, and go to state 95
-    '-'           shift, and go to state 96
-    '*'           shift, and go to state 97
-    '/'           shift, and go to state 98
-    '<'           shift, and go to state 99
-    '>'           shift, and go to state 100
-    '!'           shift, and go to state 101
-
-    OPERATOR_LE   [reduce using rule 58 (expr)]
-    OPERATOR_GE   [reduce using rule 58 (expr)]
-    OPERATOR_EQ   [reduce using rule 58 (expr)]
-    OPERATOR_NE   [reduce using rule 58 (expr)]
-    OPERATOR_AND  [reduce using rule 58 (expr)]
-    OPERATOR_OR   [reduce using rule 58 (expr)]
-    '+'           [reduce using rule 58 (expr)]
-    '-'           [reduce using rule 58 (expr)]
-    '*'           [reduce using rule 58 (expr)]
-    '/'           [reduce using rule 58 (expr)]
-    '<'           [reduce using rule 58 (expr)]
-    '>'           [reduce using rule 58 (expr)]
-    '!'           [reduce using rule 58 (expr)]
-    $default      reduce using rule 58 (expr)
+    $default  reduce using rule 55 (expr)
 
 
 State 127
 
-   53 expr: expr . '+' expr
-   54     | expr . '-' expr
-   55     | expr . '*' expr
-   56     | expr . '/' expr
-   57     | expr . '<' expr
-   58     | expr . '>' expr
-   59     | expr . '!' expr
-   59     | expr '!' expr .
-   60     | expr . OPERATOR_LE expr
-   61     | expr . OPERATOR_GE expr
-   62     | expr . OPERATOR_EQ expr
-   63     | expr . OPERATOR_NE expr
-   64     | expr . OPERATOR_AND expr
-   65     | expr . OPERATOR_OR expr
+   51 expr: expr . '+' expr
+   52     | expr . '-' expr
+   53     | expr . '*' expr
+   54     | expr . '/' expr
+   55     | expr . '<' expr
+   56     | expr . '>' expr
+   56     | expr '>' expr .
+   57     | expr . '!' expr
+   58     | expr . OPERATOR_LE expr
+   59     | expr . OPERATOR_GE expr
+   60     | expr . OPERATOR_EQ expr
+   61     | expr . OPERATOR_NE expr
+   62     | expr . OPERATOR_AND expr
+   63     | expr . OPERATOR_OR expr
 
-    OPERATOR_LE   shift, and go to state 89
-    OPERATOR_GE   shift, and go to state 90
-    OPERATOR_EQ   shift, and go to state 91
-    OPERATOR_NE   shift, and go to state 92
-    OPERATOR_AND  shift, and go to state 93
-    OPERATOR_OR   shift, and go to state 94
-    '+'           shift, and go to state 95
-    '-'           shift, and go to state 96
-    '*'           shift, and go to state 97
-    '/'           shift, and go to state 98
-    '<'           shift, and go to state 99
-    '>'           shift, and go to state 100
-    '!'           shift, and go to state 101
-
-    OPERATOR_LE   [reduce using rule 59 (expr)]
-    OPERATOR_GE   [reduce using rule 59 (expr)]
-    OPERATOR_EQ   [reduce using rule 59 (expr)]
-    OPERATOR_NE   [reduce using rule 59 (expr)]
-    OPERATOR_AND  [reduce using rule 59 (expr)]
-    OPERATOR_OR   [reduce using rule 59 (expr)]
-    '+'           [reduce using rule 59 (expr)]
-    '-'           [reduce using rule 59 (expr)]
-    '*'           [reduce using rule 59 (expr)]
-    '/'           [reduce using rule 59 (expr)]
-    '<'           [reduce using rule 59 (expr)]
-    '>'           [reduce using rule 59 (expr)]
-    '!'           [reduce using rule 59 (expr)]
-    $default      reduce using rule 59 (expr)
+    $default  reduce using rule 56 (expr)
 
 
 State 128
 
-   38 attribution: TK_IDENTIFIER '[' expr ']' . '=' expr
+   36 attribution: TK_IDENTIFIER '[' expr ']' . '=' expr
 
     '='  shift, and go to state 135
 
 
 State 129
 
-   75 while: TK_WHILE '(' expr ')' command .
+   73 while: TK_WHILE '(' expr ')' command .
 
-    $default  reduce using rule 75 (while)
+    $default  reduce using rule 73 (while)
 
 
 State 130
 
-   73 if: TK_IF '(' expr ')' TK_THEN . command
-   74   | TK_IF '(' expr ')' TK_THEN . command TK_ELSE command
+   71 if: TK_IF '(' expr ')' TK_THEN . command
+   72   | TK_IF '(' expr ')' TK_THEN . command TK_ELSE command
 
     TK_WHILE       shift, and go to state 44
     TK_IF          shift, and go to state 45
@@ -2364,7 +2051,7 @@ State 130
     TK_IDENTIFIER  shift, and go to state 50
     '{'            shift, and go to state 38
 
-    $default  reduce using rule 36 (command)
+    $default  reduce using rule 34 (command)
 
     block        go to state 51
     command      go to state 136
@@ -2380,20 +2067,20 @@ State 130
 
 State 131
 
-   53 expr: expr . '+' expr
-   54     | expr . '-' expr
-   55     | expr . '*' expr
-   56     | expr . '/' expr
-   57     | expr . '<' expr
-   58     | expr . '>' expr
-   59     | expr . '!' expr
-   60     | expr . OPERATOR_LE expr
-   61     | expr . OPERATOR_GE expr
-   62     | expr . OPERATOR_EQ expr
-   63     | expr . OPERATOR_NE expr
-   64     | expr . OPERATOR_AND expr
-   65     | expr . OPERATOR_OR expr
-   76 for: TK_FOR '(' TK_IDENTIFIER '=' expr . TK_TO expr ')' command
+   51 expr: expr . '+' expr
+   52     | expr . '-' expr
+   53     | expr . '*' expr
+   54     | expr . '/' expr
+   55     | expr . '<' expr
+   56     | expr . '>' expr
+   57     | expr . '!' expr
+   58     | expr . OPERATOR_LE expr
+   59     | expr . OPERATOR_GE expr
+   60     | expr . OPERATOR_EQ expr
+   61     | expr . OPERATOR_NE expr
+   62     | expr . OPERATOR_AND expr
+   63     | expr . OPERATOR_OR expr
+   74 for: TK_FOR '(' TK_IDENTIFIER '=' expr . TK_TO expr ')' command
 
     TK_TO         shift, and go to state 137
     OPERATOR_LE   shift, and go to state 89
@@ -2406,29 +2093,29 @@ State 131
     '-'           shift, and go to state 96
     '*'           shift, and go to state 97
     '/'           shift, and go to state 98
-    '<'           shift, and go to state 99
-    '>'           shift, and go to state 100
-    '!'           shift, and go to state 101
+    '!'           shift, and go to state 99
+    '<'           shift, and go to state 100
+    '>'           shift, and go to state 101
 
 
 State 132
 
-   47 expr: TK_IDENTIFIER '[' expr ']' .
+   45 expr: TK_IDENTIFIER '[' expr ']' .
 
-    $default  reduce using rule 47 (expr)
+    $default  reduce using rule 45 (expr)
 
 
 State 133
 
-   69 call_param_list: expr ',' . call_param_list
+   67 call_param_list: expr ',' . call_param_list
 
     TK_IDENTIFIER  shift, and go to state 67
     LIT_INTEGER    shift, and go to state 19
     LIT_REAL       shift, and go to state 20
     LIT_CHAR       shift, and go to state 21
     '#'            shift, and go to state 68
-    '('            shift, and go to state 69
-    '&'            shift, and go to state 70
+    '&'            shift, and go to state 69
+    '('            shift, and go to state 70
 
     lit              go to state 71
     expr             go to state 112
@@ -2438,22 +2125,22 @@ State 133
 
 State 134
 
-   66 func_call: TK_IDENTIFIER '(' call_param_list ')' .
+   64 func_call: TK_IDENTIFIER '(' call_param_list ')' .
 
-    $default  reduce using rule 66 (func_call)
+    $default  reduce using rule 64 (func_call)
 
 
 State 135
 
-   38 attribution: TK_IDENTIFIER '[' expr ']' '=' . expr
+   36 attribution: TK_IDENTIFIER '[' expr ']' '=' . expr
 
     TK_IDENTIFIER  shift, and go to state 67
     LIT_INTEGER    shift, and go to state 19
     LIT_REAL       shift, and go to state 20
     LIT_CHAR       shift, and go to state 21
     '#'            shift, and go to state 68
-    '('            shift, and go to state 69
-    '&'            shift, and go to state 70
+    '&'            shift, and go to state 69
+    '('            shift, and go to state 70
 
     lit        go to state 71
     expr       go to state 139
@@ -2462,26 +2149,26 @@ State 135
 
 State 136
 
-   73 if: TK_IF '(' expr ')' TK_THEN command .
-   74   | TK_IF '(' expr ')' TK_THEN command . TK_ELSE command
+   71 if: TK_IF '(' expr ')' TK_THEN command .
+   72   | TK_IF '(' expr ')' TK_THEN command . TK_ELSE command
 
     TK_ELSE  shift, and go to state 140
 
-    TK_ELSE   [reduce using rule 73 (if)]
-    $default  reduce using rule 73 (if)
+    TK_ELSE   [reduce using rule 71 (if)]
+    $default  reduce using rule 71 (if)
 
 
 State 137
 
-   76 for: TK_FOR '(' TK_IDENTIFIER '=' expr TK_TO . expr ')' command
+   74 for: TK_FOR '(' TK_IDENTIFIER '=' expr TK_TO . expr ')' command
 
     TK_IDENTIFIER  shift, and go to state 67
     LIT_INTEGER    shift, and go to state 19
     LIT_REAL       shift, and go to state 20
     LIT_CHAR       shift, and go to state 21
     '#'            shift, and go to state 68
-    '('            shift, and go to state 69
-    '&'            shift, and go to state 70
+    '&'            shift, and go to state 69
+    '('            shift, and go to state 70
 
     lit        go to state 71
     expr       go to state 141
@@ -2490,27 +2177,27 @@ State 137
 
 State 138
 
-   69 call_param_list: expr ',' call_param_list .
+   67 call_param_list: expr ',' call_param_list .
 
-    $default  reduce using rule 69 (call_param_list)
+    $default  reduce using rule 67 (call_param_list)
 
 
 State 139
 
-   38 attribution: TK_IDENTIFIER '[' expr ']' '=' expr .
-   53 expr: expr . '+' expr
-   54     | expr . '-' expr
-   55     | expr . '*' expr
-   56     | expr . '/' expr
-   57     | expr . '<' expr
-   58     | expr . '>' expr
-   59     | expr . '!' expr
-   60     | expr . OPERATOR_LE expr
-   61     | expr . OPERATOR_GE expr
-   62     | expr . OPERATOR_EQ expr
-   63     | expr . OPERATOR_NE expr
-   64     | expr . OPERATOR_AND expr
-   65     | expr . OPERATOR_OR expr
+   36 attribution: TK_IDENTIFIER '[' expr ']' '=' expr .
+   51 expr: expr . '+' expr
+   52     | expr . '-' expr
+   53     | expr . '*' expr
+   54     | expr . '/' expr
+   55     | expr . '<' expr
+   56     | expr . '>' expr
+   57     | expr . '!' expr
+   58     | expr . OPERATOR_LE expr
+   59     | expr . OPERATOR_GE expr
+   60     | expr . OPERATOR_EQ expr
+   61     | expr . OPERATOR_NE expr
+   62     | expr . OPERATOR_AND expr
+   63     | expr . OPERATOR_OR expr
 
     OPERATOR_LE   shift, and go to state 89
     OPERATOR_GE   shift, and go to state 90
@@ -2522,16 +2209,16 @@ State 139
     '-'           shift, and go to state 96
     '*'           shift, and go to state 97
     '/'           shift, and go to state 98
-    '<'           shift, and go to state 99
-    '>'           shift, and go to state 100
-    '!'           shift, and go to state 101
+    '!'           shift, and go to state 99
+    '<'           shift, and go to state 100
+    '>'           shift, and go to state 101
 
-    $default  reduce using rule 38 (attribution)
+    $default  reduce using rule 36 (attribution)
 
 
 State 140
 
-   74 if: TK_IF '(' expr ')' TK_THEN command TK_ELSE . command
+   72 if: TK_IF '(' expr ')' TK_THEN command TK_ELSE . command
 
     TK_WHILE       shift, and go to state 44
     TK_IF          shift, and go to state 45
@@ -2542,7 +2229,7 @@ State 140
     TK_IDENTIFIER  shift, and go to state 50
     '{'            shift, and go to state 38
 
-    $default  reduce using rule 36 (command)
+    $default  reduce using rule 34 (command)
 
     block        go to state 51
     command      go to state 142
@@ -2558,20 +2245,20 @@ State 140
 
 State 141
 
-   53 expr: expr . '+' expr
-   54     | expr . '-' expr
-   55     | expr . '*' expr
-   56     | expr . '/' expr
-   57     | expr . '<' expr
-   58     | expr . '>' expr
-   59     | expr . '!' expr
-   60     | expr . OPERATOR_LE expr
-   61     | expr . OPERATOR_GE expr
-   62     | expr . OPERATOR_EQ expr
-   63     | expr . OPERATOR_NE expr
-   64     | expr . OPERATOR_AND expr
-   65     | expr . OPERATOR_OR expr
-   76 for: TK_FOR '(' TK_IDENTIFIER '=' expr TK_TO expr . ')' command
+   51 expr: expr . '+' expr
+   52     | expr . '-' expr
+   53     | expr . '*' expr
+   54     | expr . '/' expr
+   55     | expr . '<' expr
+   56     | expr . '>' expr
+   57     | expr . '!' expr
+   58     | expr . OPERATOR_LE expr
+   59     | expr . OPERATOR_GE expr
+   60     | expr . OPERATOR_EQ expr
+   61     | expr . OPERATOR_NE expr
+   62     | expr . OPERATOR_AND expr
+   63     | expr . OPERATOR_OR expr
+   74 for: TK_FOR '(' TK_IDENTIFIER '=' expr TK_TO expr . ')' command
 
     OPERATOR_LE   shift, and go to state 89
     OPERATOR_GE   shift, and go to state 90
@@ -2579,26 +2266,26 @@ State 141
     OPERATOR_NE   shift, and go to state 92
     OPERATOR_AND  shift, and go to state 93
     OPERATOR_OR   shift, and go to state 94
-    ')'           shift, and go to state 143
     '+'           shift, and go to state 95
     '-'           shift, and go to state 96
     '*'           shift, and go to state 97
     '/'           shift, and go to state 98
-    '<'           shift, and go to state 99
-    '>'           shift, and go to state 100
-    '!'           shift, and go to state 101
+    '!'           shift, and go to state 99
+    '<'           shift, and go to state 100
+    '>'           shift, and go to state 101
+    ')'           shift, and go to state 143
 
 
 State 142
 
-   74 if: TK_IF '(' expr ')' TK_THEN command TK_ELSE command .
+   72 if: TK_IF '(' expr ')' TK_THEN command TK_ELSE command .
 
-    $default  reduce using rule 74 (if)
+    $default  reduce using rule 72 (if)
 
 
 State 143
 
-   76 for: TK_FOR '(' TK_IDENTIFIER '=' expr TK_TO expr ')' . command
+   74 for: TK_FOR '(' TK_IDENTIFIER '=' expr TK_TO expr ')' . command
 
     TK_WHILE       shift, and go to state 44
     TK_IF          shift, and go to state 45
@@ -2609,7 +2296,7 @@ State 143
     TK_IDENTIFIER  shift, and go to state 50
     '{'            shift, and go to state 38
 
-    $default  reduce using rule 36 (command)
+    $default  reduce using rule 34 (command)
 
     block        go to state 51
     command      go to state 144
@@ -2625,6 +2312,6 @@ State 143
 
 State 144
 
-   76 for: TK_FOR '(' TK_IDENTIFIER '=' expr TK_TO expr ')' command .
+   74 for: TK_FOR '(' TK_IDENTIFIER '=' expr TK_TO expr ')' command .
 
-    $default  reduce using rule 76 (for)
+    $default  reduce using rule 74 (for)

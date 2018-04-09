@@ -45,6 +45,11 @@ extern int lineCount;
 %token<symbol> LIT_STRING    
 %token TOKEN_ERROR   
 
+%left '+' '-'
+%left '*' '/' 
+%left OPERATOR_AND OPERATOR_OR '#' '&' '!'
+%left '<' '>' OPERATOR_LE OPERATOR_GE OPERATOR_EQ OPERATOR_NE
+
 %%
 
 program: code;
@@ -73,7 +78,7 @@ func: var_type TK_IDENTIFIER '(' param_list ')' block
 param: var_type TK_IDENTIFIER
 	;
 
-param_list:  param | param aux_param_list |
+param_list: param aux_param_list |
 	;
 
 aux_param_list: ',' param aux_param_list |
@@ -82,7 +87,7 @@ aux_param_list: ',' param aux_param_list |
 block: '{' command_list '}' 
 	;
 
-command_list: command ';' command_list | command |
+command_list: command ';' command_list | command 
 	;
 
 command: attribution | read | print | return | block | control |
