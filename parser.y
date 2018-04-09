@@ -8,12 +8,10 @@ extern int lineCount;
 
 #define   SYMBOL_UNDEFINED  	0 
 #define   SYMBOL_LIT_INTEGER  	1 
-#define   SYMBOL_LIT_FLOATING 	2 
-#define   SYMBOL_LIT_TRUE   	3 
-#define   SYMBOL_LIT_FALSE  	4 
-#define   SYMBOL_LIT_CHAR   	5 
-#define   SYMBOL_LIT_STRING  	6 
-#define   SYMBOL_IDENTIFIER  	7 
+#define   SYMBOL_LIT_REAL 	2 
+#define   SYMBOL_LIT_CHAR   	3 
+#define   SYMBOL_LIT_STRING  	4 
+#define   SYMBOL_IDENTIFIER  	5 
 
 %}
 
@@ -132,6 +130,6 @@ for: TK_FOR '(' TK_IDENTIFIER '=' expr TK_TO expr ')' command
 %%
 
 int yyerror(){
-	printf("programa não reconhecido, erro na linha %d", lineCount);
+	printf("programa não reconhecido, erro na linha %d\n", lineCount);
 	exit(3);
 }

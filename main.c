@@ -23,8 +23,7 @@ int main (int argc, char *argv[])
 
 	initMe(); 
 	if(!yyparse())
-		printf("programa aceito");	
-	hashPrint();
+		printf("Programa aceito.");
 	fclose(yyin);
 	printf("\nTotal de linhas : %d\n", getLineNumber());
 	exit(0);
