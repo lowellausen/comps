@@ -7,6 +7,8 @@
 int lineCount = 1;
 int running = 1;
 
+extern HASHNODE *table[HASH_TABLE_SIZE];
+
 %}
 
 %x COMMENT
@@ -40,11 +42,11 @@ char	{return TK_CHAR;}
 "&&"	{return OPERATOR_AND;}
 "||"	{return OPERATOR_OR;}
 
-[A-Za-z_][A-Za-z_0-9]*	{hashInsert(yytext,TK_IDENTIFIER);return TK_IDENTIFIER;}
-[0-9]+ 			{hashInsert(yytext,LIT_INTEGER);return LIT_INTEGER;}
-[0-9]+"."[0-9]+		{hashInsert(yytext,LIT_REAL);return LIT_REAL;}
-"'"[0-9a-zA-Z]"'"	{hashInsert(yytext,LIT_CHAR);return LIT_CHAR; }
-\"([^\\\"]|\\.)*\"	{hashInsert(yytext,LIT_STRING);return LIT_STRING; }
+[A-Za-z_][A-Za-z_0-9]*	{yylval.symbol = hashInsert(yytext,TK_IDENTIFIER);return TK_IDENTIFIER;}
+[0-9]+ 			{yylval.symbol = hashInsert(yytext,LIT_INTEGER);return LIT_INTEGER;}
+[0-9]+"."[0-9]+		{yylval.symbol = hashInsert(yytext,LIT_REAL);return LIT_REAL;}
+"'"[0-9a-zA-Z]"'"	{yylval.symbol = hashInsert(yytext,LIT_CHAR);return LIT_CHAR; }
+\"([^\\\"]|\\.)*\"	{yylval.symbol = hashInsert(yytext,LIT_STRING);return LIT_STRING; }
 
 [ \t]  
 

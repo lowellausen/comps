@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+HASHNODE * hashTable[HASH_TABLE_SIZE];
+
 void hashInit(){
 	int i;
 	for (i=0; i < HASH_TABLE_SIZE; i++)

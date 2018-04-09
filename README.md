@@ -1,2 +1,0 @@
-# comps
-Projeto de Comps

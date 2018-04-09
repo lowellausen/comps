@@ -6,7 +6,7 @@ typedef struct hashNode{
 	struct hashNode *next;
 } HASHNODE;
 
-HASHNODE * hashTable[HASH_TABLE_SIZE];
+
 
 void hashInit();
 void hashPrint();

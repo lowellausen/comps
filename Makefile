@@ -8,7 +8,7 @@
 #
 
 etapa1: y.tab.o lex.yy.o main.o hash.o
-	gcc -o etapa1 y.tab.o lex.yy.o main.o hash.o
+	gcc -o etapa2 y.tab.o lex.yy.o main.o hash.o
 hash.o:	hash.c
 	gcc -c hash.c
 main.o: main.c
@@ -22,12 +22,12 @@ y.tab.o: y.tab.c
 y.tab.c: parser.y
 	yacc -d -v parser.y
 
-run: etapa1
-	./etapa1
+run: etapa2
+	./etapa2
 
 file: etapa1
 	./etapa1 code.test
 
 
 clean:
-	rm lex.yy.c lex.yy.o main.o hash.o etapa1 y.tab.o y.tab.c
+	rm lex.yy.c lex.yy.o main.o hash.o etapa2 y.tab.o y.tab.c

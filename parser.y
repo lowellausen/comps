@@ -1,9 +1,24 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include "hash.h"
 
 extern int lineCount;
+
+
+#define   SYMBOL_UNDEFINED  	0 
+#define   SYMBOL_LIT_INTEGER  	1 
+#define   SYMBOL_LIT_FLOATING 	2 
+#define   SYMBOL_LIT_TRUE   	3 
+#define   SYMBOL_LIT_FALSE  	4 
+#define   SYMBOL_LIT_CHAR   	5 
+#define   SYMBOL_LIT_STRING  	6 
+#define   SYMBOL_IDENTIFIER  	7 
+
 %}
+
+
+%union {HASHNODE *symbol; };
 
 %token TK_WHILE
 %token TK_CHAR       
@@ -25,11 +40,11 @@ extern int lineCount;
 %token OPERATOR_AND  
 %token OPERATOR_OR   
 
-%token TK_IDENTIFIER 
-%token LIT_INTEGER   
-%token LIT_REAL      
-%token LIT_CHAR      
-%token LIT_STRING    
+%token<symbol> TK_IDENTIFIER 
+%token<symbol> LIT_INTEGER   
+%token<symbol> LIT_REAL      
+%token<symbol> LIT_CHAR      
+%token<symbol> LIT_STRING    
 %token TOKEN_ERROR   
 
 %%
@@ -118,5 +133,5 @@ for: TK_FOR '(' TK_IDENTIFIER '=' expr TK_TO expr ')' command
 
 int yyerror(){
 	printf("programa não reconhecido, erro na linha %d", lineCount);
-	return 3;
+	exit(3);
 }
