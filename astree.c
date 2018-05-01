@@ -3,7 +3,7 @@
 #include "hash.h"
 #include "astree.h"
 
-ASTREE *astreeCreate( int type, ASTREE *s0, ASTREE *s1, ASTREE *s2, ASTREE *s3, HASH_NODE *n ) {
+ASTREE *astreeCreate( int type, ASTREE *s0, ASTREE *s1, ASTREE *s2, ASTREE *s3, HASHNODE *n ) {
 	ASTREE *node = 0;
 	
 	node = (ASTREE*) calloc (1,sizeof(ASTREE));
@@ -59,13 +59,13 @@ void astreePrintSingle (ASTREE *node)
 			fprintf(outputfile, "float ");
 			break;
 
-		case ASTREE_VAR_DECL:
+		/*case ASTREE_VAR_DECL:
 			astreePrintSingle (node->son[0]);
 			if(node->symbol)
 				fprintf(outputfile, "%s", node->symbol->text);
 			astreePrintSingle (node->son[1]);
 			fprintf(outputfile, ";\n");
-			break;
+			break;*/
 		case ASTREE_VAR_DECL: 
 		        astreePrintSingle (node->son[0]);
 			if(node->symbol)
@@ -74,7 +74,7 @@ void astreePrintSingle (ASTREE *node)
 			astreePrintSingle (node->son[1]);
 			fprintf(outputfile, ";\n");
 			break;
-		case  ASTREE_LIT_INT: 
+		case  ASTREE_LIT: 
                         fprintf(outputfile,"%s",node->symbol->text); 
                         break;
 		case ASTREE_POINT_DECL:
@@ -82,7 +82,7 @@ void astreePrintSingle (ASTREE *node)
 			fprintf(outputfile, "#");
 			if(node->symbol)
 				fprintf(outputfile, "%s", node->symbol->text);
-			fprintf(outputfile, " : ");
+			fprintf(outputfile, " = ");
 			astreePrintSingle (node->son[1]);
 			fprintf(outputfile, ";\n");
 			break;
@@ -213,7 +213,7 @@ void astreePrintSingle (ASTREE *node)
 			fprintf(outputfile, "> ");
 			astreePrintSingle (node->son[1]); 
 			break;
-		case ASTREE_OP_NEG: 
+		case ASTREE_NEG: 
 			fprintf(outputfile, "!(");
 			astreePrintSingle (node->son[0]); 
 			fprintf(outputfile, ") ");
@@ -310,7 +310,7 @@ void astreePrintTree(ASTREE * node, int level) {
 	
 	astreePrintSingle(node);
 
-	for(i=0;i<MAX_SONS;i++)
+	for(i=0;i<MAXSONS;i++)
 		if(node->son[i])
 			astreePrintTree(node->son[i],level+1);
 }

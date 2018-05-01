@@ -62,7 +62,7 @@
 #define ASTREE_ASSIGN_VECTOR 52
 #define ASTREE_ASSIGN_VAR 53
 
-#define ASTREE_LIT_INT 54
+#define ASTREE_LIT 54
 #define ASTREE_SYMBOL_POINT 55
 #define ASTREE_SYMBOL_ADDRESS 56
 
@@ -73,12 +73,12 @@ typedef struct ASTREE
 	int type;
 	int value;
 	int printed;
-	HASH_NODE* symbol;
-	struct ASTREE *son[MAX_SONS];
+	HASHNODE* symbol;
+	struct ASTREE *son[MAXSONS];
 	
 	}ASTREE;
 
-ASTREE *astreeCreate( int type, ASTREE *s0, ASTREE *s1, ASTREE *s2, ASTREE *s3, HASH_NODE *n );
+ASTREE *astreeCreate( int type, ASTREE *s0, ASTREE *s1, ASTREE *s2, ASTREE *s3, HASHNODE *n );
 void astreesPrintSingle (ASTREE *node);
 void astreePrintTree (ASTREE *node, int level);
 

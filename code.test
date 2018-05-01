@@ -1,6 +1,6 @@
 // UFRGS - Compiladores - Marcelo Johann - 2018/1
 
-int a = 0;
+/*int a = 0;
 int i = 0;
 int v[10]: 0 0 0 0 0 0 0 0 0 0; 
 int mat[10]; 
@@ -38,4 +38,5 @@ int voidfunc()
   
 
 
-
+*/
+char d = 65;	

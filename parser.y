@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "hash.h"
+#include "astree.h"
 
 extern int lineCount;
 
@@ -16,7 +17,9 @@ extern int lineCount;
 %}
 
 
-%union {HASHNODE *symbol; };
+%union {HASHNODE *symbol; 
+	ASTREE *astree;
+	};
 
 %token TK_WHILE
 %token TK_CHAR       
@@ -57,26 +60,62 @@ extern int lineCount;
 %left '*' '/'
 %nonassoc '#' '&' '!'
 
+
+%type<astree> program
+%type<astree> code
+%type<astree> var
+%type<astree> var_type
+%type<astree> lit
+%type<astree> lit_list
+%type<astree> func
+%type<astree> param
+%type<astree> param_list
+%type<astree> aux_param_list
+%type<astree> block
+%type<astree> command_list
+%type<astree> command
+%type<astree> attribution
+%type<astree> read
+%type<astree> print
+%type<astree> print_list
+%type<astree> return
+%type<astree> expr
+%type<astree> func_call
+%type<astree> call_param_list
+%type<astree> control
+%type<astree> if
+%type<astree> while
+%type<astree> for
+
+
+
 %%
 
-program: code;
+program: code {$$ = astreeCreate(ASTREE_PROGRAM,$1,0,0,0,0); astreePrintTree($$,0); printf("deu bowa.\n"); 
+             exit (0); };
 
-code: var code | func code
-	|;
+code: var code { $$ = astreeCreate(ASTREE_DECL_LIST,$1,$2,0,0,0);}
+	| func code { $$ = astreeCreate(ASTREE_DECL_LIST,$1,$2,0,0,0);}
+	|{ $$ = 0;};
 
-var: var_type TK_IDENTIFIER '=' lit';' | var_type '#' TK_IDENTIFIER '=' lit';' | var_type TK_IDENTIFIER vec_dec ';' 	
+var: var_type TK_IDENTIFIER '=' lit';' { $$ = astreeCreate(ASTREE_VAR_DECL,$1,astreeCreate(ASTREE_LIT,0,0,0,0,$4),0,0,$2); }
+	| var_type '#' TK_IDENTIFIER '=' lit';' { $$ = astreeCreate(ASTREE_POINT_DECL,$1,astreeCreate(ASTREE_LIT,0,0,0,0,$5),0,0,$3);}
+	| var_type TK_IDENTIFIER '[' LIT_INTEGER ']'  ';' {$$ = astreeCreate(ASTREE_VET_DECL,$1,astreeCreate(ASTREE_LIT,0,0,0,0,$4),0,0,$2); }
+	| var_type TK_IDENTIFIER '[' LIT_INTEGER ']' ':' lit_list ';' {$$ = astreeCreate(ASTREE_VET_DECL_INIT,$1,astreeCreate(ASTREE_LIT,0,0,0,0,$4),$7,0,$2);} 
 	;
 
-var_type: TK_CHAR | TK_FLOAT | TK_INT 
+var_type: TK_CHAR { $$ = astreeCreate(ASTREE_CHAR,0,0,0,0,0); }
+	| TK_FLOAT { $$ = astreeCreate(ASTREE_FLOAT,0,0,0,0,0); }
+	| TK_INT { $$ = astreeCreate(ASTREE_INT,0,0,0,0,0); }
 	;
 
-vec_dec : '[' LIT_INTEGER ']' | '[' LIT_INTEGER ']' ':' lit_list |
-	;  
-
-lit: LIT_INTEGER | LIT_REAL | LIT_CHAR
+lit: LIT_INTEGER { $$ = astreeCreate(ASTREE_SYMBOL,0,0,0,0, $1); $$->symbol = $1; }
+	| LIT_REAL { $$ = astreeCreate(ASTREE_SYMBOL,0,0,0,0, $1); $$->symbol = $1; }
+	| LIT_CHAR { $$ = astreeCreate(ASTREE_SYMBOL,0,0,0,0, $1); $$->symbol = $1; }
 	;
 
-lit_list : lit lit_list |
+lit_list : lit lit_list {$$ = astreeCreate(ASTREE_SYMBOL_LIST,$1,$2,0,0,0);} 
+	| {$$ = 0;}
 	; 
 
 func: var_type TK_IDENTIFIER '(' param_list ')' block
