@@ -59,18 +59,11 @@ void astreePrintSingle (ASTREE *node)
 			fprintf(outputfile, "float ");
 			break;
 
-		/*case ASTREE_VAR_DECL:
-			astreePrintSingle (node->son[0]);
-			if(node->symbol)
-				fprintf(outputfile, "%s", node->symbol->text);
-			astreePrintSingle (node->son[1]);
-			fprintf(outputfile, ";\n");
-			break;*/
 		case ASTREE_VAR_DECL: 
 		        astreePrintSingle (node->son[0]);
 			if(node->symbol)
 				fprintf(outputfile, "%s", node->symbol->text);
-			fprintf(outputfile, ":");
+			fprintf(outputfile, "=");
 			astreePrintSingle (node->son[1]);
 			fprintf(outputfile, ";\n");
 			break;
@@ -113,7 +106,8 @@ void astreePrintSingle (ASTREE *node)
 
      	        case ASTREE_PARAM_LIST: 
 			astreePrintSingle (node->son[0]);
-			fprintf(outputfile, ", ");
+			if(node->son[1])
+				fprintf(outputfile, ", ");
 			astreePrintSingle (node->son[1]);
 			break;
 		case ASTREE_PARAM: 
@@ -123,12 +117,14 @@ void astreePrintSingle (ASTREE *node)
 			break;
 
 		case ASTREE_FUNC: 
+			fprintf(outputfile, "\n\n");
 			astreePrintSingle (node->son[0]);
 			if(node->symbol)
 				fprintf(outputfile, " %s", node->symbol->text);
-			fprintf(outputfile, "( ");	
+			fprintf(outputfile, "(");	
 			astreePrintSingle (node->son[1]);
 			fprintf(outputfile, ")\n");
+			astreePrintSingle (node->son[2]);
 			break;	
 
 		case ASTREE_VECTOR: 
@@ -155,32 +151,32 @@ void astreePrintSingle (ASTREE *node)
 
 		case ASTREE_SOMA: 
 			astreePrintSingle (node->son[0]);
-			fprintf(outputfile, "+ ");
+			fprintf(outputfile, "+");
 			astreePrintSingle (node->son[1]);
 			break;
 		case ASTREE_SUB: 
 			astreePrintSingle (node->son[0]);
-			fprintf(outputfile, "- ");
+			fprintf(outputfile, "-");
 			astreePrintSingle (node->son[1]);
 			break;
 		case ASTREE_DIV: 
 			astreePrintSingle (node->son[0]);
-			fprintf(outputfile, "/ ");
+			fprintf(outputfile, "/");
 			astreePrintSingle (node->son[1]);
 			break;
 		case ASTREE_MULT:
 			astreePrintSingle (node->son[0]);
-			fprintf(outputfile, "* ");
+			fprintf(outputfile, "*");
 			astreePrintSingle (node->son[1]);
 			break;
 		case ASTREE_LE:
 			astreePrintSingle (node->son[0]);
-			fprintf(outputfile, "<= ");
+			fprintf(outputfile, "<=");
 			astreePrintSingle (node->son[1]);
 			break;
 		case ASTREE_GE: 
 			astreePrintSingle (node->son[0]);
-			fprintf(outputfile, ">= ");
+			fprintf(outputfile, ">=");
 			astreePrintSingle (node->son[1]);
 			break;
 		case ASTREE_EQ: 
@@ -237,11 +233,16 @@ void astreePrintSingle (ASTREE *node)
 				fprintf(outputfile, " %s ", node->symbol->text);
 			fprintf(outputfile, "= ");
 			astreePrintSingle (node->son[0]);
+			fprintf(outputfile, ";");
 			break;
 		case ASTREE_ASSIGN_VECTOR:               
+			fprintf(outputfile,"%s",node->symbol->text);
+			fprintf(outputfile, "[");
 			astreePrintSingle (node->son[0]);
-                        fprintf(outputfile, "= ");
+			fprintf(outputfile, "]");
+                        fprintf(outputfile, " = ");
 			astreePrintSingle (node->son[1]);
+			fprintf(outputfile, ";");
 			break;
 
 		case ASTREE_IF: 
@@ -262,13 +263,13 @@ void astreePrintSingle (ASTREE *node)
 		case ASTREE_FOR: 
 			fprintf(outputfile, "for ");
 			fprintf(outputfile, "(");
-			astreePrintSingle (node->son[0]);
+			fprintf(outputfile,"%s ",node->symbol->text);
 			fprintf(outputfile, " = ");
-			astreePrintSingle (node->son[1]); 
+			astreePrintSingle (node->son[0]); 
 			fprintf(outputfile, " to ");
-			astreePrintSingle (node->son[2]); 
+			astreePrintSingle (node->son[1]); 
 			fprintf(outputfile, ") ");
-			astreePrintSingle (node->son[3]); 
+			astreePrintSingle (node->son[2]); 
 			break;
 
 		case ASTREE_WHILE: 
@@ -280,16 +281,19 @@ void astreePrintSingle (ASTREE *node)
 			break;
 		case ASTREE_READ:
 			fprintf(outputfile, "read ");
-			astreePrintSingle (node->son[0]);
+			fprintf(outputfile,"%s ",node->symbol->text);
+			fprintf(outputfile, ";");
 			break;
 		case ASTREE_RETURN:
 			fprintf(outputfile, "return ");
 			astreePrintSingle (node->son[0]);
+			fprintf(outputfile, ";");
 			break;
 
 		case ASTREE_PRINT:
 			fprintf(outputfile, "print ");
 			astreePrintSingle (node->son[0]);
+			fprintf(outputfile, "; ");
 			break;
 		case ASTREE_PROGRAM: 
 			astreePrintSingle (node->son[0]);
@@ -299,7 +303,22 @@ void astreePrintSingle (ASTREE *node)
 			astreePrintSingle (node->son[0]);
 			astreePrintSingle (node->son[1]); 
 			break;
-
+		case ASTREE_PRT_LST_ST: 
+			fprintf(outputfile,"%s ",node->symbol->text);
+			astreePrintSingle (node->son[0]);
+			break;
+		case ASTREE_EXP:
+			astreePrintSingle (node->son[0]);
+			break;
+		case ASTREE_PRT_LST: 
+			astreePrintSingle (node->son[0]);
+			astreePrintSingle (node->son[1]);
+			break;
+		case ASTREE_BLOCK: 
+			fprintf(outputfile,"{\n ");
+			astreePrintSingle (node->son[0]);
+			fprintf(outputfile,"}\n ");
+			break;
 	}
 }
 

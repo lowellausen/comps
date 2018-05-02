@@ -66,6 +66,10 @@
 #define ASTREE_SYMBOL_POINT 55
 #define ASTREE_SYMBOL_ADDRESS 56
 
+#define ASTREE_PRT_LST_ST 57
+#define ASTREE_EXP 58
+#define ASTREE_PRT_LST 59
+
 #define DEBUG 94944040
 
 typedef struct ASTREE

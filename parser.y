@@ -98,8 +98,12 @@ code: var code { $$ = astreeCreate(ASTREE_DECL_LIST,$1,$2,0,0,0);}
 	| func code { $$ = astreeCreate(ASTREE_DECL_LIST,$1,$2,0,0,0);}
 	|{ $$ = 0;};
 
-var: var_type TK_IDENTIFIER '=' lit';' { $$ = astreeCreate(ASTREE_VAR_DECL,$1,astreeCreate(ASTREE_LIT,0,0,0,0,$4),0,0,$2); }
-	| var_type '#' TK_IDENTIFIER '=' lit';' { $$ = astreeCreate(ASTREE_POINT_DECL,$1,astreeCreate(ASTREE_LIT,0,0,0,0,$5),0,0,$3);}
+var: var_type TK_IDENTIFIER '=' LIT_INTEGER';' { $$ = astreeCreate(ASTREE_VAR_DECL,$1,astreeCreate(ASTREE_LIT,0,0,0,0,$4),0,0,$2); }
+	| var_type TK_IDENTIFIER '=' LIT_REAL ';' { $$ = astreeCreate(ASTREE_VAR_DECL,$1,astreeCreate(ASTREE_LIT,0,0,0,0,$4),0,0,$2); }
+	| var_type TK_IDENTIFIER '=' LIT_CHAR ';' { $$ = astreeCreate(ASTREE_VAR_DECL,$1,astreeCreate(ASTREE_LIT,0,0,0,0,$4),0,0,$2); }
+	| var_type '#' TK_IDENTIFIER '=' LIT_CHAR';' { $$ = astreeCreate(ASTREE_POINT_DECL,$1,astreeCreate(ASTREE_LIT,0,0,0,0,$5),0,0,$3);}
+	| var_type '#' TK_IDENTIFIER '=' LIT_REAL ';' { $$ = astreeCreate(ASTREE_POINT_DECL,$1,astreeCreate(ASTREE_LIT,0,0,0,0,$5),0,0,$3);}
+	| var_type '#' TK_IDENTIFIER '=' LIT_INTEGER ';' { $$ = astreeCreate(ASTREE_POINT_DECL,$1,astreeCreate(ASTREE_LIT,0,0,0,0,$5),0,0,$3);}
 	| var_type TK_IDENTIFIER '[' LIT_INTEGER ']'  ';' {$$ = astreeCreate(ASTREE_VET_DECL,$1,astreeCreate(ASTREE_LIT,0,0,0,0,$4),0,0,$2); }
 	| var_type TK_IDENTIFIER '[' LIT_INTEGER ']' ':' lit_list ';' {$$ = astreeCreate(ASTREE_VET_DECL_INIT,$1,astreeCreate(ASTREE_LIT,0,0,0,0,$4),$7,0,$2);} 
 	;
@@ -118,64 +122,96 @@ lit_list : lit lit_list {$$ = astreeCreate(ASTREE_SYMBOL_LIST,$1,$2,0,0,0);}
 	| {$$ = 0;}
 	; 
 
-func: var_type TK_IDENTIFIER '(' param_list ')' block
+func: var_type TK_IDENTIFIER '(' param_list ')' block {$$ = astreeCreate(ASTREE_FUNC, $1,$4,$6,0, $2); }
 	;
 
-param: var_type TK_IDENTIFIER
+param: var_type TK_IDENTIFIER {$$ = astreeCreate(ASTREE_PARAM, $1,0,0,0, $2);}
+	| var_type '#' TK_IDENTIFIER {$$ = astreeCreate(ASTREE_PARAM, $1,0,0,0, $3);}
 	;
 
-param_list: param aux_param_list |
+param_list: param aux_param_list {$$ = astreeCreate(ASTREE_PARAM_LIST, $1,$2,0,0,0);}
+	| {$$ = 0;}
 	;
 
-aux_param_list: ',' param aux_param_list |
+aux_param_list: ',' param aux_param_list {$$ = astreeCreate(ASTREE_PARAM_LIST, $2,$3,0,0,0);}
+	| {$$ = 0;}
 	;  
 
-block: '{' command_list '}' 
+block: '{' command_list '}' { $$ = astreeCreate(ASTREE_BLOCK,$2,0,0,0,0);};
+
+command_list: command ';' command_list {$$ = astreeCreate(ASTREE_CMD_LIST, $1,$3,0,0,0);}
+	| command {$$ = $1;}
 	;
 
-command_list: command ';' command_list | command 
+command: attribution {$$ = $1;}
+	| read {$$ = $1;}
+	| print {$$ = $1;}
+	| return {$$ = $1;}
+	| block {$$ = $1;}
+	| control {$$ = $1;}
+	|{$$ = 0;}
 	;
 
-command: attribution | read | print | return | block | control |
+attribution: TK_IDENTIFIER '=' expr { $$ =  astreeCreate(ASTREE_ASSIGN_VAR, $3, 0, 0, 0, $1); }
+	| TK_IDENTIFIER '[' expr ']' '=' expr { $$ =  astreeCreate(ASTREE_ASSIGN_VECTOR, $3, $6, 0, 0, $1); }
 	;
 
-attribution: TK_IDENTIFIER '=' expr | TK_IDENTIFIER '[' expr ']' '=' expr
+read: TK_READ TK_IDENTIFIER { $$ =  astreeCreate(ASTREE_READ, 0, 0, 0, 0, $2); }
 	;
 
-read: TK_READ TK_IDENTIFIER
+print: TK_PRINT print_list { $$ =  astreeCreate(ASTREE_PRINT, $2, 0, 0, 0, 0); }
 	;
 
-print: TK_PRINT print_list
+print_list: LIT_STRING { $$ = astreeCreate(ASTREE_SYMBOL,0,0,0,0, $1); $$->symbol = $1; }
+	| expr { $$ = astreeCreate(ASTREE_EXP,$1,0,0,0, 0);}
+	| LIT_STRING print_list { $$ = astreeCreate(ASTREE_PRT_LST_ST,$2,0,0,0, $1); $$->symbol = $1; }
+	| expr print_list { $$ = astreeCreate(ASTREE_PRT_LST,$1,$2,0,0, 0); }
 	;
 
-print_list: LIT_STRING | expr | LIT_STRING print_list | expr print_list
-	;
-
-return: TK_RETURN expr
+return: TK_RETURN expr {$$ = astreeCreate(ASTREE_RETURN, $2, 0, 0, 0, 0);}
 	;	
 
-expr: TK_IDENTIFIER | TK_IDENTIFIER '[' expr ']' | lit  | func_call | '#' TK_IDENTIFIER | '&'TK_IDENTIFIER
-	| '(' expr ')' | expr '+' expr | expr '-' expr | expr '*' expr | expr '/' expr | expr '<' expr
-	| expr '>' expr | expr '!' expr | expr OPERATOR_LE expr |  expr OPERATOR_GE expr | expr OPERATOR_EQ expr
-	|  expr OPERATOR_NE expr |  expr OPERATOR_AND expr |  expr OPERATOR_OR expr
+expr: TK_IDENTIFIER {$$ = astreeCreate(ASTREE_SYMBOL, 0, 0, 0, 0, $1); } 
+	| TK_IDENTIFIER '[' expr ']' {$$ = astreeCreate(ASTREE_VECTOR, $3, 0, 0, 0, $1);} ;
+	| lit  {$$ = $1;}
+	| func_call {$$ = $1;} 
+	| '#' TK_IDENTIFIER {$$ = astreeCreate(ASTREE_SYMBOL_POINT, 0, 0, 0, 0, $2);} 
+	| '&'TK_IDENTIFIER {$$ = astreeCreate(ASTREE_SYMBOL_ADDRESS, 0, 0, 0, 0, $2);}
+	| '(' expr ')' {$$ = astreeCreate(ASTREE_EXP_BRACKET, $2, 0, 0, 0, 0);} 
+	| expr '+' expr {$$ = astreeCreate(ASTREE_SOMA, $1, $3, 0, 0, 0); }
+	| expr '-' expr {$$ = astreeCreate(ASTREE_SUB, $1, $3, 0, 0, 0); }
+	| expr '*' expr {$$ = astreeCreate(ASTREE_MULT, $1, $3, 0, 0, 0); }
+	| expr '/' expr {$$ = astreeCreate(ASTREE_DIV, $1, $3, 0, 0, 0); }
+	| expr '<' expr {$$ = astreeCreate(ASTREE_LESS, $1, $3, 0, 0, 0); }
+	| expr '>' expr {$$ = astreeCreate(ASTREE_GREAT, $1, $3, 0, 0, 0); }
+	| '!' expr {$$ = astreeCreate(ASTREE_NEG, $2, 0, 0, 0, 0);} ;	    
+	| expr OPERATOR_LE expr {$$ = astreeCreate(ASTREE_LE, $1, $3, 0, 0, 0);}
+	|  expr OPERATOR_GE expr {$$ = astreeCreate(ASTREE_GE, $1, $3, 0, 0, 0);}
+	| expr OPERATOR_EQ expr {$$ = astreeCreate(ASTREE_EQ, $1, $3, 0, 0, 0);}
+	|  expr OPERATOR_NE expr {$$ = astreeCreate(ASTREE_NE, $1, $3, 0, 0, 0);}
+	|  expr OPERATOR_AND expr {$$ = astreeCreate(ASTREE_AND, $1, $3, 0, 0, 0); }
+	|  expr OPERATOR_OR expr {$$ = astreeCreate(ASTREE_OR, $1, $3, 0, 0, 0);}       
 	;
 
-func_call: TK_IDENTIFIER '(' call_param_list ')' | TK_IDENTIFIER '('')'
+func_call: TK_IDENTIFIER '(' call_param_list ')' {$$ = astreeCreate(ASTREE_FUNC_CALL, $3, 0, 0, 0, $1);}
+	| TK_IDENTIFIER '('')' {$$ = astreeCreate(ASTREE_FUNC_CALL, 0, 0, 0, 0, $1);}
 	;
 
-call_param_list:  expr |  expr ',' call_param_list
+call_param_list:  expr {$$ = $1;}; 
+	|  expr ',' call_param_list {$$ = astreeCreate(ASTREE_EXP_LIST, $1,$3,0,0,0);}
 	;
 
-control: if | while | for
+control: if {$$ = $1;}| while {$$ = $1;}| for {$$ = $1;}
 	;
 
-if: TK_IF '(' expr ')' TK_THEN command | TK_IF '(' expr ')' TK_THEN command TK_ELSE command
+if: TK_IF '(' expr ')' TK_THEN command {$$ = astreeCreate(ASTREE_IF, $3, $6, 0, 0, 0); }
+	| TK_IF '(' expr ')' TK_THEN command TK_ELSE command {$$ = astreeCreate(ASTREE_IF_ELSE, $3, $6, $8, 0, 0); }
 	;
 
-while: TK_WHILE '(' expr ')' command
+while: TK_WHILE '(' expr ')' command {$$ = astreeCreate(ASTREE_WHILE, $3, $5, 0, 0, 0); }
 	;
 
-for: TK_FOR '(' TK_IDENTIFIER '=' expr TK_TO expr ')' command
+for: TK_FOR '(' TK_IDENTIFIER '=' expr TK_TO expr ')' command {$$ = astreeCreate(ASTREE_FOR, $5, $7, $9, 0, $3); }
 	;
 
 %%

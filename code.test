@@ -1,13 +1,14 @@
 // UFRGS - Compiladores - Marcelo Johann - 2018/1
-
-/*int a = 0;
+int incn = 0;
+int a = 0;
 int i = 0;
 int v[10]: 0 0 0 0 0 0 0 0 0 0; 
 int mat[10]; 
 float f = 10.55;
 char c = 'x';
 char d = 65;
-int #pt = 0;
+int #pt = 'a';
+
 
 
 int main()
@@ -20,23 +21,21 @@ int main()
   print " Digite um numero: \n";
   read i;
 
-
   print "Incrementado algumas vezes fica " a "\n";
   ;;;
   {;};
   {}
   }
 
-int incn (int x, int n)
+int n (int x, int n)
   {
   return x+n;
   }
 
-int voidfunc()
+int voidfunc(int v, int c)
   {
   }
   
 
 
-*/
-char d = 65;	
+

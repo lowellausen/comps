@@ -2,7 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "hash.h"
+#include "astree.h"
 #include "y.tab.h"
+
 
 int lineCount = 1;
 int running = 1;
