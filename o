@@ -6,37 +6,35 @@ float f=10.55;
 char c='x';
 char d=65;
 int #pt = 'a';
-int 10=0;
 
 
-int  main()
+int main()
 {
-  a = 10 ;
- pt = &a ;
- i = #pt ;
-v[2 ]= v[10 - 1 ];
-print " Digite um numero: \n" ; 
-read i ;
-print "Incrementado algumas vezes fica " a "\n" ; 
-
-
-
+a= 10;
+pt= &a;
+i= #pt;
+v[2] = v[10-1];
+print " Digite um numero: \n";
+read i;
+print "Incrementado algumas vezes fica "a"\n";
+;
+;
+;
 {
- 
-;}
- 
+;
+}
+;
 {
- }
- ;;;;;;;;;;;}
- 
+}
+}
 
-int  n(int x, int n)
-{
- return x + n ;
-;}
- 
 
-int  voidfunc(int v, int c)
+int n(int x, int n)
 {
- }
- 
+return x+n;
+}
+
+
+int voidfunc(int v, int c)
+{
+}
