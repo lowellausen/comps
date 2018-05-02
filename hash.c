@@ -31,7 +31,7 @@ int getHashAddress(char * text){
 	int i;
 
 	for (i=0; i < strlen(text);i++)
-		address = (address*text[i]) % HASH_TABLE_SIZE +1;
+		address = (address*text[i]) % HASH_TABLE_SIZE +7;
 	return address -1;
 }
 

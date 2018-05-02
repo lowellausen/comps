@@ -39,6 +39,7 @@ int main (int argc, char *argv[])
    yyparse();
 
    fclose(outputfile);
+	hashPrint();
    
   
    exit(0);

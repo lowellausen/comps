@@ -92,7 +92,7 @@ extern int lineCount;
 %%
 
 program: code {$$ = astreeCreate(ASTREE_PROGRAM,$1,0,0,0,0); astreePrintTree($$,0); printf("deu bowa.\n"); 
-             exit (0); };
+              };
 
 code: var code { $$ = astreeCreate(ASTREE_DECL_LIST,$1,$2,0,0,0);}
 	| func code { $$ = astreeCreate(ASTREE_DECL_LIST,$1,$2,0,0,0);}

@@ -1407,7 +1407,7 @@ yyreduce:
         case 2:
 #line 94 "parser.y" /* yacc.c:1646  */
     {(yyval.astree) = astreeCreate(ASTREE_PROGRAM,(yyvsp[0].astree),0,0,0,0); astreePrintTree((yyval.astree),0); printf("deu bowa.\n"); 
-             exit (0); }
+              }
 #line 1412 "y.tab.c" /* yacc.c:1646  */
     break;
 

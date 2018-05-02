@@ -1,4 +1,4 @@
-#define HASH_TABLE_SIZE 500
+#define HASH_TABLE_SIZE 997
 
 typedef struct hashNode{
 	char * text;
