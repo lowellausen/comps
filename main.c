@@ -11,6 +11,8 @@ extern int getLineNumber();
 extern void initMe();
 extern FILE *yyin;
 extern int yyparse();
+extern FILE *outputfile;
+extern int printTree;
 
 
 int main (int argc, char *argv[])
@@ -34,12 +36,14 @@ int main (int argc, char *argv[])
       exit(3);
    }
 
+   printTree=1;	
+   
    initMe(); 
 
    yyparse();
 
    fclose(outputfile);
-	hashPrint();
+	//hashPrint();
    
   
    exit(0);
