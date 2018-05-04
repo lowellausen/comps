@@ -85,8 +85,8 @@ typedef struct ASTREE
 int printTree;
 
 ASTREE *astreeCreate( int type, ASTREE *s0, ASTREE *s1, ASTREE *s2, ASTREE *s3, HASHNODE *n );
-void astreesPrintSingle (ASTREE *node, char *gap);
-void astreePrintTree (ASTREE *node, char *gap);
+void astreesPrintSingle (ASTREE *node, char *gap, int level);
+void astreePrintTree (ASTREE *node, char *gap, int level);
 
 FILE* outputfile;
 

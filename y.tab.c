@@ -702,7 +702,7 @@ yyreduce:
     {
 case 1:
 #line 94 "parser.y"
-	{yyval.astree = astreeCreate(ASTREE_PROGRAM,yystack.l_mark[0].astree,0,0,0,0); astreePrintTree(yyval.astree,"  "); printf("deu bowa.\n"); 
+	{yyval.astree = astreeCreate(ASTREE_PROGRAM,yystack.l_mark[0].astree,0,0,0,0); astreePrintTree(yyval.astree,"",1); printf("Programa Reconhecido.\n"); 
               }
 break;
 case 2:
