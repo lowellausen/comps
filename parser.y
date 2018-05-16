@@ -193,7 +193,7 @@ lit_list : lit lit_list {$$ = astreeCreate(ASTREE_SYMBOL_LIST,$1,$2,0,0,0);}
 	| {$$ = 0;}
 	; 
 
-func: var_type TK_IDENTIFIER '(' {reset_cont();clear_lists();} param_list ')'{
+func: var_type TK_IDENTIFIER '(' {reset_cont();clear_lists();} param_list ')'/*{
 	     functionDataType = $1->dataType;
 	     $2->number_of_param_func = get_cont();
 	     $2->natureza = NATUREZA_FUNCTION;
@@ -206,7 +206,7 @@ func: var_type TK_IDENTIFIER '(' {reset_cont();clear_lists();} param_list ')'{
 		$2->list_dataTypes[i] = list_dataTypes[i];
 		$2->list_naturezas[i] = list_naturezas[i];
 	     }
-         } block {$$ = astreeCreate(ASTREE_FUNC, $1,$4,$6,0, $2); }
+         } block {$$ = astreeCreate(ASTREE_FUNC, $1,$4,$6,0, $2); }*/
 	;
 
 param: var_type TK_IDENTIFIER {
@@ -247,8 +247,26 @@ command: attribution {$$ = $1;}
 	|{$$ = 0;}
 	;
 
-attribution: TK_IDENTIFIER '=' expr { $$ =  astreeCreate(ASTREE_ASSIGN_VAR, $3, 0, 0, 0, $1); }
-	| TK_IDENTIFIER '[' expr ']' '=' expr { $$ =  astreeCreate(ASTREE_ASSIGN_VECTOR, $3, $6, 0, 0, $1); }
+attribution: TK_IDENTIFIER '=' expr { 
+			verify_variable_declared ($1);			
+			$$ =  astreeCreate(ASTREE_ASSIGN_VAR, $3, 0, 0, 0, $1); 
+			if(!compareHashTreeNatureza($1->natureza,$3->natureza))
+			{			
+				fprintf(stderr,"Erro na linha  %d. Atribuicao de elementos incompativeis.\n", getLineNumber()); 
+				set_error_flag();
+			}
+		}
+	| TK_IDENTIFIER '[' expr ']' '=' expr{ 
+			$1->natureza = NATUREZA_ASTREE_ESCALAR;
+			
+			$$ =  astreeCreate(ASTREE_ASSIGN_VECTOR, $3, $6, 0, 0, $1);
+			if($1->natureza != $3->natureza)
+			{
+				
+				fprintf(stderr,"Erro na linha  %d. Atribuicao de elementos incompativeis.\n", getLineNumber()); 
+				set_error_flag();
+			} 
+		}
 	;
 
 read: TK_READ TK_IDENTIFIER { $$ =  astreeCreate(ASTREE_READ, 0, 0, 0, 0, $2); }
@@ -263,8 +281,15 @@ print_list: LIT_STRING { $$ = astreeCreate(ASTREE_SYMBOL,0,0,0,0, $1); $$->symbo
 	| expr print_list { $$ = astreeCreate(ASTREE_PRT_LST,$1,$2,0,0, 0); }
 	;
 
-return: TK_RETURN expr {$$ = astreeCreate(ASTREE_RETURN, $2, 0, 0, 0, 0);}
-	;	
+return: TK_RETURN expr {
+		$$ = astreeCreate(ASTREE_RETURN, $2, 0, 0, 0, 0); 
+		if(!compareHashTreeNatureza($2->natureza,functionDataType))
+		{
+			fprintf(stderr,"Erro na linha  %d. Retorno da funcao invalido.\n", getLineNumber()); 
+			set_error_flag();
+		}
+		functionDataType = 0;
+	};
 
 expr: TK_IDENTIFIER {
 			verify_variable_declared ($1);
