@@ -90,6 +90,8 @@ typedef struct ASTREE
 	int type;
 	int value;
 	int printed;
+	int natureza;
+	int dataType;
 	HASHNODE* symbol;
 	struct ASTREE *son[MAXSONS];
 	
