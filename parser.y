@@ -260,6 +260,19 @@ attribution: TK_IDENTIFIER '=' expr {
 			}
 		}
 	| TK_IDENTIFIER '[' expr ']' '=' expr{ 
+
+			
+			verify_vector($1);
+			if($3->dataType == DATATYPE_ASTREE_FLOAT || DATATYPE_ASTREE_CHAR || $3->natureza == NATUREZA_ASTREE_POINTER)
+			{
+				fprintf(stderr,"Erro na linha  %d. Indice do vetor %s deveria escalar.\n",getLineNumber(),$1->text); 
+				set_error_flag();
+			}			
+			/*$$ = astreeCreate(ASTREE_VECTOR, $3, 0, 0, 0, $1);
+			//$$ = define_astree_nature_and_type($$,$1); //Talvez deva ser NATUREZA_ESCALAR
+			$$ = define_astree_type($$,$1);
+			$$->natureza = NATUREZA_ASTREE_ESCALAR;*/
+
 			$1->natureza = NATUREZA_ASTREE_ESCALAR;
 			
 			$$ =  astreeCreate(ASTREE_ASSIGN_VECTOR, $3, $6, 0, 0, $1);
@@ -298,7 +311,7 @@ expr: TK_IDENTIFIER {
 			verify_variable_declared ($1);
 			$$ = astreeCreate(ASTREE_SYMBOL, 0, 0, 0, 0, $1); 
 			$$ = define_astree_nature_and_type($$,$1);
-} 
+		    } 
 	| TK_IDENTIFIER '[' expr ']' {
 			verify_vector($1);
 			if($3->dataType == DATATYPE_ASTREE_FLOAT || DATATYPE_ASTREE_CHAR || $3->natureza == NATUREZA_ASTREE_POINTER)
@@ -310,7 +323,7 @@ expr: TK_IDENTIFIER {
 			//$$ = define_astree_nature_and_type($$,$1); //Talvez deva ser NATUREZA_ESCALAR
 			$$ = define_astree_type($$,$1);
 			$$->natureza = NATUREZA_ASTREE_ESCALAR;
-} ;
+} 
 	| lit  {$$ = $1;}
 	| func_call {$$ = $1;
 $$->natureza = NATUREZA_ASTREE_ESCALAR;} 
@@ -453,15 +466,97 @@ if($1->natureza != NATUREZA_ASTREE_ESCALAR
 						$$->dataType = DATATYPE_ASTREE_CHAR;
 					else if ($1->dataType!=DATATYPE_ASTREE_FLOAT)
 						$$->dataType = DATATYPE_ASTREE_FLOAT;}
-	| expr '<' expr {$$ = astreeCreate(ASTREE_LESS, $1, $3, 0, 0, 0); }
-	| expr '>' expr {$$ = astreeCreate(ASTREE_GREAT, $1, $3, 0, 0, 0); }
-	| '!' expr {$$ = astreeCreate(ASTREE_NEG, $2, 0, 0, 0, 0);} ;	    
-	| expr OPERATOR_LE expr {$$ = astreeCreate(ASTREE_LE, $1, $3, 0, 0, 0);}
-	|  expr OPERATOR_GE expr {$$ = astreeCreate(ASTREE_GE, $1, $3, 0, 0, 0);}
-	| expr OPERATOR_EQ expr {$$ = astreeCreate(ASTREE_EQ, $1, $3, 0, 0, 0);}
-	|  expr OPERATOR_NE expr {$$ = astreeCreate(ASTREE_NE, $1, $3, 0, 0, 0);}
-	|  expr OPERATOR_AND expr {$$ = astreeCreate(ASTREE_AND, $1, $3, 0, 0, 0); }
-	|  expr OPERATOR_OR expr {$$ = astreeCreate(ASTREE_OR, $1, $3, 0, 0, 0);}       
+	| expr '<' expr {
+			$$ = astreeCreate(ASTREE_LESS, $1, $3, 0, 0, 0); 			
+			if($1->natureza != NATUREZA_ASTREE_ESCALAR || $1->dataType!= DATATYPE_ASTREE_INTEGER 
+                        || $3->natureza != NATUREZA_ASTREE_ESCALAR || $3->dataType!= DATATYPE_ASTREE_INTEGER)
+			{
+				fprintf(stderr,"Erro na linha  %d. '<' soh eh permitido entre inteiros (word ou byte).\n", getLineNumber()); 
+				set_error_flag();
+			}
+			$$->natureza = NATUREZA_ASTREE_ESCALAR;
+			$$->dataType = DATATYPE_ASTREE_BOOLEAN;		
+		}
+	| expr '>' expr {
+			$$ = astreeCreate(ASTREE_GREAT, $1, $3, 0, 0, 0); 
+			if($1->natureza != NATUREZA_ASTREE_ESCALAR || $1->dataType!= DATATYPE_ASTREE_INTEGER 
+                        || $3->natureza != NATUREZA_ASTREE_ESCALAR || $3->dataType!= DATATYPE_ASTREE_INTEGER)
+			{
+				fprintf(stderr,"Erro na linha  %d. '>' soh eh permitido entre inteiros (word ou byte).\n", getLineNumber()); 
+				set_error_flag();
+			}
+			$$->natureza = NATUREZA_ASTREE_ESCALAR;
+			$$->dataType = DATATYPE_ASTREE_BOOLEAN;		
+		}
+	| '!' expr {$$ = astreeCreate(ASTREE_NEG, $2, 0, 0, 0, 0);} 	    
+	| expr OPERATOR_LE expr {
+			$$ = astreeCreate(ASTREE_LE, $1, $3, 0, 0, 0);
+			if($1->natureza != NATUREZA_ASTREE_ESCALAR || $1->dataType!= DATATYPE_ASTREE_INTEGER 
+                        || $3->natureza != NATUREZA_ASTREE_ESCALAR || $3->dataType!= DATATYPE_ASTREE_INTEGER)
+			{
+				fprintf(stderr,"Erro na linha  %d. '<=' soh eh permitido entre inteiros (word ou byte).\n", getLineNumber()); 
+				set_error_flag();
+			}
+			$$->natureza = NATUREZA_ASTREE_ESCALAR;
+			$$->dataType = DATATYPE_ASTREE_BOOLEAN;		
+		}
+	|  expr OPERATOR_GE expr {
+			$$ = astreeCreate(ASTREE_GE, $1, $3, 0, 0, 0);
+			if($1->natureza != NATUREZA_ASTREE_ESCALAR || $1->dataType!= DATATYPE_ASTREE_INTEGER 
+                        || $3->natureza != NATUREZA_ASTREE_ESCALAR || $3->dataType!= DATATYPE_ASTREE_INTEGER)
+			{
+				fprintf(stderr,"Erro na linha  %d. '>=' soh eh permitido entre inteiros (word ou byte).\n", getLineNumber()); 
+				set_error_flag();
+			}
+			$$->natureza = NATUREZA_ASTREE_ESCALAR;
+			$$->dataType = DATATYPE_ASTREE_BOOLEAN;		
+		}
+	| expr OPERATOR_EQ expr {
+			$$ = astreeCreate(ASTREE_EQ, $1, $3, 0, 0, 0);
+			if($1->natureza != NATUREZA_ASTREE_ESCALAR || $1->dataType!= DATATYPE_ASTREE_INTEGER 
+                        || $3->natureza != NATUREZA_ASTREE_ESCALAR || $3->dataType!= DATATYPE_ASTREE_INTEGER)
+			{
+				fprintf(stderr,"Erro na linha  %d. '==' soh eh permitido entre inteiros (word ou byte).\n", getLineNumber()); 
+				set_error_flag();
+			}
+			$$->natureza = NATUREZA_ASTREE_ESCALAR;
+			$$->dataType = DATATYPE_ASTREE_BOOLEAN;		
+		}
+	|  expr OPERATOR_NE expr {
+			$$ = astreeCreate(ASTREE_NE, $1, $3, 0, 0, 0);
+			if($1->natureza != NATUREZA_ASTREE_ESCALAR || $1->dataType!= DATATYPE_ASTREE_INTEGER 
+                        || $3->natureza != NATUREZA_ASTREE_ESCALAR || $3->dataType!= DATATYPE_ASTREE_INTEGER)
+			{
+				fprintf(stderr,"Erro na linha  %d. '!=' soh eh permitido entre inteiros (word ou byte).\n", getLineNumber()); 
+				set_error_flag();
+			}
+			$$->natureza = NATUREZA_ASTREE_ESCALAR;
+			$$->dataType = DATATYPE_ASTREE_BOOLEAN;		
+		}
+	|  expr OPERATOR_AND expr {
+			$$ = astreeCreate(ASTREE_AND, $1, $3, 0, 0, 0); 
+			printf ("nat=%d datatype=%d\n",$1->natureza,$1->dataType);
+			printf ("nat=%d datatype=%d\n",$3->natureza,$3->dataType);
+			if( ($1->natureza != NATUREZA_ASTREE_ESCALAR || ($1->dataType!= DATATYPE_ASTREE_INTEGER &&  $1->dataType != DATATYPE_ASTREE_BOOLEAN ))
+                        || ($3->natureza != NATUREZA_ASTREE_ESCALAR  || ($3->dataType!= DATATYPE_ASTREE_INTEGER &&  $3->dataType != DATATYPE_ASTREE_BOOLEAN )) )
+			{
+				fprintf(stderr,"Erro na linha  %d. '&&' soh eh permitido entre inteiros (word ou byte).\n", getLineNumber()); 
+				set_error_flag();
+			}
+			$$->natureza = NATUREZA_ASTREE_ESCALAR;
+			$$->dataType = DATATYPE_ASTREE_BOOLEAN;		
+		}
+	|  expr OPERATOR_OR expr {
+			$$ = astreeCreate(ASTREE_OR, $1, $3, 0, 0, 0);
+			if( $1->natureza != NATUREZA_ASTREE_ESCALAR || ($1->dataType!= DATATYPE_ASTREE_INTEGER &&  $1->dataType != DATATYPE_ASTREE_BOOLEAN ) 
+                        || $3->natureza != NATUREZA_ASTREE_ESCALAR  || ($3->dataType!= DATATYPE_ASTREE_INTEGER &&  $3->dataType != DATATYPE_ASTREE_BOOLEAN ))
+			{
+				fprintf(stderr,"Erro na linha  %d. '||' soh eh permitido entre inteiros (word ou byte).\n", getLineNumber()); 
+				set_error_flag();
+			}
+			$$->natureza = NATUREZA_ASTREE_ESCALAR;
+			$$->dataType = DATATYPE_ASTREE_BOOLEAN;		
+		}        
 	;
 
 func_call: TK_IDENTIFIER '(' {reset_cont();clear_lists();} call_param_list ')' {
@@ -491,14 +586,52 @@ call_param_list:  expr {$$ = $1;};
 control: if {$$ = $1;}| while {$$ = $1;}| for {$$ = $1;}
 	;
 
-if: TK_IF '(' expr ')' TK_THEN command {$$ = astreeCreate(ASTREE_IF, $3, $6, 0, 0, 0); }
-	| TK_IF '(' expr ')' TK_THEN command TK_ELSE command {$$ = astreeCreate(ASTREE_IF_ELSE, $3, $6, $8, 0, 0); }
+if: TK_IF '(' expr ')' TK_THEN command {
+		$$ = astreeCreate(ASTREE_IF, $3, $6, 0, 0, 0); 
+		if(($3->natureza != NATUREZA_ASTREE_ESCALAR) || ($3->dataType!= DATATYPE_ASTREE_BOOLEAN))
+		{
+			fprintf(stderr,"Erro na linha  %d. Resultado da expressao precisa ser booleano.\n", getLineNumber()); 
+			set_error_flag();
+		}
+	}
+	| TK_IF '(' expr ')' TK_THEN command TK_ELSE command {
+		$$ = astreeCreate(ASTREE_IF_ELSE, $3, $6, $8, 0, 0); 
+		if(($3->natureza != NATUREZA_ASTREE_ESCALAR) || ($3->dataType!= DATATYPE_ASTREE_BOOLEAN))
+		{
+			fprintf(stderr,"Erro na linha  %d. Resultado da expressao precisa ser booleano.\n", getLineNumber()); 
+			set_error_flag();
+		}
+	}
 	;
 
 while: TK_WHILE '(' expr ')' command {$$ = astreeCreate(ASTREE_WHILE, $3, $5, 0, 0, 0); }
+	{ 
+		$$ = astreeCreate(ASTREE_WHILE, $3, $5, 0, 0, 0);
+		
+		if($3->natureza != NATUREZA_ASTREE_ESCALAR)
+		{
+			fprintf(stderr,"Erro na linha  %d. Resultado da expressao precisa ser booleano.\n", getLineNumber()); 
+			set_error_flag();
+		}
+	}
 	;
 
 for: TK_FOR '(' TK_IDENTIFIER '=' expr TK_TO expr ')' command {$$ = astreeCreate(ASTREE_FOR, $5, $7, $9, 0, $3); }
+	{ 
+		$$ = astreeCreate(ASTREE_FOR, $5, $7, $9, 0, $3); 
+		
+		
+		$3->natureza = NATUREZA_ESCALAR;
+		//define_dataType ($1->type, $2);
+		verify_variable_declaration ($2);
+
+
+		if(($5->natureza != NATUREZA_ASTREE_ESCALAR) || $7->natureza != NATUREZA_ASTREE_ESCALAR) || ($5->dataType!= DATATYPE_ASTREE_BOOLEAN))
+		{
+			fprintf(stderr,"Erro na linha  %d. Resultado da expressao precisa ser booleano.\n", getLineNumber()); 
+			set_error_flag();
+		}
+	}
 	;
 
 %%

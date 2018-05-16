@@ -85,6 +85,8 @@
 #define DATATYPE_ASTREE_CHAR 68
 #define DATATYPE_ASTREE_FLOAT 69
 
+#define DATATYPE_ASTREE_BOOLEAN 70 //
+
 typedef struct ASTREE
 	{
 	int type;
