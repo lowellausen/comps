@@ -30,17 +30,17 @@ void reset_cont();
 void inc_cont();
 int get_cont();
 
-void define_dataType (int type, HASH_NODE *identifier);
-ASTREE* define_astree_nature_and_type(ASTREE *node,HASH_NODE *element);
-ASTREE* define_astree_type(ASTREE *node,HASH_NODE *element);
-ASTREE* define_astree_nature(ASTREE *node,HASH_NODE *element);
+void define_dataType (int type, HASHNODE *identifier);
+ASTREE* define_astree_nature_and_type(ASTREE *node,HASHNODE *element);
+ASTREE* define_astree_type(ASTREE *node,HASHNODE *element);
+ASTREE* define_astree_nature(ASTREE *node,HASHNODE *element);
 
-void verify_function_declaration (HASH_NODE *function);
-void verify_function_declared (HASH_NODE *function);
-void verify_variable_declaration (HASH_NODE *variable);
-void verify_variable_declared (HASH_NODE *variable);
-void verify_vector (HASH_NODE *vector);
-void verify_pointer (HASH_NODE *pointer);
+void verify_function_declaration (HASHNODE *function);
+void verify_function_declared (HASHNODE *function);
+void verify_variable_declaration (HASHNODE *variable);
+void verify_variable_declared (HASHNODE *variable);
+void verify_vector (HASHNODE *vector);
+void verify_pointer (HASHNODE *pointer);
 
 int compareHashTreeNatureza (int hashc, int treec);
 void compare_lists (int* naturezaHash,int* dataTypesHash,int size);
@@ -117,7 +117,7 @@ void compare_lists (int* naturezaHash,int* dataTypesHash,int size);
 %type<astree> if
 %type<astree> while
 %type<astree> for
-
+%type<astree> error
 
 
 %%
@@ -193,20 +193,7 @@ lit_list : lit lit_list {$$ = astreeCreate(ASTREE_SYMBOL_LIST,$1,$2,0,0,0);}
 	| {$$ = 0;}
 	; 
 
-func: var_type TK_IDENTIFIER '(' {reset_cont();clear_lists();} param_list ')'{
-	     functionDataType = $1->dataType;
-	     $2->number_of_param_func = get_cont();
-	     $2->natureza = NATUREZA_FUNCTION;
-	     define_dataType ($1->type, $2);
-	     verify_function_declaration($2);
-             $$ = astreeCreate(ASTREE_HEADER, $1,$5,0,0, $2); 
-	     int i;
-	     for(i=0;i<20;i++)
-	     {
-		$2->list_dataTypes[i] = list_dataTypes[i];
-		$2->list_naturezas[i] = list_naturezas[i];
-	     }
-         } block {$$ = astreeCreate(ASTREE_FUNC, $1,$4,$6,0, $2); }
+func: var_type TK_IDENTIFIER '(' {reset_cont();clear_lists();} param_list ')' block {$$ = astreeCreate(ASTREE_FUNC, $1,$5,$7,0, $2); }
 	;
 
 param: var_type TK_IDENTIFIER {
@@ -220,15 +207,15 @@ param: var_type TK_IDENTIFIER {
 		$3->natureza = NATUREZA_POINTER;
 		define_dataType ($1->type, $3);
 		verify_variable_declaration ($3);
-		$$ = astreeCreate(ASTREE_PARAM_POINT,$1,0,0,0,$3);
+		$$ = astreeCreate(ASTREE_PARAM,$1,0,0,0,$3);
 		put_in_lists(NATUREZA_POINTER, $3->dataType);
 	};
 
-param_list: param{inc_cont();} aux_param_list {$$ = astreeCreate(ASTREE_PARAM_LIST, $1,$2,0,0,0);}
+param_list: param{inc_cont();} aux_param_list {$$ = astreeCreate(ASTREE_PARAM_LIST, $1,$3,0,0,0);}
 	| {$$ = 0;}
 	;
 
-aux_param_list: ',' param {inc_cont();} aux_param_list {$$ = astreeCreate(ASTREE_PARAM_LIST, $2,$3,0,0,0);}
+aux_param_list: ',' param {inc_cont();} aux_param_list {$$ = astreeCreate(ASTREE_PARAM_LIST, $2,$4,0,0,0);}
 	| {$$ = 0;}
 	;  
 
@@ -523,14 +510,14 @@ int get_cont()
 	return cont;
 }
 
-void define_dataType (int type, HASH_NODE *identifier)
+void define_dataType (int type, HASHNODE *identifier)
 { 
-	if(type == ASTREE_INTEGER)identifier->dataType = DATATYPE_INTEGER;
+	if(type == ASTREE_INT)identifier->dataType = DATATYPE_INTEGER;
 	if(type == ASTREE_FLOAT)identifier->dataType = DATATYPE_FLOAT;
 	if(type == ASTREE_CHAR)identifier->dataType = DATATYPE_CHAR;
 }
 
-void verify_function_declaration (HASH_NODE *function)
+void verify_function_declaration (HASHNODE *function)
 {	
 	if(function->is_declared == 1)
 	{
@@ -540,7 +527,7 @@ void verify_function_declaration (HASH_NODE *function)
 	else function->is_declared = 1;	
 }
 
-void verify_function_declared (HASH_NODE *function)
+void verify_function_declared (HASHNODE *function)
 { 
 	if(function->is_declared == 0)
 	{
@@ -557,7 +544,7 @@ void verify_function_declared (HASH_NODE *function)
 	}
 }
 
-void verify_variable_declaration (HASH_NODE *variable)
+void verify_variable_declaration (HASHNODE *variable)
 {
 	if(variable->is_declared == 1)
 	{
@@ -568,7 +555,7 @@ void verify_variable_declaration (HASH_NODE *variable)
 }
 
 
-void verify_variable_declared (HASH_NODE *variable)
+void verify_variable_declared (HASHNODE *variable)
 { 
 	
 	if(variable->is_declared == 0)
@@ -586,7 +573,7 @@ void verify_variable_declared (HASH_NODE *variable)
         }
 }
 
-void verify_vector (HASH_NODE *vector)
+void verify_vector (HASHNODE *vector)
 { 
 	if(vector->is_declared == 0)
 	{
@@ -603,7 +590,7 @@ void verify_vector (HASH_NODE *vector)
     	}
 }
 
-void verify_pointer (HASH_NODE *pointer)
+void verify_pointer (HASHNODE *pointer)
 { 
 	if(pointer->is_declared == 0)
 	{
@@ -620,7 +607,7 @@ void verify_pointer (HASH_NODE *pointer)
     }
 }
 
-ASTREE* define_astree_nature_and_type(ASTREE *node,HASH_NODE *element)
+ASTREE* define_astree_nature_and_type(ASTREE *node,HASHNODE *element)
 {
     switch (element->natureza)
     {
@@ -652,7 +639,7 @@ ASTREE* define_astree_nature_and_type(ASTREE *node,HASH_NODE *element)
      return node;      
 }
 
-ASTREE* define_astree_type(ASTREE *node,HASH_NODE *element)
+ASTREE* define_astree_type(ASTREE *node,HASHNODE *element)
 {
     switch (element->dataType)
     {
@@ -669,7 +656,7 @@ ASTREE* define_astree_type(ASTREE *node,HASH_NODE *element)
      return node;      
 }
 
-ASTREE* define_astree_nature(ASTREE *node,HASH_NODE *element)
+ASTREE* define_astree_nature(ASTREE *node,HASHNODE *element)
 {
     switch (element->natureza)
     {
