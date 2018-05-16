@@ -193,18 +193,42 @@ lit_list : lit lit_list {$$ = astreeCreate(ASTREE_SYMBOL_LIST,$1,$2,0,0,0);}
 	| {$$ = 0;}
 	; 
 
-func: var_type TK_IDENTIFIER '(' param_list ')' block {$$ = astreeCreate(ASTREE_FUNC, $1,$4,$6,0, $2); }
+func: var_type TK_IDENTIFIER '(' {reset_cont();clear_lists();} param_list ')'{
+	     functionDataType = $1->dataType;
+	     $2->number_of_param_func = get_cont();
+	     $2->natureza = NATUREZA_FUNCTION;
+	     define_dataType ($1->type, $2);
+	     verify_function_declaration($2);
+             $$ = astreeCreate(ASTREE_HEADER, $1,$5,0,0, $2); 
+	     int i;
+	     for(i=0;i<20;i++)
+	     {
+		$2->list_dataTypes[i] = list_dataTypes[i];
+		$2->list_naturezas[i] = list_naturezas[i];
+	     }
+         } block {$$ = astreeCreate(ASTREE_FUNC, $1,$4,$6,0, $2); }
 	;
 
-param: var_type TK_IDENTIFIER {$$ = astreeCreate(ASTREE_PARAM, $1,0,0,0, $2);}
-	| var_type '#' TK_IDENTIFIER {$$ = astreeCreate(ASTREE_PARAM, $1,0,0,0, $3);}
-	;
+param: var_type TK_IDENTIFIER {
+		$2->natureza = NATUREZA_ESCALAR;
+		define_dataType ($1->type, $2);
+		verify_variable_declaration ($2);
+		$$ = astreeCreate(ASTREE_PARAM, $1,0,0,0, $2);
+		put_in_lists(NATUREZA_ESCALAR, $2->dataType);
+	}
+	| var_type '#' TK_IDENTIFIER{ 
+		$3->natureza = NATUREZA_POINTER;
+		define_dataType ($1->type, $3);
+		verify_variable_declaration ($3);
+		$$ = astreeCreate(ASTREE_PARAM_POINT,$1,0,0,0,$3);
+		put_in_lists(NATUREZA_POINTER, $3->dataType);
+	};
 
-param_list: param aux_param_list {$$ = astreeCreate(ASTREE_PARAM_LIST, $1,$2,0,0,0);}
+param_list: param{inc_cont();} aux_param_list {$$ = astreeCreate(ASTREE_PARAM_LIST, $1,$2,0,0,0);}
 	| {$$ = 0;}
 	;
 
-aux_param_list: ',' param aux_param_list {$$ = astreeCreate(ASTREE_PARAM_LIST, $2,$3,0,0,0);}
+aux_param_list: ',' param {inc_cont();} aux_param_list {$$ = astreeCreate(ASTREE_PARAM_LIST, $2,$3,0,0,0);}
 	| {$$ = 0;}
 	;  
 
