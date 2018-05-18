@@ -1,4 +1,4 @@
-#define HASH_TABLE_SIZE 500
+#define HASH_TABLE_SIZE 997
 
 #define   NATUREZA_ESCALAR	0
 #define   NATUREZA_VETOR	1
