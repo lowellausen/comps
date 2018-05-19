@@ -12,8 +12,8 @@ int semanticFullCheck(ASTREE *node){
 void setSymbolAndDataType(ASTREE *node, int type){
 
 	if (type == ASTREE_FUNC){
-		if(node->son[0]->symbol->type != TK_IDENTIFIER){
-		printSemanticError("funcao declarada mais de uma vez", node->son[0]->symbol->text);
+		if(node->symbol->type != TK_IDENTIFIER){
+		printSemanticError("funcao declarada mais de uma vez", node->symbol->text);
 		return;
 		}
 	}
@@ -42,16 +42,16 @@ void setSymbolAndDataType(ASTREE *node, int type){
 			break;
 		case ASTREE_VET_DECL: 
 			node->symbol->type = SYMBOL_VEC;
-			setDataType(node, node->son[0]->son[0]->type);
+			setDataType(node, node->son[0]->type);
 			break;
 		case ASTREE_VET_DECL_INIT: 
 			node->symbol->type = SYMBOL_VEC; //mudar algo do de cima??#TODO
-			setDataType(node, node->son[0]->son[0]->type);
+			setDataType(node, node->son[0]->type);
 			break;
 		case ASTREE_FUNC:
-			node->son[0]->symbol->type = SYMBOL_FUNC;
-			setDataType(node->son[0], node->son[0]->son[0]->type);
-			int n_par = countDecFuncNumParams(node->son[0]->son[1]);
+			node->symbol->type = SYMBOL_FUNC;
+			setDataType(node, node->son[0]->type);
+			int n_par = countDecFuncNumParams(node->son[1]);
 			setNumParams(node,n_par);
 			break;
 
@@ -66,8 +66,8 @@ int countDecFuncNumParams(ASTREE *node){
 }
 
 void setNumParams(ASTREE *node, int npar){
-	int address = getHashAddress(node->son[0]->symbol->text);
-	HASHNODE* hash = hashInsert(node->son[0]->symbol->text, address);
+	int address = getHashAddress(node->symbol->text);
+	HASHNODE* hash = hashInsert(node->symbol->text, address);
 	hash->number_of_param_func = npar;
 }
 
