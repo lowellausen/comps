@@ -7,10 +7,12 @@
 # and #include "main.c" in the last part of the scanner.l
 #
 
-etapa3: y.tab.o lex.yy.o main.o hash.o astree.o y.tab.o
-	gcc -o etapa3 lex.yy.o main.o hash.o astree.o y.tab.o
+etapa4: y.tab.o lex.yy.o main.o hash.o semantics.o astree.o y.tab.o
+	gcc -o etapa4 lex.yy.o main.o hash.o semantics.o astree.o y.tab.o
 hash.o:	hash.c
 	gcc -c hash.c
+semantics.o:	semantics.c
+	gcc -c semantics.c
 astree.o: astree.c
 	gcc -c astree.c
 main.o: main.c
@@ -24,12 +26,12 @@ y.tab.o: y.tab.c
 y.tab.c: parser.y
 	yacc -d -v parser.y
 
-run: etapa3
-	./etapa3
+run: etapa4
+	./etapa4
 
-file: etapa3
-	./etapa3 code.test out.test
+file: etapa4
+	./etapa4 code.test out.test
 
 
 clean:
-	rm lex.yy.c lex.yy.o main.o hash.o y.tab.h y.tab.c y.tab.o etapa3 astree.o
+	rm lex.yy.c lex.yy.o main.o hash.o y.tab.h y.tab.c y.tab.o etapa4 astree.o

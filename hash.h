@@ -1,3 +1,6 @@
+#ifndef HASH_H
+#define HASH_H
+
 #define HASH_TABLE_SIZE 997
 
 #define   NATUREZA_ESCALAR	0
@@ -21,6 +24,7 @@ typedef struct hashNode{
 	struct hashNode *next;
 } HASHNODE;
 
+HASHNODE * hashTable[HASH_TABLE_SIZE];
 
 
 void hashInit();
@@ -29,3 +33,4 @@ int getHashAddress(char * text);
 HASHNODE * hashInsert(char * text, int type);
 HASHNODE * hashSearch(char * text);
 
+#endif

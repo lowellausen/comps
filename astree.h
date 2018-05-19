@@ -2,6 +2,9 @@
 #define ASTREE_H
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "hash.h"
 
 #define MAXSONS 4
 
@@ -72,20 +75,33 @@
 
 #define DEBUG 94944040
 
+#define   SYMBOL_UNDEFINED  	0 
+#define   SYMBOL_LIT_INTEGER  	1 
+#define   SYMBOL_LIT_REAL 	2 
+#define   SYMBOL_LIT_CHAR   	3 
+#define   SYMBOL_LIT_STRING  	4 
+#define   SYMBOL_IDENTIFIER  	5 
+#define   SYMBOL_VAR 		6
+#define   SYMBOL_VEC 		7
+#define   SYMBOL_FUNC 		8
+#define   SYMBOL_PTR 		9
 
-#define NATUREZA_ASTREE_NAO_DEF 60
+
+
+/*#define NATUREZA_ASTREE_NAO_DEF 60
 #define NATUREZA_ASTREE_ESCALAR 61
 #define NATUREZA_ASTREE_STRING  62
 #define NATUREZA_ASTREE_VETOR   63
 #define NATUREZA_ASTREE_POINTER 64
-#define NATUREZA_ASTREE_FUNCTION 65
+#define NATUREZA_ASTREE_FUNCTION 65*/
 
 #define DATATYPE_ASTREE_NAO_DEF 66
 #define DATATYPE_ASTREE_INTEGER 67
 #define DATATYPE_ASTREE_CHAR 68
 #define DATATYPE_ASTREE_FLOAT 69
+#define DATATYPE_ASTREE_STRING 71
 
-#define DATATYPE_ASTREE_BOOLEAN 70 //
+#define DATATYPE_ASTREE_BOOLEAN 70 //usar para definir nodos de expressões??
 
 typedef struct ASTREE
 	{

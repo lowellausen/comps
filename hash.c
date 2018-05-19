@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-HASHNODE * hashTable[HASH_TABLE_SIZE];
+//HASHNODE * hashTable[HASH_TABLE_SIZE];
 
 void hashInit(){
 	int i;
