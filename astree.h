@@ -100,6 +100,7 @@
 #define DATATYPE_ASTREE_CHAR 68
 #define DATATYPE_ASTREE_FLOAT 69
 #define DATATYPE_ASTREE_STRING 71
+#define DATATYPE_ASTREE_PTR 72
 
 #define DATATYPE_ASTREE_BOOLEAN 70 //usar para definir nodos de expressões??
 

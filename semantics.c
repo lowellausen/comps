@@ -76,6 +76,7 @@ void setDataType(ASTREE *node, int type){
 		case ASTREE_INT: node->symbol->dataType = DATATYPE_ASTREE_INTEGER; break;
 		case ASTREE_CHAR: node->symbol->dataType = DATATYPE_ASTREE_CHAR; break;
 		case ASTREE_FLOAT: node->symbol->dataType = DATATYPE_ASTREE_FLOAT; break;
+		case ASTREE_SYMBOL_POINT: node->symbol->dataType = DATATYPE_ASTREE_PTR; break;
 		default: node->symbol->dataType = DATATYPE_ASTREE_NAO_DEF; break;
 	}
 	node->dataType = node->symbol->dataType;
@@ -89,6 +90,11 @@ void checkSymbolsUse(ASTREE *node){
 	switch(node->type){
 		case ASTREE_ASSIGN_VAR:
 			if(node->symbol->type != SYMBOL_VAR){
+				printSemanticError("expressao de atribuicao invalida",NULL);
+			}
+			break;
+		case ASTREE_SYMBOL_POINT:
+			if(node->symbol->type != SYMBOL_PTR){
 				printSemanticError("expressao de atribuicao invalida",NULL);
 			}
 			break;
@@ -246,12 +252,28 @@ void checkAstNodeDataType(ASTREE *node){
 			else
 				node->dataType = DATATYPE_ASTREE_BOOLEAN;
 			break;
-		case ASTREE_SOMA:    
+		case ASTREE_SOMA:
+			if(node->son[0]->dataType == DATATYPE_ASTREE_BOOLEAN || node->son[1]->dataType == DATATYPE_ASTREE_BOOLEAN){
+				printSemanticError("expressao booleana nao esperada em expressao aritmetica", NULL);
+			}
+			if(node->son[0]->dataType == DATATYPE_ASTREE_PTR && node->son[1]->dataType == DATATYPE_ASTREE_PTR){
+				printSemanticError("soma de 2 ponteiros nao esperada ", NULL);
+			}
+			if(node->son[0]->dataType == DATATYPE_ASTREE_NAO_DEF || node->son[1]->dataType == DATATYPE_ASTREE_NAO_DEF){
+				printSemanticError("expressao UNDEFINED em operacao aritmetica", NULL);
+				node->dataType = DATATYPE_ASTREE_NAO_DEF;
+			}
+			else
+				node->dataType = aritmeticInference(node);
+			break;    
 		case ASTREE_SUB: 
 		case ASTREE_MULT: 
 		case ASTREE_DIV: 
 			if(node->son[0]->dataType == DATATYPE_ASTREE_BOOLEAN || node->son[1]->dataType == DATATYPE_ASTREE_BOOLEAN){
 				printSemanticError("expressao booleana nao esperada em expressao aritmetica", NULL);
+			}
+			if(node->son[0]->dataType == DATATYPE_ASTREE_PTR || node->son[1]->dataType == DATATYPE_ASTREE_PTR){
+				printSemanticError("expressão aritmética de ponteiros não esperada ", NULL);
 			}
 			if(node->son[0]->dataType == DATATYPE_ASTREE_NAO_DEF || node->son[1]->dataType == DATATYPE_ASTREE_NAO_DEF){
 				printSemanticError("expressao UNDEFINED em operacao aritmetica", NULL);
