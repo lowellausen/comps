@@ -92,7 +92,7 @@ extern int lineCount;
 
 %%
 
-program: code {$$ = astreeCreate(ASTREE_PROGRAM,$1,0,0,0,0); astreePrintTree($$,"",1); printf("Programa Reconhecido.\n"); 
+program: code {$$ = astreeCreate(ASTREE_PROGRAM,$1,0,0,0,0); astreePrintTree($$,"",1);semanticFullCheck($$); printf("Programa Reconhecido.\n"); 
               };
 
 code: var code { $$ = astreeCreate(ASTREE_DECL_LIST,$1,$2,0,0,0);}

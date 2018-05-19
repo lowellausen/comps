@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "hash.h"
 #include "astree.h"
+#include "semantics.h"
 #include "y.tab.h"
 
 
@@ -41,6 +42,8 @@ int main (int argc, char *argv[])
    initMe(); 
 
    yyparse();
+
+	//semanticFullCheck(ast);
 
    fclose(outputfile);
 	//hashPrint();
