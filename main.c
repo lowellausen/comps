@@ -46,7 +46,7 @@ int main (int argc, char *argv[])
 	//semanticFullCheck(ast);
 
    fclose(outputfile);
-	//hashPrint();
+	hashPrint();
    
   
    exit(0);

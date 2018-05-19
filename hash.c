@@ -57,7 +57,7 @@ HASHNODE * hashSearch(char * text){
 	address = getHashAddress(text);
 	node = hashTable[address];
 	while (node != NULL){
-		if (strcmp(node->text, text))
+		if (strcmp(node->text, text)==0)
 			return node;
 		node = node->next;
 	}

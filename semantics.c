@@ -67,8 +67,7 @@ int countDecFuncNumParams(ASTREE *node){
 }
 
 void setNumParams(ASTREE *node, int npar){
-	int address = getHashAddress(node->symbol->text);
-	HASHNODE* hash = hashInsert(node->symbol->text, address);
+	HASHNODE* hash = hashSearch(node->symbol->text);
 	hash->number_of_param_func = npar;
 }
 
