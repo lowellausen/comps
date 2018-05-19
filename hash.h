@@ -30,7 +30,7 @@ HASHNODE * hashTable[HASH_TABLE_SIZE];
 void hashInit();
 void hashPrint();
 int getHashAddress(char * text);
-HASHNODE * hashInsert(char * text, int type);
+HASHNODE * hashInsert(char * text, int type, int dataType);
 HASHNODE * hashSearch(char * text);
 
 #endif

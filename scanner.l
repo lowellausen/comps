@@ -44,11 +44,13 @@ char	{return TK_CHAR;}
 "&&"	{return OPERATOR_AND;}
 "||"	{return OPERATOR_OR;}
 
-[A-Za-z_][A-Za-z_0-9]*	{yylval.symbol = hashInsert(yytext,TK_IDENTIFIER);return TK_IDENTIFIER;}
-[0-9]+ 			{yylval.symbol = hashInsert(yytext,LIT_INTEGER);return LIT_INTEGER;}
-[0-9]+"."[0-9]+		{yylval.symbol = hashInsert(yytext,LIT_REAL);return LIT_REAL;}
-"'"[0-9a-zA-Z]"'"	{yylval.symbol = hashInsert(yytext,LIT_CHAR);return LIT_CHAR; }
-\"([^\\\"]|\\.)*\"	{yylval.symbol = hashInsert(yytext,LIT_STRING);return LIT_STRING; }
+[A-Za-z_][A-Za-z_0-9]*	{yylval.symbol = hashInsert(yytext,SYMBOL_IDENTIFIER, DATATYPE_ASTREE_NAO_DEF);return TK_IDENTIFIER;}
+[0-9]+ 			{yylval.symbol = hashInsert(yytext,SYMBOL_LIT_INTEGER,DATATYPE_ASTREE_INTEGER);return LIT_INTEGER;}
+[0-9]+"."[0-9]+		{yylval.symbol = hashInsert(yytext,SYMBOL_LIT_REAL,DATATYPE_ASTREE_FLOAT);return LIT_REAL;}
+"'"[0-9a-zA-Z]"'"	{yylval.symbol = hashInsert(yytext,SYMBOL_LIT_CHAR, DATATYPE_ASTREE_CHAR);return LIT_CHAR; }
+\"([^\\\"]|\\.)*\"	{yylval.symbol = hashInsert(yytext,SYMBOL_LIT_STRING, DATATYPE_ASTREE_STRING);return LIT_STRING; }
+
+
 
 [ \t]  
 

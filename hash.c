@@ -35,7 +35,7 @@ int getHashAddress(char * text){
 	return address -1;
 }
 
-HASHNODE * hashInsert(char * text, int type){
+HASHNODE * hashInsert(char * text, int type, int dataType){
 	HASHNODE * newNode = hashSearch(text);
 	int address = getHashAddress(text);
 	
@@ -45,6 +45,7 @@ HASHNODE * hashInsert(char * text, int type){
 	newNode->text = (char *) calloc (strlen(text)+1, sizeof(char));
 	strcpy(newNode->text, text);
 	newNode->type = type;
+	newNode->dataType = dataType;
 	newNode->next = hashTable[address];
 	hashTable[address] = newNode;
 	return newNode;

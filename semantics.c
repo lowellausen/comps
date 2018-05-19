@@ -12,12 +12,12 @@ int semanticFullCheck(ASTREE *node){
 void setSymbolAndDataType(ASTREE *node, int type){
 
 	if (type == ASTREE_FUNC){
-		if(node->symbol->type != TK_IDENTIFIER){
+		if(node->symbol->type != SYMBOL_IDENTIFIER){
 		printSemanticError("funcao declarada mais de uma vez", node->symbol->text);
 		return;
 		}
 	}
-	else if(node->symbol->type != TK_IDENTIFIER){
+	else if(node->symbol->type != SYMBOL_IDENTIFIER){
 		printSemanticError("variavel declarada mais de uma vez", node->symbol->text);
 		return;
 	}
@@ -32,7 +32,8 @@ void setSymbolAndDataType(ASTREE *node, int type){
 			node->symbol->type = SYMBOL_VAR;
 			setDataType(node, node->son[0]->type);
 			break;
-		case ASTREE_VAR_DECL: 				
+		case ASTREE_VAR_DECL:
+			fprintf(stderr, "\nvar decl type: %d\n", type); 				
 			node->symbol->type = SYMBOL_VAR;
 			setDataType(node, node->son[0]->type);
 			break;
