@@ -3,14 +3,14 @@
 
 #define HASH_TABLE_SIZE 997
 
-#define   NATUREZA_ESCALAR	0
+/*#define   NATUREZA_ESCALAR	0
 #define   NATUREZA_VETOR	1
 #define   NATUREZA_FUNCTION	2
 #define   NATUREZA_POINTER	3
 
 #define   DATATYPE_CHAR		4
 #define   DATATYPE_FLOAT	5
-#define   DATATYPE_INTEGER	6
+#define   DATATYPE_INTEGER	6*/
 
 typedef struct hashNode{
 	char * text;

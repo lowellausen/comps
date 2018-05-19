@@ -37,7 +37,7 @@ int main (int argc, char *argv[])
       exit(3);
    }
 
-   printTree=1;	
+   printTree=0;	
    
    initMe(); 
 
@@ -46,7 +46,7 @@ int main (int argc, char *argv[])
 	//semanticFullCheck(ast);
 
    fclose(outputfile);
-	hashPrint();
+	//hashPrint();
    
   
    exit(0);

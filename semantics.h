@@ -1,5 +1,5 @@
 #include "astree.h"
-#include "y.tab.h"
+//#include "y.tab.h"
 #include "hash.h"
 
 int semanticErrors;

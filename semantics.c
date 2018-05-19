@@ -32,8 +32,7 @@ void setSymbolAndDataType(ASTREE *node, int type){
 			node->symbol->type = SYMBOL_VAR;
 			setDataType(node, node->son[0]->type);
 			break;
-		case ASTREE_VAR_DECL:
-			fprintf(stderr, "\nvar decl type: %d\n", type); 				
+		case ASTREE_VAR_DECL:			
 			node->symbol->type = SYMBOL_VAR;
 			setDataType(node, node->son[0]->type);
 			break;
@@ -146,9 +145,9 @@ int verifyFuncCallParams(ASTREE* node){
 		return 1;
 	}
 	// undefined pq alguem pode tentar colocar uma string ou var q n exista
-	if( node->son[0]->dataType == DATATYPE_ASTREE_NAO_DEF){
+	/*if( node->son[0]->dataType == DATATYPE_ASTREE_NAO_DEF){
 		return 0; //indicativo de invalidez (algum parametro eh -1)
-	}
+	}*/
 	int acc_val = verifyFuncCallParams(node->son[1]);
 	if(acc_val == 0){
 		return 0; //se no resto da lista tem bool, retorna false
@@ -191,8 +190,8 @@ void checkAstNodeDataType(ASTREE *node){
 				node->dataType = node->symbol->dataType;
 			break;		
 		case ASTREE_VECTOR:
-			if(node->son[0]->dataType != DATATYPE_INTEGER && node->son[0]->dataType != DATATYPE_CHAR) {
-				printSemanticError("indice do vetor deve ser do tipo inteiro", node->symbol->text); 
+			if(node->son[0]->dataType != DATATYPE_ASTREE_INTEGER && node->son[0]->dataType != DATATYPE_ASTREE_CHAR) {
+				printSemanticError("indice do vetor dever ser do tipo inteiro", node->symbol->text); 
 			}
 			node->dataType = node->symbol->dataType;
 			break;
@@ -294,7 +293,7 @@ void checkAstNodeDataType(ASTREE *node){
 				node->dataType = node->symbol->dataType;
 			break;
 		case ASTREE_ASSIGN_VECTOR: 
-			if(node->son[0]->dataType != DATATYPE_INTEGER && node->son[0]->dataType != DATATYPE_CHAR) {
+			if(node->son[0]->dataType != DATATYPE_ASTREE_INTEGER && node->son[0]->dataType != DATATYPE_ASTREE_CHAR) {
 				printSemanticError("indice do vetor em atribuicao v#indice deve ser do tipo inteiro", node->symbol->text); 
 			}
 			if(!verifyAssignmentTypes(node->symbol->dataType, node->son[1]->dataType)){
@@ -368,14 +367,14 @@ int typeInference(int type1, int type2){
 		return DATATYPE_ASTREE_NAO_DEF;
 	}
 
-	if(type1 == DATATYPE_FLOAT || type2 == DATATYPE_FLOAT){
-		return DATATYPE_FLOAT;
+	if(type1 == DATATYPE_ASTREE_FLOAT || type2 == DATATYPE_ASTREE_FLOAT){
+		return DATATYPE_ASTREE_FLOAT;
 	}
-	else if(type1 == DATATYPE_INTEGER || type2 == DATATYPE_INTEGER){
-		return DATATYPE_INTEGER;
+	else if(type1 == DATATYPE_ASTREE_INTEGER || type2 == DATATYPE_ASTREE_INTEGER){
+		return DATATYPE_ASTREE_INTEGER;
 	}
-	else if(type1 == DATATYPE_CHAR || type2 == DATATYPE_CHAR){
-		return DATATYPE_CHAR;
+	else if(type1 == DATATYPE_ASTREE_CHAR || type2 == DATATYPE_ASTREE_CHAR){
+		return DATATYPE_ASTREE_CHAR;
 	}
 	else{ 
 		return DATATYPE_ASTREE_NAO_DEF;
