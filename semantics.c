@@ -38,7 +38,8 @@ void setSymbolAndDataType(ASTREE *node, int type){
 			break;
 		case ASTREE_POINT_DECL: 				
 			node->symbol->type = SYMBOL_PTR;
-			setDataType(node, node->son[0]->type);
+			//setDataType(node, node->son[0]->type);
+			setDataType(node, ASTREE_SYMBOL_POINT);
 			break;
 		case ASTREE_VET_DECL: 
 			node->symbol->type = SYMBOL_VEC;
@@ -88,7 +89,7 @@ void checkSymbolsUse(ASTREE *node){
 	
 	switch(node->type){
 		case ASTREE_ASSIGN_VAR:
-			if(node->symbol->type != SYMBOL_VAR){
+			if(node->symbol->type != SYMBOL_VAR && node->symbol->type != SYMBOL_PTR){
 				printSemanticError("expressao de atribuicao invalida",NULL);
 			}
 			break;
@@ -251,6 +252,14 @@ void checkAstNodeDataType(ASTREE *node){
 			else
 				node->dataType = DATATYPE_ASTREE_BOOLEAN;
 			break;
+		case ASTREE_SYMBOL_ADDRESS:
+			if(testID(node->symbol,node))
+				node->dataType = DATATYPE_ASTREE_PTR;
+			break;
+		case ASTREE_SYMBOL_POINT:
+			if(testID(node->symbol,node))
+				node->dataType = node->symbol->dataType;
+			break;
 		case ASTREE_SOMA:
 			if(node->son[0]->dataType == DATATYPE_ASTREE_BOOLEAN || node->son[1]->dataType == DATATYPE_ASTREE_BOOLEAN){
 				printSemanticError("expressao booleana nao esperada em expressao aritmetica", NULL);
@@ -366,7 +375,9 @@ int typeInference(int type1, int type2){
 	if(type1 == DATATYPE_ASTREE_BOOLEAN || type2 == DATATYPE_ASTREE_BOOLEAN){
 		return DATATYPE_ASTREE_NAO_DEF;
 	}
-
+	else if(type1 == DATATYPE_ASTREE_PTR || type2 == DATATYPE_ASTREE_PTR){
+		return DATATYPE_ASTREE_PTR;
+	}
 	if(type1 == DATATYPE_ASTREE_FLOAT || type2 == DATATYPE_ASTREE_FLOAT){
 		return DATATYPE_ASTREE_FLOAT;
 	}
