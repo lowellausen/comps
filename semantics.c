@@ -349,7 +349,6 @@ void checkAstNodeDataType(ASTREE *node){
 	
 }
 int aritmeticInference(ASTREE *node){
-	// eh soh isso ?? 
 	return typeInference(node->son[0]->dataType, node->son[1]->dataType);
 
 }
@@ -395,7 +394,7 @@ void hashCheckUndeclared(){
 		for(node=hashTable[i]; node; node=node->next){ 
 			if(node->type == SYMBOL_IDENTIFIER){
 				//erro variavel nao declarada
-				printSemanticError("variavel nao declarada", node->text); 
+				printSemanticError("Variável não declarada", node->text); 
 			}
 		}
 	} 
