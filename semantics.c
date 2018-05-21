@@ -13,20 +13,15 @@ void setSymbolAndDataType(ASTREE *node, int type){
 
 	if (type == ASTREE_FUNC){
 		if(node->symbol->type != SYMBOL_IDENTIFIER){
-		printSemanticError("funcao declarada mais de uma vez", node->symbol->text);
+		printSemanticError("Declaração duplicada de função", node->symbol->text);
 		return;
 		}
 	}
 	else if(node->symbol->type != SYMBOL_IDENTIFIER){
-		printSemanticError("variavel declarada mais de uma vez", node->symbol->text);
+		printSemanticError("Declaração duplicada de variável", node->symbol->text);
 		return;
 	}
 	
-/*	if(node->symbol)
-		printf("node %s type %d\n",node->symbol->text,type);
-	else
-		printf("node %s type %d\n",node->son[0]->symbol->text,type);
-*/
 	switch(type){
 		case ASTREE_PARAM:	
 			node->symbol->type = SYMBOL_VAR;
@@ -46,7 +41,7 @@ void setSymbolAndDataType(ASTREE *node, int type){
 			setDataType(node, node->son[0]->type);
 			break;
 		case ASTREE_VET_DECL_INIT: 
-			node->symbol->type = SYMBOL_VEC; //mudar algo do de cima??#TODO
+			node->symbol->type = SYMBOL_VEC; //mudar algo do de cima?
 			setDataType(node, node->son[0]->type);
 			break;
 		case ASTREE_FUNC:
@@ -60,7 +55,7 @@ void setSymbolAndDataType(ASTREE *node, int type){
 }
 
 int countDecFuncNumParams(ASTREE *node){
-	if(!node) // if NULL = end of list
+	if(!node) 
 		return 0;
 	else
 		return 1 + countDecFuncNumParams(node->son[1]);
@@ -90,33 +85,33 @@ void checkSymbolsUse(ASTREE *node){
 	switch(node->type){
 		case ASTREE_ASSIGN_VAR:
 			if(node->symbol->type != SYMBOL_VAR && node->symbol->type != SYMBOL_PTR){
-				printSemanticError("expressao de atribuicao invalida",NULL);
+				printSemanticError("Atribuição incompatível",NULL);
 			}
 			break;
 		case ASTREE_SYMBOL_POINT:
 			if(node->symbol->type != SYMBOL_PTR){
-				printSemanticError("expressao de atribuicao invalida",NULL);
+				printSemanticError("Atribuição incompatível",NULL);
 			}
 			break;
 		case ASTREE_ASSIGN_VECTOR:
 			if(node->symbol->type != SYMBOL_VEC){
-				printSemanticError("expressao de atribuicao de vetor invalida",NULL);
+				printSemanticError("Atribuição incompatível de vetor",NULL);
 			}
 			break;
 		case ASTREE_VECTOR:
 			if(node->symbol->type != SYMBOL_VEC){
-				printSemanticError("expressao de acesso ao vetor invalida",NULL);
+				printSemanticError("Acesso de vetor incompatível",NULL);
 			}
 			break;
 		case ASTREE_FUNC_CALL:
 			if(node->symbol->type != SYMBOL_FUNC){
-				printSemanticError("expressao de chamada de funcao invalida",NULL);		
+				printSemanticError("Chamada de função incompatível",NULL);		
 			}			
 			break;
 		//Somente variaveis escalares sao aceitas no comando read e nao vetores ou pos. de vetores
 		case ASTREE_READ:
 			if(node->symbol->type != SYMBOL_VAR){
-				printSemanticError("comando 'read' invalido, apenas valores escalares sao aceitos",NULL);		
+				printSemanticError("Read incompatível",NULL);		
 			}			
 			break;		
 	}
@@ -132,29 +127,26 @@ void verifyParams(ASTREE* node){
 	if(node->son[0]){
 		int val = verifyFuncCallParams(node->son[0]);
 		if(!val) 
-			printSemanticError("ha parametros booleanos na chamada da funcao",node->symbol->text);
+			printSemanticError("Chamada de função incompatível",node->symbol->text);
 		n_par = countFuncCallParams(node->son[0]);
 	}		
 	HASHNODE* hash = hashSearch(node->symbol->text);
 	int correct_n_par = hash->number_of_param_func;
-	if(n_par != correct_n_par)
-		printSemanticError("numero invalido de parametros na chamada da funcao",node->symbol->text);
+	if(n_par != correct_n_par) //n parametros errado
+		printSemanticError("Chamada de função incompatível",node->symbol->text);
 }
 
 int verifyFuncCallParams(ASTREE* node){
 	if(!node){
 		return 1;
 	}
-	// undefined pq alguem pode tentar colocar uma string ou var q n exista
-	/*if( node->son[0]->dataType == DATATYPE_ASTREE_NAO_DEF){
-		return 0; //indicativo de invalidez (algum parametro eh -1)
-	}*/
+
 	int acc_val = verifyFuncCallParams(node->son[1]);
 	if(acc_val == 0){
-		return 0; //se no resto da lista tem bool, retorna false
+		return 0; 
 	} 
 	
-	return 1; //apenas retorna true se o tipo dessa nao eh booleano e nao tem nenhuma outra bool no resto da lista
+	return 1; 
 }
 
 int countFuncCallParams(ASTREE* node){
@@ -166,7 +158,7 @@ int countFuncCallParams(ASTREE* node){
 
 int testID(HASHNODE* id,ASTREE* node){
 	if(id->type == SYMBOL_VEC || id->type == SYMBOL_FUNC){
-		printSemanticError("uso invalido de vetor/funcao", id->text);
+		printSemanticError("Vetor/função incompatível", id->text);
 		node->dataType = DATATYPE_ASTREE_NAO_DEF;
 		return 0;
 	}
@@ -174,7 +166,6 @@ int testID(HASHNODE* id,ASTREE* node){
 }
 
 
-//TODO : verificar print
 void checkAstNodeDataType(ASTREE *node){
 	if(node == NULL){
 		return;
@@ -192,12 +183,12 @@ void checkAstNodeDataType(ASTREE *node){
 			break;		
 		case ASTREE_VECTOR:
 			if(node->son[0]->dataType != DATATYPE_ASTREE_INTEGER && node->son[0]->dataType != DATATYPE_ASTREE_CHAR) {
-				printSemanticError("indice do vetor dever ser do tipo inteiro", node->symbol->text); 
+				printSemanticError("Indice de vetor incompatível", node->symbol->text); 
 			}
 			node->dataType = node->symbol->dataType;
 			break;
-		case ASTREE_FUNC_CALL:  // not sure if node->symbol->dataType ou node->symbol->type
-			// talvez uma condicao a mais se for literal
+		case ASTREE_FUNC_CALL:  
+			
 			verifyParams(node);
 			node->dataType = node->symbol->dataType;
 			break;
@@ -206,7 +197,7 @@ void checkAstNodeDataType(ASTREE *node){
 		case ASTREE_LE:
 		case ASTREE_GE:
 			if(node->son[0]->dataType == DATATYPE_ASTREE_NAO_DEF || node->son[1]->dataType == DATATYPE_ASTREE_NAO_DEF){
-				printSemanticError("expressao UNDEFINED em operacao relacional", NULL);
+				printSemanticError("Expressão inválida", NULL);
 				node->dataType = DATATYPE_ASTREE_NAO_DEF;
 			}
 			else
@@ -214,16 +205,11 @@ void checkAstNodeDataType(ASTREE *node){
 			break;
 		case ASTREE_EQ:
 		case ASTREE_NE:
-	//ACHO QUE N PODE TER  BOOL EM LADO NENHUM
-			/*if((node->son[0]->dataType == DATATYPE_ASTREE_BOOLEAN && node->son[1]->dataType != DATATYPE_ASTREE_BOOLEAN) || 
-			(node->son[1]->dataType == DATATYPE_ASTREE_BOOLEAN && node->son[0]->dataType != DATATYPE_ASTREE_BOOLEAN)){
-				printSemanticError("conflito de tipos em operação de eq/ne", NULL);
-			}*/
 			if(node->son[0]->dataType == DATATYPE_ASTREE_BOOLEAN || node->son[1]->dataType == DATATYPE_ASTREE_BOOLEAN){
-				printSemanticError("conflito de tipos em operação de eq/ne", NULL);
+				printSemanticError("Tipos incompatíveis em operação", NULL);
 			}
 			if(node->son[0]->dataType == DATATYPE_ASTREE_NAO_DEF || node->son[1]->dataType == DATATYPE_ASTREE_NAO_DEF){
-				printSemanticError("expressao UNDEFINED em operacao relacional", NULL);
+				printSemanticError("Tipo inválido em operação", NULL);
 				node->dataType = DATATYPE_ASTREE_NAO_DEF;
 			}
 			else
@@ -232,10 +218,10 @@ void checkAstNodeDataType(ASTREE *node){
 		case ASTREE_AND:	
 		case ASTREE_OR:
 			if(node->son[0]->dataType != DATATYPE_ASTREE_BOOLEAN || node->son[1]->dataType != DATATYPE_ASTREE_BOOLEAN){
-				printSemanticError("expressao booleana esperada em operacao and/or", NULL); 
+				printSemanticError("Tipos incompatíveis em operação", NULL); 
 			}
 			if(node->son[0]->dataType == DATATYPE_ASTREE_NAO_DEF || node->son[1]->dataType == DATATYPE_ASTREE_NAO_DEF){
-				printSemanticError("expressao UNDEFINED em operacao relacional", NULL);
+				printSemanticError("Tipo inválido em operação", NULL);
 				node->dataType = DATATYPE_ASTREE_NAO_DEF;
 			}
 			else
@@ -243,10 +229,10 @@ void checkAstNodeDataType(ASTREE *node){
 			break;
 		case ASTREE_NEG:
 			if(node->son[0]->dataType != DATATYPE_ASTREE_BOOLEAN){
-				printSemanticError("expressao booleana esperada em operacao not", NULL); 
+				printSemanticError("Tipo incompatívei em operação", NULL); 
 			}
 			if(node->son[0]->dataType == DATATYPE_ASTREE_NAO_DEF){
-				printSemanticError("expressao UNDEFINED em operacao NOT", NULL);
+				printSemanticError("Tipo incompatívei em operação", NULL);
 				node->dataType = DATATYPE_ASTREE_NAO_DEF;
 			}
 			else
@@ -262,13 +248,13 @@ void checkAstNodeDataType(ASTREE *node){
 			break;
 		case ASTREE_SOMA:
 			if(node->son[0]->dataType == DATATYPE_ASTREE_BOOLEAN || node->son[1]->dataType == DATATYPE_ASTREE_BOOLEAN){
-				printSemanticError("expressao booleana nao esperada em expressao aritmetica", NULL);
+				printSemanticError("Tipos incompatíveis em operação", NULL);
 			}
 			if(node->son[0]->dataType == DATATYPE_ASTREE_PTR && node->son[1]->dataType == DATATYPE_ASTREE_PTR){
-				printSemanticError("soma de 2 ponteiros nao esperada ", NULL);
+				printSemanticError("Tipos incompatíveis em operação ", NULL);
 			}
 			if(node->son[0]->dataType == DATATYPE_ASTREE_NAO_DEF || node->son[1]->dataType == DATATYPE_ASTREE_NAO_DEF){
-				printSemanticError("expressao UNDEFINED em operacao aritmetica", NULL);
+				printSemanticError("Tipos incompatíveis em operação", NULL);
 				node->dataType = DATATYPE_ASTREE_NAO_DEF;
 			}
 			else
@@ -278,13 +264,13 @@ void checkAstNodeDataType(ASTREE *node){
 		case ASTREE_MULT: 
 		case ASTREE_DIV: 
 			if(node->son[0]->dataType == DATATYPE_ASTREE_BOOLEAN || node->son[1]->dataType == DATATYPE_ASTREE_BOOLEAN){
-				printSemanticError("expressao booleana nao esperada em expressao aritmetica", NULL);
+				printSemanticError("Tipos incompatíveis em operação", NULL);
 			}
 			if(node->son[0]->dataType == DATATYPE_ASTREE_PTR || node->son[1]->dataType == DATATYPE_ASTREE_PTR){
-				printSemanticError("expressão aritmética de ponteiros não esperada ", NULL);
+				printSemanticError("Tipos incompatíveis em operação ", NULL);
 			}
 			if(node->son[0]->dataType == DATATYPE_ASTREE_NAO_DEF || node->son[1]->dataType == DATATYPE_ASTREE_NAO_DEF){
-				printSemanticError("expressao UNDEFINED em operacao aritmetica", NULL);
+				printSemanticError("Tipos incompatíveis em operação", NULL);
 				node->dataType = DATATYPE_ASTREE_NAO_DEF;
 			}
 			else
@@ -292,10 +278,10 @@ void checkAstNodeDataType(ASTREE *node){
 			break;
 		case ASTREE_ASSIGN_VAR: 
 			if(!verifyAssignmentTypes(node->symbol->dataType, node->son[0]->dataType)){
-				printSemanticError("conflito de tipos na atribuicao", NULL);
+				printSemanticError("Tipos incompatíveis em atribuição", NULL);
 			}
 			if(node->son[0]->dataType == DATATYPE_ASTREE_NAO_DEF){
-				printSemanticError("expressao UNDEFINED em comando ASSIGN", NULL);
+				printSemanticError("Tipos incompatíveis em atribuição", NULL);
 				node->dataType = DATATYPE_ASTREE_NAO_DEF;
 			}
 			else
@@ -303,13 +289,13 @@ void checkAstNodeDataType(ASTREE *node){
 			break;
 		case ASTREE_ASSIGN_VECTOR: 
 			if(node->son[0]->dataType != DATATYPE_ASTREE_INTEGER && node->son[0]->dataType != DATATYPE_ASTREE_CHAR) {
-				printSemanticError("indice do vetor em atribuicao v#indice deve ser do tipo inteiro", node->symbol->text); 
+				printSemanticError("Tipo incompatível em indexação de vetor", node->symbol->text); 
 			}
 			if(!verifyAssignmentTypes(node->symbol->dataType, node->son[1]->dataType)){
-				printSemanticError("conflito de tipos na atribuicao", NULL);
+				printSemanticError("Tipos incompatíveis em atribuição", NULL);
 			}
 			if(node->son[1]->dataType == DATATYPE_ASTREE_NAO_DEF){
-				printSemanticError("expressao UNDEFINED em comando ASSIGN", NULL);
+				printSemanticError("Tipos incompatíveis em atribuição", NULL);
 				node->dataType = DATATYPE_ASTREE_NAO_DEF;
 			}
 			else
@@ -320,47 +306,47 @@ void checkAstNodeDataType(ASTREE *node){
 			break;
 		case ASTREE_FOR:
 			if(node->son[0]->dataType == DATATYPE_ASTREE_BOOLEAN || node->son[1]->dataType == DATATYPE_ASTREE_BOOLEAN){
-				printSemanticError("expresao booleana em comando FOR", NULL);	
+				printSemanticError("Tipos incompatíveis em comando FOR", NULL);	
 			}
 			if(node->son[0]->dataType == DATATYPE_ASTREE_NAO_DEF || node->son[1]->dataType == DATATYPE_ASTREE_NAO_DEF){
-				printSemanticError("expressao UNDEFINED em comando FOR", NULL);
+				printSemanticError("Tipos incompatíveis em comando FOR", NULL);
 			}	
 			break;
 		case ASTREE_WHILE:
 			if(node->son[0]->dataType != DATATYPE_ASTREE_BOOLEAN){
-				printSemanticError("expresao booleana esperada em comando WHILE", NULL);	
+				printSemanticError("Tipos incompatíveis em comando WHILE", NULL);	
 			}
 			if(node->son[0]->dataType == DATATYPE_ASTREE_NAO_DEF){
-				printSemanticError("expressao UNDEFINED em comando WHILE", NULL);
+				printSemanticError("Tipos incompatíveis em comando WHILE", NULL);
 			}
 			break;	
 		case ASTREE_RETURN:	
 			if(node->son[0]->dataType == DATATYPE_ASTREE_BOOLEAN){
-				printSemanticError("comando RETURN do tipo booleano nao esperado", NULL);
+				printSemanticError("Tipos incompatíveis em comando RETURN", NULL);
 			}
 			if(node->son[0]->dataType == DATATYPE_ASTREE_NAO_DEF){
-				printSemanticError("expressao UNDEFINED em comando RETURN", NULL);
+				printSemanticError("Tipos incompatíveis em comando RETURN", NULL);
 			}
 			break;	
 		case ASTREE_READ:
 			if(node->symbol->dataType == DATATYPE_ASTREE_BOOLEAN || node->symbol->dataType == DATATYPE_ASTREE_NAO_DEF){
-				printSemanticError("comando READ com tipo nao esperado", NULL);
+				printSemanticError("Tipos incompatíveis em comando READ", NULL);
 			}
 			break;
-		// print é uma lista de elementos onde cada elemento pode ser um string ou expressao aritmetica
+		
 		case ASTREE_PRINT:
 			if(node->symbol){
 				if(node->symbol->dataType != DATATYPE_ASTREE_STRING){
-					printSemanticError("comando PRINT com simbolo nao esperado, deve ser string", NULL);
+					printSemanticError("Tipos incompatíveis em comando PRINT", NULL);
 				}
 			}else if(node->son[0]){
 				if(node->son[0]->dataType == DATATYPE_ASTREE_BOOLEAN || node->son[0]->dataType == DATATYPE_ASTREE_NAO_DEF){
-					printSemanticError("comando PRINT com expressao nao esperada, deve ser aritmetica", NULL);
+					printSemanticError("Tipos incompatíveis em comando PRINT", NULL);
 				}
 			}
 	}
 
-	//printf("type: %d datatype: %d \n", node->type, node->dataType);
+	
 }
 int aritmeticInference(ASTREE *node){
 	// eh soh isso ?? 
