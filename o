@@ -11,6 +11,11 @@ int incn(int b, int v)
 }
 
 
+int inc(int b, int v)
+{
+}
+
+
 int main()
 {
 c= 'j';

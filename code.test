@@ -8,6 +8,8 @@ int i =0;
 
 int incn(int b, int v){}
 
+
+int inc(int b, int v){}
 int main(){
 	c = 'j';
 	asa[0] = 2;

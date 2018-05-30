@@ -92,7 +92,7 @@ extern int lineCount;
 
 %%
 
-program: code {$$ = astreeCreate(ASTREE_PROGRAM,$1,0,0,0,0); astreePrintTree($$,"",1);semanticFullCheck($$); printf("Programa Reconhecido.\n"); 
+program: code {$$ = astreeCreate(ASTREE_PROGRAM,$1,0,0,0,0); astreePrintTree($$,"",1);semanticFullCheck($$); printf("Programa Reconhecido.\n"); tacPrintListReverse(generateCode($1)); 
               };
 
 code: var code { $$ = astreeCreate(ASTREE_DECL_LIST,$1,$2,0,0,0);}
@@ -178,7 +178,7 @@ return: TK_RETURN expr {$$ = astreeCreate(ASTREE_RETURN, $2, 0, 0, 0, 0);}
 	;	
 
 expr: TK_IDENTIFIER {$$ = astreeCreate(ASTREE_SYMBOL, 0, 0, 0, 0, $1); } 
-	| TK_IDENTIFIER '[' expr ']' {$$ = astreeCreate(ASTREE_VECTOR, $3, 0, 0, 0, $1);} ;
+	| TK_IDENTIFIER '[' expr ']' {$$ = astreeCreate(ASTREE_VECTOR, $3, 0, 0, 0, $1);} 
 	| lit  {$$ = $1;}
 	| func_call {$$ = $1;} 
 	| '#' TK_IDENTIFIER {$$ = astreeCreate(ASTREE_SYMBOL_POINT, 0, 0, 0, 0, $2);} 
@@ -190,7 +190,7 @@ expr: TK_IDENTIFIER {$$ = astreeCreate(ASTREE_SYMBOL, 0, 0, 0, 0, $1); }
 	| expr '/' expr {$$ = astreeCreate(ASTREE_DIV, $1, $3, 0, 0, 0); }
 	| expr '<' expr {$$ = astreeCreate(ASTREE_LESS, $1, $3, 0, 0, 0); }
 	| expr '>' expr {$$ = astreeCreate(ASTREE_GREAT, $1, $3, 0, 0, 0); }
-	| '!' expr {$$ = astreeCreate(ASTREE_NEG, $2, 0, 0, 0, 0);} ;	    
+	| '!' expr {$$ = astreeCreate(ASTREE_NEG, $2, 0, 0, 0, 0);} 	    
 	| expr OPERATOR_LE expr {$$ = astreeCreate(ASTREE_LE, $1, $3, 0, 0, 0);}
 	|  expr OPERATOR_GE expr {$$ = astreeCreate(ASTREE_GE, $1, $3, 0, 0, 0);}
 	| expr OPERATOR_EQ expr {$$ = astreeCreate(ASTREE_EQ, $1, $3, 0, 0, 0);}

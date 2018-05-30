@@ -27,9 +27,9 @@
 #define ASTREE_VET_DECL 14
 #define ASTREE_VET_DECL_INIT 15
 
-#define ASTREE_SYMBOL_LIST 16
-#define ASTREE_PARAM 17
-#define ASTREE_PARAM_LIST 18
+#define ASTREE_SYMBOL_LIST 16  //nada na tac?
+#define ASTREE_PARAM 17		//nada na tac?	
+#define ASTREE_PARAM_LIST 18	//nada na tac?
 
 #define ASTREE_FUNC 19
 
@@ -41,10 +41,9 @@
 #define ASTREE_SUB 33
 #define ASTREE_MULT 34 
 #define ASTREE_DIV 35
-
 #define ASTREE_NEG 36 
 #define ASTREE_POINTER 37 
-#define ASTREE_ADRESS 38 
+#define ASTREE_ADRESS 38     //nada na tac?
 
 #define ASTREE_LE 39 
 #define ASTREE_GE 40 
@@ -59,19 +58,19 @@
 #define ASTREE_EXP_LIST 48
 #define ASTREE_CMD_LIST 49
 
-#define ASTREE_PROGRAM 50
+#define ASTREE_PROGRAM 50     //nada na tac?
 #define ASTREE_DECL_LIST 51
 
 #define ASTREE_ASSIGN_VECTOR 52
 #define ASTREE_ASSIGN_VAR 53
-
-#define ASTREE_LIT 54
+   
+#define ASTREE_LIT 54            //nada na tac?
 #define ASTREE_SYMBOL_POINT 55
-#define ASTREE_SYMBOL_ADDRESS 56
+#define ASTREE_SYMBOL_ADDRESS 56  //nada na tac?
 
-#define ASTREE_PRT_LST_ST 57
-#define ASTREE_EXP 58
-#define ASTREE_PRT_LST 59
+#define ASTREE_PRT_LST_ST 57     //nada na tac?
+#define ASTREE_EXP 58           //nada na tac?
+#define ASTREE_PRT_LST 59       //nada na tac?
 
 #define DEBUG 94944040
 
