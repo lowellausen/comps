@@ -1,4 +1,5 @@
 #include "tac.h"
+#include "hash.h"
 
 TAC * tacCreate(int type, HASHNODE * res, HASHNODE * op1, HASHNODE * op2)
 {
@@ -117,7 +118,7 @@ TAC * generateCode(ASTREE * root)
 		// Process children first
 		for(i=0; i < MAXSONS; i++)
 			code[i] = generateCode(root->son[i]);
-		
+
 		switch(root->type)
 		{
 			case ASTREE_SYMBOL: return tacCreate(TAC_SYMBOL, root->symbol, 0, 0);
@@ -138,20 +139,20 @@ TAC * generateCode(ASTREE * root)
 			case ASTREE_ASSIGN_VAR: return tacJoin(code[0], tacCreate(TAC_MOVE, root->symbol, code[0] ? code[0]->res : 0, 0));
 			case ASTREE_POINTER: return tacCreate(TAC_POINTER, root->symbol, 0, 0);
 			case ASTREE_SYMBOL_POINT: return tacCreate(TAC_POINTER_ADDR, root->symbol, 0, 0);
-			
+
 			case ASTREE_VET_DECL: return tacCreate(TAC_VECTORDEC1, root->symbol, root->son[1] ? root->son[1]->symbol : 0,0);
-			case ASTREE_VET_DECL_INIT: return tacCreate(TAC_VECTORDEC2, root->symbol, code[1] ? code[1]->res : 0, code[2] ? code[2]->res : 0); 				
-			
+			case ASTREE_VET_DECL_INIT: return tacCreate(TAC_VECTORDEC2, root->symbol, code[1] ? code[1]->res : 0, code[2] ? code[2]->res : 0);
+
 			case ASTREE_POINT_DECL: return tacCreate(TAC_POINTER_DEC, root->symbol, root->son[1] ? root->son[1]->symbol : 0, 0);
 			case ASTREE_ASSIGN_VECTOR: return makeVectorAttr(root->symbol, code[0], code[1]);
 
 			case ASTREE_VAR_DECL: return tacCreate(TAC_VARDEC, 0, 0, 0);
-			
-			case ASTREE_FUNC: return makeFuncDec(root->son[0]->symbol, code[1], code[2]);		
-			/*case ASTREE_FUNCDEC_PARAMS: return makeFuncDec(root->symbol, code[1], code[2]); 
-			case ASTREE_FUNCDEC_PARAMS2: return 0;*/ 
-			
-			
+
+			case ASTREE_FUNC: return makeFuncDec(root->son[0]->symbol, code[1], code[2]);
+			/*case ASTREE_FUNCDEC_PARAMS: return makeFuncDec(root->symbol, code[1], code[2]);
+			case ASTREE_FUNCDEC_PARAMS2: return 0;*/
+
+
 			case ASTREE_CHAR:	return tacCreate(TAC_CHAR, root->symbol, 0, 0);
 			case ASTREE_INT:	return tacCreate(TAC_INT, root->symbol, 0, 0);
 			case ASTREE_FLOAT:	return tacCreate(TAC_FLOAT, root->symbol, 0, 0);
@@ -162,7 +163,7 @@ TAC * generateCode(ASTREE * root)
 
 			case ASTREE_IF: return makeIfThen(code[0], code[1]);
 			case ASTREE_IF_ELSE: return makeIfElse(code[0], code[1], code[2]);
-			
+
 			case ASTREE_BLOCK:	return code[0];
 			case ASTREE_CMD_LIST: return tacJoin(code[0],code[1]);
 
@@ -172,12 +173,12 @@ TAC * generateCode(ASTREE * root)
 			case ASTREE_PRINT: return tacJoin(code[0], tacCreate(TAC_PRINT, code[0] ? code[0]->res : 0, 0, 0));
 			case ASTREE_READ: return tacJoin(code[0], tacCreate(TAC_INPUT, root->symbol, 0, 0));
 			case ASTREE_FOR: return makeLoop(root->symbol, code[0], code[1], code[2], code[3]);
-			case ASTREE_WHILE: return makeLoopWhile(code[0], code[1], code[2]);		
-	
-	
-			//NÃO TEMOS DISTINÇÃO ENTRE PARAMETROS DE FUNÇÃO E LISTA DE EXPRESSÕES! case ASTREE_FUNCPARAMS: return makeArg(root->symbol, code[0], code[1]);????????????????????????????TODO	
+			case ASTREE_WHILE: return makeLoopWhile(code[0], code[1], code[2]);
+
+
+			//NÃO TEMOS DISTINÇÃO ENTRE PARAMETROS DE FUNÇÃO E LISTA DE EXPRESSÕES! case ASTREE_FUNCPARAMS: return makeArg(root->symbol, code[0], code[1]);????????????????????????????TODO
 			case ASTREE_FUNC_CALL: return makeFuncCall(root->symbol, code[0]);
-			
+
 			default:  return tacJoin(tacJoin(tacJoin(code[0],code[1]),code[2]),code[3]);
 			break;
 		}
@@ -191,7 +192,7 @@ TAC * generateCode(ASTREE * root)
 }
 
 TAC * makeOp(int type, TAC * code0, TAC * code1)
-{       
+{
 	return tacJoin(tacJoin(code0,code1),
 			tacCreate(type,(HASHNODE *)makeTemp(), code0 ? code0->res : 0, code1 ? code1->res : 0));
 }
@@ -255,14 +256,14 @@ TAC * makeLoop(HASHNODE * identifier, TAC * code0, TAC * code1, TAC * code2, TAC
         // JUMP LABELBEGIN
         // LABELEND
 
-	
-                                                                       //INIT  [BEGIN] [IF-EXP][JMPEND][CMD]  [INC]  [JMPBEGIN][END]               
+
+                                                                       //INIT  [BEGIN] [IF-EXP][JMPEND][CMD]  [INC]  [JMPBEGIN][END]
 	//return tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(code0, labelBegin), code1),jmpEnd),code3),code2),jmpBegin),labelEnd);
 	return tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(tacJoin(idsymb, initid), code1),jmpEnd),code3),code2),jmpBegin),labelEnd);
 }
 
 TAC * makeLoopWhile(TAC * code0, TAC * code1, TAC * code2){
-	
+
 	return 0;
 }
 
@@ -274,7 +275,7 @@ TAC * makeVectorAttr(HASHNODE * symbol, TAC * index, TAC * attr)
 	code = tacCreate(TAC_VECTOR_WRITE, symbol, index ? index->res : 0, attr ? attr->res : 0);
 
 	return tacJoin(tacJoin(index, attr), code);
-		
+
 }
 
 
@@ -302,7 +303,7 @@ TAC * makeFuncCall(HASHNODE * symbol, TAC * params)
 	TAC * new;
 	HASHNODE * temp = makeTemp();
 
-	new = tacCreate(TAC_CALL, temp, symbol, params ? params->res : 0);	
+	new = tacCreate(TAC_CALL, temp, symbol, params ? params->res : 0);
 
 	return tacJoin(params, new);
 }

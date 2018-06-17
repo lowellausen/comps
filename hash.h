@@ -12,8 +12,8 @@
 #define   DATATYPE_FLOAT	5
 #define   DATATYPE_INTEGER	6*/
 
-#define SYMBOL_VARTEMP 13	
-#define SYMBOL_LABEL 14	
+#define SYMBOL_VARTEMP 13
+#define SYMBOL_LABEL 14
 
 typedef struct hashNode{
 	char * text;
@@ -35,7 +35,7 @@ void hashPrint();
 int getHashAddress(char * text);
 HASHNODE * hashInsert(char * text, int type, int dataType);
 HASHNODE * hashSearch(char * text);
-HASHNODE * makeTemp(void);
-HASHNODE * makeLabel(void);
+HASHNODE * makeTemp();
+HASHNODE * makeLabel();
 
 #endif

@@ -38,7 +38,7 @@ int getHashAddress(char * text){
 HASHNODE * hashInsert(char * text, int type, int dataType){
 	HASHNODE * newNode = hashSearch(text);
 	int address = getHashAddress(text);
-	
+
 	if (newNode != NULL)
 		return newNode;
 	newNode = (HASHNODE *) calloc (1, sizeof(HASHNODE));
@@ -63,7 +63,7 @@ HASHNODE * hashSearch(char * text){
 	}
 	return NULL;
 }
-HASHNODE * makeTemp(void)
+HASHNODE * makeTemp()
 {
 	static int nextTemp = 0;
 	char tempName[256];
@@ -73,7 +73,7 @@ HASHNODE * makeTemp(void)
 }
 
 
-HASHNODE * makeLabel(void)
+HASHNODE * makeLabel()
 {
 	static int nextLabel = 0;
 	char labelName[256];

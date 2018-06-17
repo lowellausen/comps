@@ -1407,7 +1407,7 @@ yyreduce:
     {
         case 2:
 #line 95 "parser.y" /* yacc.c:1646  */
-    {(yyval.astree) = astreeCreate(ASTREE_PROGRAM,(yyvsp[0].astree),0,0,0,0); astreePrintTree((yyval.astree),"",1);semanticFullCheck((yyval.astree)); printf("Programa Reconhecido.\n"); 
+    {(yyval.astree) = astreeCreate(ASTREE_PROGRAM,(yyvsp[0].astree),0,0,0,0); astreePrintTree((yyval.astree),"",1);semanticFullCheck((yyval.astree)); printf("Programa Reconhecido.\n"); tacPrintListReverse(generateCode((yyvsp[0].astree))); 
               }
 #line 1413 "y.tab.c" /* yacc.c:1646  */
     break;
