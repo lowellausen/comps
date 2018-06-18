@@ -22,7 +22,7 @@ void tacPrintSingle(TAC * tac)
 
 		switch(tac->type)
 		{
-			case TAC_SYMBOL: fprintf(stderr, "TAC_SYMBOL "); break;
+			case TAC_SYMBOL: return; fprintf(stderr, "TAC_SYMBOL "); break; //poluição demais tche
 			case TAC_VECTOR:  fprintf(stderr, "TAC_VECTOR "); break;
 			case TAC_LIT: fprintf(stderr, "TAC_LIT "); break;
 			case TAC_ADD: fprintf(stderr, "TAC_ADD "); break;
@@ -41,12 +41,13 @@ void tacPrintSingle(TAC * tac)
 			case TAC_MOVE: fprintf(stderr, "TAC_MOVE "); break;
 			case TAC_POINTER: fprintf(stderr, "TAC_POINTER "); break;
 			case TAC_POINTER_ADDR: fprintf(stderr, "TAC_POINTER_ADDR "); break;
-			case TAC_VECTORDEC1: fprintf(stderr, "TAC_VECTORDEC1 "); break;
-			case TAC_VECTORDEC2: fprintf(stderr, "TAC_VECTORDEC2 "); break;
+			case TAC_VECTORDEC1: fprintf(stderr, "TAC_VECTORDEC "); break;
+			case TAC_VECTORDEC2: fprintf(stderr, "TAC_VECTORDEC_INIT "); break;
 			case TAC_POINTER_DEC_NO_INIT: fprintf(stderr, "TAC_POINTER_DEC_NO_INIT "); break;
 			case TAC_POINTER_DEC: fprintf(stderr, "TAC_POINTER_DEC "); break;
 			case TAC_VARDEC: fprintf(stderr, "TAC_VARDEC "); break;
 			case TAC_VARDEC_INIT: fprintf(stderr, "TAC_VARDEC_INIT "); break;
+			case TAC_VARDEC_PARAM: fprintf(stderr, "TAC_VARDEC_PARAM "); break;
 			case TAC_FUNCDEC: fprintf(stderr, "TAC_FUNDEC "); break;
 			case TAC_FUNCDEC_PARAMS: fprintf(stderr, "TAC_FUNDEC_PARAMS "); break;
 			case TAC_FUNCDEC_PARAMS2: fprintf(stderr, "TAC_FUNDEC_PARAMS2 "); break;
@@ -60,7 +61,7 @@ void tacPrintSingle(TAC * tac)
 			case TAC_PRINT: fprintf(stderr, "TAC_PRINT "); break;
 			case TAC_INPUT: fprintf(stderr, "TAC_INPUT "); break;
 			case TAC_VECTOR_WRITE: fprintf(stderr, "TAC_VECTOR_WRITE "); break;
-			case TAC_ARG: fprintf(stderr, "TAC_ARG "); break;
+			case TAC_ARG: return ;fprintf(stderr, "TAC_ARG "); break; // estranho tbm
 			case TAC_CALL: fprintf(stderr, "TAC_CALL "); break;
 			case TAC_FUNDEC: fprintf(stderr, "TAC_FUNDEC "); break;
 			case TAC_JUMP: fprintf(stderr, "TAC_JUMP "); break;
@@ -141,21 +142,20 @@ TAC * generateCode(ASTREE * root)
 			case ASTREE_SYMBOL_POINT: return tacCreate(TAC_POINTER_ADDR, root->symbol, 0, 0);
 
 			case ASTREE_VET_DECL: return tacCreate(TAC_VECTORDEC1, root->symbol, root->son[1] ? root->son[1]->symbol : 0,0);
-			case ASTREE_VET_DECL_INIT: return tacCreate(TAC_VECTORDEC2, root->symbol, code[1] ? code[1]->res : 0, code[2] ? code[2]->res : 0);
+			case ASTREE_VET_DECL_INIT: return tacCreate(TAC_VECTORDEC2, root->symbol, root->son[1] ? root->son[1]->symbol : 0, code[2] ? code[2]->res : 0);
 
 			case ASTREE_POINT_DECL: return tacCreate(TAC_POINTER_DEC, root->symbol, root->son[1] ? root->son[1]->symbol : 0, 0);
 			case ASTREE_ASSIGN_VECTOR: return makeVectorAttr(root->symbol, code[0], code[1]);
 
 			case ASTREE_VAR_DECL: return tacCreate(TAC_VARDEC_INIT, root->symbol,root->son[1]->symbol, 0);
+            case ASTREE_PARAM: return tacCreate(TAC_VARDEC_PARAM, root->symbol,(HASHNODE*)root->son[1], 0);
 
-			case ASTREE_FUNC: return makeFuncDec(root->son[0]->symbol, code[1], code[2]);
-			/*case ASTREE_FUNCDEC_PARAMS: return makeFuncDec(root->symbol, code[1], code[2]);
-			case ASTREE_FUNCDEC_PARAMS2: return 0;*/
+			case ASTREE_FUNC: return makeFuncDec(root->symbol, code[1], code[2]);
 
 
-			case ASTREE_CHAR:	return tacCreate(TAC_CHAR, root->symbol, 0, 0);
+			/*case ASTREE_CHAR:	return tacCreate(TAC_CHAR, root->symbol, 0, 0);
 			case ASTREE_INT:	return tacCreate(TAC_INT, root->symbol, 0, 0);
-			case ASTREE_FLOAT:	return tacCreate(TAC_FLOAT, root->symbol, 0, 0);
+			case ASTREE_FLOAT:	return tacCreate(TAC_FLOAT, root->symbol, 0, 0);*/
 
 			case ASTREE_DECL_LIST: return tacJoin(code[0], code[1]);
 
@@ -166,6 +166,7 @@ TAC * generateCode(ASTREE * root)
 
 			case ASTREE_BLOCK:	return code[0];
 			case ASTREE_CMD_LIST: return tacJoin(code[0],code[1]);
+			case ASTREE_SYMBOL_LIST: return tacJoin(code[0],code[1]);
 
 			// ANTIGO case ASTREE_OUTPUT_PARAM:
 			case ASTREE_EXP_LIST: return tacJoin(code[0],makeArg(root->symbol, code[0], code[1]));

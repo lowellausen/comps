@@ -32,7 +32,8 @@
 #define TAC_POINTER_DEC_NO_INIT 21
 #define TAC_POINTER_DEC 22
 #define TAC_VARDEC_INIT 23
-#define TAC_FUNCDEC 24	
+#define TAC_VARDEC_PARAM 55
+#define TAC_FUNCDEC 24
 #define TAC_FUNCDEC_PARAMS 25
 #define TAC_FUNCDEC_PARAMS2 26
 #define TAC_VECTOR_INIT 27
@@ -47,7 +48,7 @@
 #define TAC_VECTOR_WRITE 36
 #define TAC_ARG 37
 #define TAC_CALL 38
-#define TAC_FUNDEC 39 
+#define TAC_FUNDEC 39
 #define TAC_JUMP 40
 #define TAC_LABEL 41
 #define TAC_TEMP 42

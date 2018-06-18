@@ -68,7 +68,7 @@ HASHNODE * makeTemp()
 	static int nextTemp = 0;
 	char tempName[256];
 
-	sprintf(tempName,"Temp%d", nextTemp++);
+	sprintf(tempName,"Tempey%d", nextTemp++);
 	return hashInsert(tempName,SYMBOL_VARTEMP,0);
 }
 
@@ -78,7 +78,7 @@ HASHNODE * makeLabel()
 	static int nextLabel = 0;
 	char labelName[256];
 
-	sprintf(labelName, "Label%d", nextLabel++);
+	sprintf(labelName, "LaBelly%d", nextLabel++);
 	return hashInsert(labelName, SYMBOL_LABEL,0);
 }
 
