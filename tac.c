@@ -142,7 +142,7 @@ TAC * generateCode(ASTREE * root)
 			case ASTREE_SYMBOL_POINT: return tacCreate(TAC_POINTER_ADDR, root->symbol, 0, 0);
 
 			case ASTREE_VET_DECL: return tacCreate(TAC_VECTORDEC1, root->symbol, root->son[1] ? root->son[1]->symbol : 0,0);
-			case ASTREE_VET_DECL_INIT: return tacCreate(TAC_VECTORDEC2, root->symbol, root->son[1] ? root->son[1]->symbol : 0, code[2] ? code[2]->res : 0);
+			case ASTREE_VET_DECL_INIT: return tacCreate(TAC_VECTORDEC2, root->symbol, root->son[1] ? root->son[1]->symbol : 0, 0);
 
 			case ASTREE_POINT_DECL: return tacCreate(TAC_POINTER_DEC, root->symbol, root->son[1] ? root->son[1]->symbol : 0, 0);
 			case ASTREE_ASSIGN_VECTOR: return makeVectorAttr(root->symbol, code[0], code[1]);
