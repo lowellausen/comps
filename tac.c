@@ -146,7 +146,7 @@ TAC * generateCode(ASTREE * root)
 			case ASTREE_POINT_DECL: return tacCreate(TAC_POINTER_DEC, root->symbol, root->son[1] ? root->son[1]->symbol : 0, 0);
 			case ASTREE_ASSIGN_VECTOR: return makeVectorAttr(root->symbol, code[0], code[1]);
 
-			case ASTREE_VAR_DECL: return tacCreate(TAC_VARDEC, 0, 0, 0);
+			case ASTREE_VAR_DECL: return tacCreate(TAC_VARDEC_INIT, root->symbol,root->son[1]->symbol, 0);
 
 			case ASTREE_FUNC: return makeFuncDec(root->son[0]->symbol, code[1], code[2]);
 			/*case ASTREE_FUNCDEC_PARAMS: return makeFuncDec(root->symbol, code[1], code[2]);
@@ -264,7 +264,13 @@ TAC * makeLoop(HASHNODE * identifier, TAC * code0, TAC * code1, TAC * code2, TAC
 
 TAC * makeLoopWhile(TAC * code0, TAC * code1, TAC * code2){
 
-	return 0;
+    HASHNODE *beginLabel = makeLabel();
+    HASHNODE *endLabel = makeLabel();
+    TAC* tacBeginLabel = tacCreate(TAC_LABEL, beginLabel,0, 0);
+    TAC *tacEndLabel = tacCreate(TAC_LABEL, endLabel,0, 0);
+    TAC *j0 = tacCreate(TAC_IFZ, endLabel, code0?code0->res:0, NULL);
+    TAC *j1 = tacCreate(TAC_JUMP, beginLabel,0,0);
+    return tacJoin(tacBeginLabel,tacJoin(code0,tacJoin(j0,tacJoin(code1,tacJoin(j1,tacEndLabel)))));
 }
 
 
