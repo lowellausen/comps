@@ -5,6 +5,7 @@
 #include "astree.h"
 #include "semantics.h"
 #include "tac.h"
+#include "asm.h"
 
 extern int lineCount;
 
@@ -93,7 +94,10 @@ extern int lineCount;
 
 %%
 
-program: code {$$ = astreeCreate(ASTREE_PROGRAM,$1,0,0,0,0); astreePrintTree($$,"",1);semanticFullCheck($$); printf("Programa Reconhecido.\n"); tacPrintListReverse(generateCode($1));
+program: code {$$ = astreeCreate(ASTREE_PROGRAM,$1,0,0,0,0); astreePrintTree($$,"",1);
+semanticFullCheck($$); printf("Programa Reconhecido.\n");
+TAC * tac = generateCode($1);
+tacPrintListReverse(tac); writeToFile("program.s", generateAsm(tacGetFirst(tac)));
               };
 
 code: var code { $$ = astreeCreate(ASTREE_DECL_LIST,$1,$2,0,0,0);}

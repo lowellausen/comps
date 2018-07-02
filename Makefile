@@ -14,7 +14,7 @@ hash.o:	hash.c
 tac.o:	tac.c
 	gcc -g -gdwarf -c tac.c
 asm.o:	asm.c
-	gcc -w -g -gdwarf -c asm.c
+	gcc  -g -gdwarf -c asm.c
 semantics.o:	semantics.c
 	gcc -g -gdwarf -c semantics.c
 astree.o: astree.c

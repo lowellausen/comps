@@ -4,6 +4,24 @@ int printNumber = 0;
 int boolLabelCount = 0;
 int declaredTemps[200];
 
+
+int writeToFile(char* path, char* programString)
+{
+	FILE* file;
+
+	file = fopen(path,"w");
+
+	if(file == NULL)
+	{
+		fprintf(stderr,"ERROR: Couldn't open %s\n",path);
+		exit(1);
+	}
+
+	fprintf(file,"%s",programString);
+
+	return 1;
+}
+
 void initDeclaredTemps()
 {
   int i;
@@ -39,7 +57,7 @@ void asmVecdec(TAC* tac, char* asmString0, char* asmString1, char* tempString)
       }else{
         if(tacTemp->res->type == SYMBOL_LIT_CHAR)
         {
-          char* charValue[40];
+          char charValue[40];
           sprintf(charValue , "%d", tacTemp->res->text[1]);
           strcat(tempString, "	.byte ");
           strcat(tempString, charValue);
@@ -78,7 +96,7 @@ void asmVardec(TAC* tac, char* asmString0, char* asmString1, char* tempString)
   }else{
     if(tac->op1->type == SYMBOL_LIT_CHAR)
     {
-      char* charValue[40];
+      char charValue[40];
       sprintf(charValue , "%d", tac->op1->text[1]);
       sprintf(tempString, " .globl	%s\n .type	%s, @object\n .size	%s, 1\n%s:\n  .byte	%s\n",  tac->res->text,tac->res->text,tac->res->text,tac->res->text, charValue);
 
@@ -100,7 +118,7 @@ void asmReturn(TAC* tac, char* asmString0, char* asmString1, char* tempString)
 {
   strcat(asmString1, "\n## TAC_RETURN\n");
   if (isdigit(tac->op1->text[0])){
-    char* charValue[40];
+    char charValue[40];
     sprintf(charValue , "%d", tac->op1->text);
     sprintf(tempString, "	movl	$%s, %%eax",tac->op1->text);
     strcat(asmString1, tempString);
@@ -461,9 +479,9 @@ char* generateAsm (TAC* first)
   //recebe uma corrente de TACs
   // e gera uma string
   // que eh o programa em assembly
-  char* asmString0[ASM_STRING_SIZE]; //declaracoes assembly
-  char* asmString1[ASM_STRING_SIZE];
-  char* tempString[ASM_STRING_SIZE];
+  char asmString0[ASM_STRING_SIZE]; //declaracoes assembly
+  char asmString1[ASM_STRING_SIZE];
+  char tempString[ASM_STRING_SIZE];
 
   strcat(asmString0, "###\n### string0\n	.data\n");
   strcat(asmString1, "###\n###\n###\n###\n### string1\n	.text\n");
