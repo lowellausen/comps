@@ -294,8 +294,8 @@ TAC * makeLoopWhile(TAC * code0, TAC * code1, TAC * code2){
     HASHNODE *endLabel = makeLabel();
     TAC* tacBeginLabel = tacCreate(TAC_LABEL, beginLabel,0, 0);
     TAC *tacEndLabel = tacCreate(TAC_LABEL, endLabel,0, 0);
-    TAC *j0 = tacCreate(TAC_IFZ, endLabel, code0?code0->res:0, NULL);
-    TAC *j1 = tacCreate(TAC_JUMP, beginLabel,0,0);
+    TAC *j0 = tacCreate(TAC_IFZ, code0?code0->res:0, endLabel, 0);
+    TAC *j1 = tacCreate(TAC_JUMP,0, beginLabel,0);
     return tacJoin(tacBeginLabel,tacJoin(code0,tacJoin(j0,tacJoin(code1,tacJoin(j1,tacEndLabel)))));
 }
 
