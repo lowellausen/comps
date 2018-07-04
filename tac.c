@@ -253,7 +253,7 @@ TAC * makeIfElse(TAC * code0, TAC * code1, TAC * code2)
 	// LABEL
 
 	newLabel = makeLabel();
-	tacIfElse = tacCreate(TAC_IFZ, 0, code0 ? code0->res : 0, newLabel);
+	tacIfElse = tacCreate(TAC_IFZ, code0 ? code0->res : 0, newLabel, 0);
 	tacLabel = tacCreate(TAC_LABEL, newLabel, 0, 0);
 	return tacJoin(tacJoin(tacJoin(tacJoin(code0, tacIfElse), code1), tacLabel), code2);
 }
@@ -270,7 +270,7 @@ TAC * makeLoop(HASHNODE * identifier, TAC * code0, TAC * code1, TAC * code2, TAC
 	TAC * initid = tacJoin(code0, tacCreate(TAC_MOVE, identifier, code0 ? code0->res : 0, 0));
 
 	TAC * jmpBegin = tacCreate(TAC_JUMP, 0, loopLabelBegin, 0);
-	TAC * jmpEnd = tacCreate(TAC_IFZ, 0, loopLabelEnd, code1 ? code1->res : 0);
+	TAC * jmpEnd = tacCreate(TAC_IFZ, code1 ? code1->res : 0, loopLabelEnd, 0);
 
 
         // INIT
