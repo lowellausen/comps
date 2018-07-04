@@ -23,7 +23,7 @@
 #define TAC_AND 14
 #define TAC_OR 15
 #define TAC_NOT 50
-#define TAC_MOVE     16
+#define TAC_MOVE 16
 
 #define TAC_POINTER 17
 #define TAC_POINTER_ADDR 18
@@ -41,7 +41,7 @@
 #define TAC_FLOAT 29
 #define TAC_CHAR 30
 #define TAC_IFZ 31
-#define TAC_IFNZ 32    // WARNING NÃO É USADA MAS TALVEZ PRECISE SER
+#define TAC_IFNZ 32
 #define TAC_RETURN 33
 #define TAC_PRINT 34
 #define TAC_INPUT 35
@@ -55,11 +55,6 @@
 #define TAC_BEGINFUNC 43
 #define TAC_ENDFUNC 44
 #define TAC_VECTOR_READ 45
-#define TAC_VECTORDEC_INIT 152
-#define TAC_INC 155  //TALVEZ PRECISE USAR???
-#define TAC_IFN 156   //TALVEZ TBM
-#define TAC_PRINTELEMENT 158
-#define TAC_JUMPFALSE 160
 
 #define TAC_VARDEC 46
 
@@ -71,7 +66,6 @@ typedef struct tac_node
 	HASHNODE * op1;
 	HASHNODE * op2;
 	struct tac_node * prev;
-	struct tac_node * next;
 } TAC;
 
 

@@ -11,22 +11,9 @@ TAC * tacCreate(int type, HASHNODE * res, HASHNODE * op1, HASHNODE * op2)
 	newTac->op1 = op1;
 	newTac->op2 = op2;
 	newTac->prev = 0;
-    newTac->next = 0;
 	return newTac;
 }
 
-TAC* tacGetFirst(TAC* tac)
-{
-  // get first tac of a tac chain
-  if(!tac->prev)
-  { //eh o primeiro tac
-    return tac;
-  }
-  else
-  { //ainda nao eh o primeiro tac
-    return tacGetFirst(tac->prev);
-  }
-}
 
 void tacPrintSingle(TAC * tac)
 {
@@ -65,7 +52,6 @@ void tacPrintSingle(TAC * tac)
 			case TAC_FUNCDEC_PARAMS: fprintf(stderr, "TAC_FUNDEC_PARAMS "); break;
 			case TAC_FUNCDEC_PARAMS2: fprintf(stderr, "TAC_FUNDEC_PARAMS2 "); break;
 			case TAC_VECTOR_INIT: fprintf(stderr, "TAC_VECTOR_INIT "); break;
-			case TAC_VECTORDEC_INIT: fprintf(stderr, "TAC_VECTORDEC_INIT "); break;
 			case TAC_CHAR: fprintf(stderr, "TAC_CHAR "); break;
 			case TAC_INT: fprintf(stderr, "TAC_INT "); break;
 			case TAC_FLOAT: fprintf(stderr, "TAC_FLOAT "); break;
@@ -97,18 +83,6 @@ void tacPrintSingle(TAC * tac)
 	}
 }
 
-TAC * tacReverse(TAC * tac)
-{
-	if(tac == 0)
-		return;
-
-	TAC * aux;
-
-	for(aux = tac; aux->prev; aux = aux->prev)
-		aux->prev->next = aux;
-
-	return aux;
-}
 
 void tacPrintListReverse(TAC * tac)
 {
@@ -117,15 +91,6 @@ void tacPrintListReverse(TAC * tac)
 		tacPrintListReverse(tac->prev);
 		tacPrintSingle(tac);
 	}
-}
-void tacPrintList(TAC * tac)
-{
-	if(tac != 0)
-	{
-		tacPrintSingle(tac);
-		tacPrintList(tac->next);
-	}
-
 }
 
 TAC * tacJoin(TAC * l1, TAC * l2)
@@ -177,7 +142,7 @@ TAC * generateCode(ASTREE * root)
 			case ASTREE_SYMBOL_POINT: return tacCreate(TAC_POINTER_ADDR, root->symbol, 0, 0);
 
 			case ASTREE_VET_DECL: return tacCreate(TAC_VECTORDEC1, root->symbol, root->son[1] ? root->son[1]->symbol : 0,0);
-			case ASTREE_VET_DECL_INIT: return tacJoin(tacCreate(TAC_VECTORDEC_INIT, root->symbol, root->son[1] ? root->son[1]->symbol : 0, code[2] ? code[2]->res : 0),root->son[2]->symbol);
+			case ASTREE_VET_DECL_INIT: return tacCreate(TAC_VECTORDEC2, root->symbol, root->son[1] ? root->son[1]->symbol : 0, 0);
 
 			case ASTREE_POINT_DECL: return tacCreate(TAC_POINTER_DEC, root->symbol, root->son[1] ? root->son[1]->symbol : 0, 0);
 			case ASTREE_ASSIGN_VECTOR: return makeVectorAttr(root->symbol, code[0], code[1]);

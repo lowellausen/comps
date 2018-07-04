@@ -102,7 +102,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 22 "parser.y" /* yacc.c:1909  */
+#line 21 "parser.y" /* yacc.c:1909  */
 ASTREE *astree;
 	HASHNODE *symbol;
 	

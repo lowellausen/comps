@@ -7,14 +7,12 @@
 # and #include "main.c" in the last part of the scanner.l
 #
 
-etapa6: y.tab.o lex.yy.o main.o hash.o semantics.o astree.o tac.o y.tab.o asm.o
-	gcc -g -gdwarf -o etapa6 lex.yy.o main.o hash.o semantics.o astree.o asm.o tac.o y.tab.o
+etapa5: y.tab.o lex.yy.o main.o hash.o semantics.o astree.o tac.o y.tab.o 
+	gcc -g -gdwarf -o etapa5 lex.yy.o main.o hash.o semantics.o astree.o tac.o y.tab.o
 hash.o:	hash.c
 	gcc -g -gdwarf -c hash.c
 tac.o:	tac.c
 	gcc -g -gdwarf -c tac.c
-asm.o:	asm.c
-	gcc  -g -gdwarf -c asm.c
 semantics.o:	semantics.c
 	gcc -g -gdwarf -c semantics.c
 astree.o: astree.c
@@ -22,7 +20,7 @@ astree.o: astree.c
 main.o: main.c
 	gcc -g -gdwarf -c main.c
 lex.yy.o: lex.yy.c
-	gcc -g -gdwarf -c lex.yy.c
+	gcc -g -gdwarf -c lex.yy.c 
 lex.yy.c: scanner.l
 	lex scanner.l
 y.tab.o: y.tab.c
@@ -30,12 +28,12 @@ y.tab.o: y.tab.c
 y.tab.c: parser.y
 	yacc -d -v parser.y
 
-run: etapa6
-	./etapa6
+run: etapa5
+	./etapa5
 
-file: etapa6
-	./etapa6 code.test out.test
+file: etapa5
+	./etapa5 code.test out.test
 
 
 clean:
-	rm lex.yy.c lex.yy.o main.o hash.o y.tab.h y.tab.c y.tab.o etapa6 astree.o semantics.o tac.o asm.o
+	rm lex.yy.c lex.yy.o main.o hash.o y.tab.h y.tab.c y.tab.o etapa5 astree.o semantics.o tac.o
