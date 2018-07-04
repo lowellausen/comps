@@ -66,6 +66,7 @@ typedef struct tac_node
 	HASHNODE * op1;
 	HASHNODE * op2;
 	struct tac_node * prev;
+	struct tac_node * next;
 } TAC;
 
 

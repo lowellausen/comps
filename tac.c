@@ -11,6 +11,7 @@ TAC * tacCreate(int type, HASHNODE * res, HASHNODE * op1, HASHNODE * op2)
 	newTac->op1 = op1;
 	newTac->op2 = op2;
 	newTac->prev = 0;
+	newTac->next = 0;
 	return newTac;
 }
 
@@ -93,6 +94,29 @@ void tacPrintListReverse(TAC * tac)
 	}
 }
 
+void tacPrintList(TAC * tac)
+{
+	if(tac != 0)
+	{
+		tacPrintSingle(tac);
+		tacPrintList(tac->next);
+	}
+
+}
+
+TAC * tacReverse(TAC * tac)
+{
+	if(tac == 0)
+		return;
+
+	TAC * aux;
+
+	for(aux = tac; aux->prev; aux = aux->prev)
+		aux->prev->next = aux;
+
+	return aux;
+}
+
 TAC * tacJoin(TAC * l1, TAC * l2)
 {
 	TAC * aux;
@@ -100,8 +124,9 @@ TAC * tacJoin(TAC * l1, TAC * l2)
 	if(l1 == 0) return l2;
 	if(l2 == 0) return l1;
 
-	for(aux = l2 ; aux->prev != 0 ; aux = aux->prev){}
-
+	for(aux = l2 ; aux->prev != 0 ; aux = aux->prev)
+	{
+	}
 
 	aux->prev = l1;
 	return l2;

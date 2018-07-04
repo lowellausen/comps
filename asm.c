@@ -1,619 +1,846 @@
 #include "asm.h"
+#include "hash.h"
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 
-int printNumber = 0;
-int boolLabelCount = 0;
-int declaredTemps[200];
 
 
-int writeToFile(char* path, char* programString)
+int LFBcount = 0;
+int LFEcount = 0;
+int LCcount = 0;
+
+int inStrDCount = -1;
+int inStrCCount = -1;
+int firstVarInit = 0;
+int vectorInitVarCount = 0;
+int vectorInitSize = 0;
+int vectorIsWord = 0;
+
+
+void generateASM(TAC * tac)
 {
-	FILE* file;
+	FILE * out;
+	out = fopen("asm.s", "w");
 
-	file = fopen(path,"w");
+	fprintf(out, "\t.data\n");
 
-	if(file == NULL)
+	generateDeclarations(tac, out);
+	generateStrDec(tac, out);
+
+	fprintf(out, "\t.text\n");
+
+	generateInstr(tac, out);
+
+
+	fclose(out);
+}
+
+void generateInstr(TAC * tac, FILE * out)
+{
+	LCcount = 0;
+
+	if(tac == 0)
+		return;
+
+	TAC * firstTac = tac;
+	TAC * aux;
+	TAC * aux2, *aux3;
+
+	int numArgs = 0;
+	int numArgsPrint = 0;
+	int beginFuncArgs = 0;
+	int espOffset=0;
+	int i;
+	char tempString[100];
+
+	for(; tac; tac = tac->next)
 	{
-		fprintf(stderr,"ERROR: Couldn't open %s\n",path);
-		exit(1);
+		switch(tac->type)
+		{
+			      case TAC_BEGINFUNC:
+					beginFuncArgs = 0;
+
+
+					if(!strcmp(tac->res->text,"main")) //Se for a main
+					{
+						fprintf(out,
+							"\t.globl	main\n"
+							"\t.type	main, @function\n"
+							"main:\n"
+							".LFB%d:\n"		// Aux counter
+							"\tpushl	%%ebp\n"
+							"\tmovl	%%esp, %%ebp\n"
+							"\tandl	$-16, %%esp\n"
+						, LFBcount++);
+					}
+
+					else
+					{
+						aux = tac->next;
+						/*if(aux->type == TAC_HEADER)
+						{
+							aux2=aux=aux->next;
+							while(aux->type  == TAC_FUNCDEC_PARAMS2)
+							{
+								beginFuncArgs++;
+								aux=aux->next;
+							}
+						}*/ //ver aqui
+
+
+						fprintf(out,
+							"\t.globl	%s\n"
+							"%s:\n"
+							".LFB%d:\n"		// Aux counter
+							"\tpushl	%%ebp\n"
+							"\tmovl	%%esp, %%ebp\n"
+							, tac->res->text, tac->res->text, LFBcount++);
+						if(beginFuncArgs > 0)
+						{
+							sprintf (tempString, "%d", beginFuncArgs*4);
+							fprintf(out,
+								"\tsubl	$%s, %%esp\n"
+								,tempString);
+							aux = aux2; //(primeiro argumento)
+							for(i = 0; i < beginFuncArgs; i++, aux=aux->next)
+							{
+								sprintf (tempString, "%d", i*4+8);
+								fprintf(out,
+									"\tmovl	%s(%%ebp), %%eax\n"
+									,tempString);
+								sprintf (tempString, "%d", i*(-4)-4);
+								fprintf(out,
+									"\tmovw	%%ax, %s(%%ebp)\n"
+									"\tmovw	%%ax, %s\n"
+									,tempString,aux->res->text);
+							}
+						}
+
+					}
+				break;
+
+				case TAC_ENDFUNC:
+					if(!strcmp(tac->res->text,"main"))
+						fprintf(out,
+							"\tleave\n"
+							"\tret\n"
+							".LFE%d:\n"
+							".size	main, .-main\n"
+						, LFEcount++);
+					else
+						fprintf(out,
+							"\tleave\n"
+							"\tret\n"
+							".LFE%d:\n"
+							".size	%s, .-%s\n"
+						, LFEcount++, tac->res->text, tac->res->text);
+				break;
+
+				case TAC_CALL:
+					espOffset = 0;
+					numArgs = 0;
+					aux=tac->prev;
+					while(aux)
+					{
+						printf("aux 22=%d\n",aux->type);
+						if(aux->type == TAC_ARG)
+							numArgs++;
+						if(aux->type == TAC_ARG || aux->type == TAC_SYMBOL)
+						{
+							aux=aux->prev;
+						}
+						else
+						{
+							aux=aux->next;
+							break;
+						}
+					}
+					if(numArgs>0)
+						fprintf(out,
+								"\tsubl	$%d, %%esp\n"
+							, numArgs*4);
+					aux2=aux;
+					while(aux2 && (aux2->type == TAC_ARG || aux2->type == TAC_SYMBOL))
+					{
+						if(aux2->type == TAC_ARG)
+						{
+
+							if(espOffset > 0)
+								fprintf(out,
+									"\tmovl	$%s, %d(%%esp)\n"
+								,aux2->op1->text, espOffset);
+							else
+								fprintf(out,
+									"\tmovl	$%s, (%%esp)\n"
+								,aux2->op1->text);
+							espOffset += 4;
+						}
+						if(aux2->type != TAC_ARG && aux2->type != TAC_SYMBOL)
+							break;
+						aux2=aux2->next;
+					}
+
+
+					fprintf(out,
+						"\tcall\t%s\n"
+						"\tmovw	%%ax, %s\n"
+					, tac->op1->text, tac->res->text);	// function name, return value
+				break;
+
+				case TAC_RETURN:
+					if(tac->res)
+					if(tac->res->type == SYMBOL_IDENTIFIER || tac->res->type == SYMBOL_VARTEMP)
+						fprintf(out,"\tmovzwl	%s, %%eax\n", tac->res->text);
+					else
+						fprintf(out,"\tmovl	$%s, %%eax\n", tac->res->text);
+				break;
+
+				case TAC_MOVE:
+					// mov a,b (a = b)
+					printf("type=%d name=%s\n",tac->op1->type,tac->op1->text);
+					if((tac->op1->type == SYMBOL_IDENTIFIER || tac->op1->type == SYMBOL_VARTEMP))
+					{
+						fprintf(out,"\tmovw	%s, %%ax\n", tac->op1->text);
+						fprintf(out,"\tmovw	%%ax, %s\n", tac->res->text);
+					}
+					else
+					{
+						if (!strcmp(tac->op1->text,"TRUE"))
+							fprintf(out,"\tmovb	$1, %s\n", tac->res->text);
+						else
+						if (!strcmp(tac->op1->text,"FALSE"))
+							fprintf(out,"\tmovb	$0, %s\n", tac->res->text);
+						else
+					   		fprintf(out,"\tmovw	$%s, %s\n", tac->op1->text,tac->res->text);
+					}
+				break;
+
+				case TAC_PRINT:
+
+				for(aux = tac->prev; aux->type == TAC_ARG ||
+						aux->type == TAC_SYMBOL ||
+						aux->type == TAC_TEMP ||
+						aux->type == TAC_VECTOR_READ; aux = aux->prev)
+					;
+
+   			        numArgsPrint=0;
+				for(aux = aux->next ; aux != tac ; aux = aux->next)
+				{
+					if(aux->type == TAC_ARG)
+					{
+						numArgsPrint++;
+						printf("numargsprint=%d\n",numArgsPrint);
+
+						if(aux->op1->type == SYMBOL_LIT_STRING && strcmp(aux->op1->text,"%c") && strcmp(aux->op1->text,"%d"))
+							fprintf(out,
+								"\tmovl	$.LC%d, %%eax\n"
+								"\tmovl	%%eax, (%%esp)\n"
+								"\tcall	printf\n"
+							,LCcount++);
+						else if(aux->op1->dataType == DATATYPE_ASTREE_INTEGER || aux->op1->dataType == DATATYPE_ASTREE_INTEGER || aux->op1->dataType == DATATYPE_ASTREE_BOOLEAN || aux->op1->type == SYMBOL_VARTEMP)
+							if(aux->op1->natureza == SYMBOL_PTR && aux->prev->type == TAC_POINTER)
+								;
+							else
+							{
+								if(aux->op1->dataType == DATATYPE_ASTREE_INTEGER)
+									fprintf(out,
+									"\tmovzbl	%s, %%eax\n"
+									"\tcwtl\n"
+									"\tmovl	%%eax, 4(%%esp)\n"
+									"\tmovl	$.LCD0, (%%esp)\n"
+									"\tcall	printf\n"
+									,aux->op1->text);
+								else
+									fprintf(out,
+									"\tmovzwl	%s, %%eax\n"
+									"\tcwtl\n"
+									"\tmovl	%%eax, 4(%%esp)\n"
+									"\tmovl	$.LCD0, (%%esp)\n"
+									"\tcall	printf\n"
+									,aux->op1->text);
+							}
+
+					}
+
+				}
+			break;
+
+			case TAC_VECTOR_READ:
+				if(tac->op1)
+				{
+					if(tac->op1->dataType == DATATYPE_ASTREE_INTEGER || tac->op1->dataType == DATATYPE_ASTREE_BOOLEAN)
+						sprintf (tempString, "%d", atoi(tac->op2->text));
+					else
+						sprintf (tempString, "%d", atoi(tac->op2->text)*2);
+					if(tac->res)
+						fprintf(out,
+							"\tmovzwl	%s+%s,  %%eax\n"
+							"\tmovl	%%eax, %s\n"
+							, tac->op1->text,tempString,tac->res->text);
+				}
+			break;
+
+			case TAC_VECTOR_WRITE:
+				if(tac->op1)
+				{
+					if(tac->op1->dataType == DATATYPE_ASTREE_INTEGER || tac->op1->dataType == DATATYPE_ASTREE_BOOLEAN)
+						sprintf (tempString, "%d", atoi(tac->op1->text));
+					else
+						sprintf (tempString, "%d", atoi(tac->op1->text)*2);
+					if(tac->res)
+						if(tac->op2->type == SYMBOL_IDENTIFIER)
+							fprintf(out,
+								"\tmovzwl	%s,  %%eax\n"
+								"\tmovl	%%eax, %s+%s\n"
+								, tac->op2->text,tac->res->text,tempString);
+						else
+							fprintf(out,
+								"\tmovw	$%s,  %s+%s\n"
+								, tac->op2->text,tac->res->text,tempString);
+				}
+			break;
+
+			case TAC_ADD:
+				generateAdd(tac, out);
+			break;
+
+			case TAC_SUB:
+				generateSub(tac, out);
+			break;
+
+			case TAC_MUL:
+				generateMul(tac, out);
+			break;
+
+			case TAC_EQ:
+			case TAC_LE:
+			case TAC_GE:
+			case TAC_NE:
+			case TAC_GREATER:
+			case TAC_LESS:
+					generateBoolOp(tac, out);
+					break;
+
+			case TAC_AND:
+			case TAC_OR:
+				if(tac->type==TAC_OR)
+					strcpy(tempString,"\torb	%ah,  %al\n");
+				else
+					strcpy(tempString,"\tandb	%ah,  %al\n");
+
+				if(tac->op1->type == SYMBOL_LIT_STRING && tac->op2->type != SYMBOL_LIT_STRING)
+				{
+					if(!strcmp(tac->op1->text,"TRUE"))
+						fprintf(out,
+							"\tmovb	$1,  %%al\n");
+					else
+						fprintf(out,
+							"\tmovb	$0,  %%al\n");
+					fprintf(out,
+						"\tmovb	%s,  %%ah\n"
+						"%s"
+						"\tmovb %%al, %s\n"
+						,tac->op2->text,tempString,tac->res->text);
+				}
+				else
+				if(tac->op1->type != SYMBOL_LIT_STRING && tac->op2->type == SYMBOL_LIT_STRING)
+				{
+					fprintf(out,
+						"\tmovb	%s,  %%al\n"
+						, tac->op1->text);
+					if(!strcmp(tac->op2->text,"TRUE"))
+						fprintf(out,
+							"\tmovb	$1,  %%ah\n");
+					else
+						fprintf(out,
+							"\tmovb	$0,  %%ah\n");
+					fprintf(out,
+						"%s"
+						"\tmovb %%al, %s\n"
+						,tempString,tac->res->text);
+				}
+				else
+				if(tac->op1->type == SYMBOL_LIT_STRING && tac->op2->type == SYMBOL_LIT_STRING)
+				{
+					if(!strcmp(tac->op1->text,"TRUE"))
+						fprintf(out,
+							"\tmovb	$1,  %%al\n");
+					else
+						fprintf(out,
+							"\tmovb	$0,  %%al\n");
+
+					if(!strcmp(tac->op2->text,"TRUE"))
+						fprintf(out,
+							"\tmovb	$1,  %%ah\n");
+					else
+						fprintf(out,
+							"\tmovb	$0,  %%ah\n");
+					fprintf(out,
+						"%s"
+						"\tmovb %%al, %s\n"
+						,tempString,tac->res->text);
+				}
+				else
+				{
+					fprintf(out,
+						"\tmovb	%s,  %%al\n"
+						"\tmovb	%s,  %%ah\n"
+						"%s"
+						"\tmovb %%al, %s\n"
+						, tac->op1->text,tac->op2->text, tempString,tac->res->text);
+				}
+			break;
+
+
+			case TAC_LABEL:
+			//printf("antes do label\n");
+				fprintf(out,
+					"%s:\n"
+				, tac->res->text);
+			//printf("depois do label\n");
+			break;
+
+			case TAC_JUMP:
+			//printf("antes do jump\n");
+				fprintf(out,
+					"\tjmp	%s\n"
+				, tac->op1->text);
+			//printf("depois do jump\n");
+			break;
+
+			case TAC_IFZ:
+			//printf("antes do ifz\n");
+				fprintf(out,
+					"\tmovw	%s,%%ax\n"
+					"\ttestw	%%ax,%%ax\n"
+					"\tjz	%s\n"
+				, tac->res->text, tac->op1->text);
+			//printf("depois do ifz\n");
+			break;
+
+			case TAC_IFNZ:
+				fprintf(out,
+					"\tmovw	%s,%%ax\n"
+					"\ttestw	%%ax,%%ax\n"
+					"\tjnz	%s\n"
+				, tac->res->text, tac->op1->text);
+			break;
+
+			case TAC_INPUT:
+
+				if(tac->res->dataType == DATATYPE_ASTREE_INTEGER)
+				{
+					fprintf(out,
+						"\tmovl	$%s, 4(%%esp)\n"
+						"\tmovl	$.LCD0, (%%esp)\n"
+						"\tcall	__isoc99_scanf\n"
+					, tac->res->text);
+
+				}
+				else if(tac->res->dataType == DATATYPE_ASTREE_INTEGER)
+				{
+					fprintf(out,
+						"\tmovl	$%s, 4(%%esp)\n"
+						"\tmovl	$.LCC0, (%%esp)\n"
+						"\tcall	__isoc99_scanf\n"
+					, tac->res->text);
+				}
+			break;
+
+
+
+		}
+	}
+}
+
+void generateDeclarations(TAC * tac, FILE * out)
+{
+   TAC * aux, *aux2;
+   char tempString[100];
+   int i;
+
+   for(aux = tac; aux; aux = aux->next)
+	{
+		switch(aux->type)
+		{
+			/*case TAC_VECTORDEC:
+				if(aux->res)
+					fprintf(out,"\t.comm	%s,%s,32\n",aux->res->text,aux->op1->text);
+			break;
+			case TAC_VECTORDEC_INIT:
+				vectorInitVarCount = 0;
+				fprintf(out,
+					".globl 	%s\n"
+				, aux->res->text);
+
+				fprintf(out,"\t.align 32\n");
+
+				fprintf(out,
+					"\t.type	%s, @object\n"
+				, aux->res->text);
+
+				if(aux->res->dataType == DATATYPE_ASTREE_BOOLEAN || aux->res->dataType == DATATYPE_ASTREE_INTEGER)
+				{
+					vectorIsWord = 0;
+					vectorInitSize = atoi(aux->op1->text);
+					fprintf(out,"\t.size	%s,%s",aux->res->text,aux->op1->text);
+				}
+				else
+				if(aux->res->dataType == DATATYPE_ASTREE_INTEGER)
+				{
+					vectorIsWord = 1;
+					vectorInitSize = atoi(aux->op1->text)*2;
+					sprintf (tempString, "%d", atoi(aux->op1->text)*2);
+					fprintf(out,"\t.size	%s,%s",aux->res->text,tempString);
+				}
+
+				fprintf(out,
+					"\n%s:\n"
+				, aux->res->text);
+			break;*/
+			//  VER AQUI!!!!
+
+			case TAC_VECTOR_INIT:
+				if (vectorIsWord == 1)
+					vectorInitVarCount++;
+   				vectorInitVarCount++;
+				fprintf(out,"\t.value %s\n",aux->res->text);
+				if (aux->next)
+					if (aux->next->type != TAC_VECTOR_INIT)
+					{
+						sprintf (tempString, "%d", vectorInitSize-vectorInitVarCount);
+						if (strcmp(tempString,"0"))
+							fprintf(out,"\t.zero %s\n",tempString);
+					}
+			break;
+
+			case TAC_VARDEC_INIT:
+			case TAC_POINTER_DEC:
+				fprintf(out,
+					".globl 	%s\n"
+				, aux->res->text);
+
+				if (firstVarInit == 0)
+				{
+					fprintf(out,
+					"\t.data 	\n");
+				}
+				firstVarInit=1;
+
+				if(aux->res->dataType == DATATYPE_ASTREE_INTEGER)
+					fprintf(out,"\t.align 2\n");
+
+				fprintf(out,
+					"\t.type	%s, @object\n"
+				, aux->res->text);
+
+				if(aux->res->dataType == DATATYPE_ASTREE_BOOLEAN || aux->res->dataType == DATATYPE_ASTREE_INTEGER)
+					fprintf(out,"\t.size	%s,1",aux->res->text);
+				else
+				if(aux->res->dataType == DATATYPE_ASTREE_INTEGER)
+					fprintf(out,"\t.size	%s,2",aux->res->text);
+
+				fprintf(out,
+					"\n%s:\n"
+				, aux->res->text);
+
+
+				if(aux->res->dataType == DATATYPE_ASTREE_BOOLEAN)
+					if(!strcmp(aux->op1->text,"TRUE"))
+						fprintf(out,
+							"\t.long	1\n");
+					else
+						fprintf(out,
+							"\t.long	0\n");
+				else if(aux->res->dataType == DATATYPE_ASTREE_INTEGER)
+					fprintf(out,
+						"\t.byte	%d\n", (*(aux)->op1->text) == 39 ? (*(aux->op1->text+1)) : atoi(aux->op1->text));
+				else if(aux->res->dataType == DATATYPE_ASTREE_INTEGER)
+					fprintf(out,
+						"\t.long	%s\n"
+					, aux->op1->text);
+			break;
+
+			case TAC_VARDEC:
+			case TAC_POINTER_DEC_NO_INIT:
+				if(aux->res)
+				{
+					if(aux->res->dataType == DATATYPE_ASTREE_BOOLEAN || aux->res->dataType == DATATYPE_ASTREE_INTEGER)
+						fprintf(out,"\t.comm	%s,1,1\n",aux->res->text);
+					else
+						fprintf(out,"\t.comm	%s,2,2\n",aux->res->text);
+				}
+			break;
+
+			case TAC_TEMP:
+			case TAC_FUNCDEC_PARAMS2:
+			//("antes do TEMP\n");
+					fprintf(out,
+						"\t.globl	%s\n"
+						"%s:\n"
+						"\t.long	0\n"
+					, aux->res->text, aux->res->text);
+			//printf("depois do TEMP\n");
+
+				break;
+		}
+	}
+}
+
+
+void generateStrDec(TAC * tac, FILE * out)
+{
+	if(tac == 0)
+		return;
+
+	TAC * aux;
+	TAC * aux2;
+
+	for(aux = tac; aux->next ; aux = aux->next)
+	{
+
+			if(aux->type == TAC_ARG)
+			{
+				if(aux->op1->type == SYMBOL_LIT_STRING)
+					fprintf(out,
+						".LC%d:\n"
+						"\t.string	%s\n"
+					, LCcount++, aux->op1->text);
+			}
+			else if(aux->type == TAC_INPUT)
+			{
+
+				if(inStrDCount < 0)
+				{
+					inStrDCount = 1;
+					fprintf(out,
+						".LCD0:\n"
+						"\t.string	\"%%d\"\n");
+					fprintf(out,
+						".LCC0:\n"
+						"\t.string	 \"%%c\"\n");
+				}
+			}
+			else if(aux->type == TAC_PRINT)
+			{
+				for(aux2 = aux->prev ; aux2->type == TAC_ARG ||
+						aux2->type == TAC_SYMBOL ||
+						aux2->type == TAC_TEMP ||
+						aux2->type == TAC_VECTOR_READ ; aux2 = aux2->prev)
+					;
+
+				for(aux2 = aux2->next ; aux2 != aux ; aux2 = aux2->next)
+				{
+					if(aux2->type == TAC_ARG)
+						if((aux2->op1->dataType == DATATYPE_ASTREE_INTEGER || aux2->op1->type == SYMBOL_VARTEMP || aux2->op1->dataType == DATATYPE_ASTREE_INTEGER || aux2->op1->dataType == DATATYPE_ASTREE_BOOLEAN) && inStrDCount < 0)
+						{
+							inStrDCount = 1;
+							fprintf(out,
+								".LCD0:\n"
+								"\t.string	\"%%d\"\n");
+							fprintf(out,
+								".LCC0:\n"
+								"\t.string	 \"%%c\"\n");
+
+						}
+				}
+			}
+
 	}
 
-	fprintf(file,"%s",programString);
-
-	return 1;
-}
-
-void initDeclaredTemps()
-{
-  int i;
-  for(i = 0; i < 200; i++)
-  {
-    declaredTemps[i] = 0;
-  }
-}
-
-void asmVecdec(TAC* tac, char* asmString0, char* asmString1, char* tempString)
-{
-  int vectorSize;
-  int i;
-  TAC* tacTemp;
-  //fprintf(stderr, "DEBUG %s\n", tac->op2->text  ); //debug
-  vectorSize = atoi(tac->op2->text);
-
-  strcat(asmString0, "\n## TAC_VECTORDEC1\n");
-  if(! tac->op1) //se nao for inicializado
-  {
-    sprintf(tempString, "	.comm %s, %i, 32\n", tac->res->text, 4*vectorSize);
-  }else{
-    sprintf(tempString, "	.globl	%s\n	.type	%s, @object\n	.size	%s, %i\n%s:\n", tac->res->text,tac->res->text,tac->res->text,atoi(tac->op2->text)*4,tac->res->text);
-    for(tacTemp = tac->prev; tacTemp->prev->type == TAC_SYMBOL; tacTemp = tacTemp->prev)
-    {} // vai ate o primeiro TAC_SYMBOL
-    for(tacTemp = tacTemp; tacTemp->type == TAC_SYMBOL; tacTemp = tacTemp->next)
-    {
-      if(tacTemp->res->type == SYMBOL_LIT_REAL)
-      {
-        strcat(tempString, "	.long ");
-        strcat(tempString, "111111" );
-        strcat(tempString, "\n");
-      }else{
-        if(tacTemp->res->type == SYMBOL_LIT_CHAR)
-        {
-          char charValue[40];
-          sprintf(charValue , "%d", tacTemp->res->text[1]);
-          strcat(tempString, "	.byte ");
-          strcat(tempString, charValue);
-          strcat(tempString, "\n");
-        }else{
-          strcat(tempString, "	.long ");
-          strcat(tempString, tacTemp->res->text );
-          strcat(tempString, "\n");
-        }
-      }
-    }
-  }
-  strcat(asmString0, tempString);
-}
-
-void asmVecWrite(TAC* tac, char* asmString0, char* asmString1, char* tempString)
-{
-  strcat(asmString1, "\n## TAC_VECTOR_WRITE\n");
-  sprintf(tempString,"	movl	%s(%%rip), %%eax\n	movl	%%eax, %s+%i(%%rip)", tac->op1->text, tac->op2->text,  atoi(tac->op2->text)*4);
-  strcat(asmString1, tempString);
-}
-
-void asmVecRead(TAC* tac, char* asmString0, char* asmString1, char* tempString)
-{
-  strcat(asmString1, "\n## TAC_VECTOR_READ\n");
-  sprintf(tempString,"	movl	%%eax, %s+%i(%%rip)\n	movl	%s(%%rip), %%eax", tac->op1->text, atoi(tac->op2->text)*4, tac->op2->text);
-  strcat(asmString1, tempString);
-}
-
-void asmVardec(TAC* tac, char* asmString0, char* asmString1, char* tempString)
-{
-  strcat(asmString0, "\n## TAC_VARDEC_INIT\n");
-  if(tac->op1->type == SYMBOL_LIT_REAL)
-  {
-    sprintf(tempString, "	.globl	%s\n	.type	%s, @object\n	.size	%s, 4\n%s:\n	.long	111111\n", tac->res->text,tac->res->text,tac->res->text,tac->res->text);
-  }else{
-    if(tac->op1->type == SYMBOL_LIT_CHAR)
-    {
-      char charValue[40];
-      sprintf(charValue , "%d", tac->op1->text[1]);
-      sprintf(tempString, " .globl	%s\n .type	%s, @object\n .size	%s, 1\n%s:\n  .byte	%s\n",  tac->res->text,tac->res->text,tac->res->text,tac->res->text, charValue);
-
-    }else{
-      sprintf(tempString, "	.globl	%s\n	.type	%s, @object\n	.size	%s, 4\n%s:\n	.long	%s\n", tac->res->text,tac->res->text,tac->res->text,tac->res->text, tac->op1->text);
-    }
-  }
-  strcat(asmString0, tempString);
-}
-
-void asmBeginFun(TAC* tac, char* asmString0, char* asmString1, char* tempString)
-{
-  strcat(asmString1, "\n## TAC_BEGINFUNC\n");
-  sprintf(tempString,"	.globl	%s\n	.type	%s, @function\n%s:\n	pushq	%%rbp\n	movq	%%rsp, %%rbp\n",tac->res->text,tac->res->text,tac->res->text);
-  strcat(asmString1, tempString);
-}
-
-void asmReturn(TAC* tac, char* asmString0, char* asmString1, char* tempString)
-{
-  strcat(asmString1, "\n## TAC_RETURN\n");
-  if (isdigit(tac->op1->text[0])){
-    char charValue[40];
-    sprintf(charValue , "%d", tac->op1->text);
-    sprintf(tempString, "	movl	$%s, %%eax",tac->op1->text);
-    strcat(asmString1, tempString);
-  }else{ //variavel
-    sprintf(tempString, "	movl	%s(%%rip), %%eax",tac->op1->text);
-    strcat(asmString1, tempString);
-  }
-}
-
-void asmPrint(TAC* tac, char* asmString0, char* asmString1, char* tempString)
-{
-  TAC* temp;
-  strcat(asmString1, "\n## TAC_PRINT\n");
-  for(temp = tac->prev; (temp) && (temp->type == TAC_PRINTELEMENT || temp->type == TAC_SYMBOL); temp = temp->prev){
-    if(temp->type != TAC_SYMBOL) //ignora TAC_SYMBOLs
-    if(temp->res->type == SYMBOL_LIT_STRING){
-      sprintf(tempString,".LC%d:\n	.string	%s\n",printNumber,temp->res->text);
-      strcat(asmString0, tempString);
-      sprintf(tempString,"	movl	$.LC%d, %%edi\n	movl	$0, %%eax\n	call	printf\n",printNumber);
-      strcat(asmString1, tempString);
-      printNumber++;
-    }else{ //expr
-      //fprintf(stderr, " DEBUG 11111\n");
-      sprintf(tempString,".LC%d:\n	.string	\"%%d\"\n",printNumber);
-      strcat(asmString0, tempString);
-      sprintf(tempString,"\tmovl\t%s(%%rip), %%eax\n\tmovl\t%%eax, %%esi\n\tmovl	$.LC%d, %%edi\n	movl	$0, %%eax\n	call	printf\n", temp->res->text, printNumber);
-      strcat(asmString1, tempString);
-      printNumber++;
-    }
-  }
-}
-
-void asmRead(TAC* tac, char* asmString0, char* asmString1, char* tempString)
-{
-  strcat(asmString1, "\n## TAC_INPUT\n");
-  if(tac->res->dataType == DATATYPE_ASTREE_FLOAT)
-  sprintf(tempString,".LC%d:\n	.string	\"%%f\"\n",printNumber);
-  else
-  sprintf(tempString,".LC%d:\n	.string	\"%%d\"\n",printNumber);
-  strcat(asmString0, tempString);
-  sprintf(tempString,"	movl	$%s, %%esi\n	movl	$.LC%d, %%edi\n	movl	$0, %%eax\n	call	__isoc99_scanf\n",tac->res->text,printNumber);
-  strcat(asmString1, tempString);
-  printNumber++;
-}
-
-void asmDeclareTemp(TAC* tac, char* asmString0, char* asmString1, char* tempString)
-{
-  int index ;
-  if(tac->res){
-    if(tac->res->text[0] == '_' && tac->res->text[3] == 't')
-    {
-      index = tac->res->text[7] - '0';
-      if(declaredTemps[9]==1){
-        index = (tac->res->text[8] - '0') + 10;
-        //fprintf(stderr, "\nDEBUG %s --- %i\n", tac->res->text, index );
-      }
-      if(declaredTemps[index] == 0)
-      {
-        declaredTemps[index] = 1;
-        sprintf(tempString, "	.comm	%s,4,4\n", tac->res->text);
-        strcat(asmString0, tempString);
-        //fprintf(stderr, "\nDEBUG2 %s --- %i\n", tac->res->text, index );
-      }
-    }
-  }
-  if(tac->op1){
-    if(tac->op1->text[0] == '_' && tac->op1->text[3] == 't')
-    {
-      index = tac->op1->text[7] - '0';
-      if(declaredTemps[9]==1){
-        index = (tac->op1->text[8] - '0') + 10;
-      }
-      if(declaredTemps[index] == 0)
-      {
-        declaredTemps[index] = 1;
-        sprintf(tempString, "	.comm	%s,4,4\n", tac->op1->text);
-        strcat(asmString0, tempString);
-      }
-    }
-  }
-  if(tac->op2){
-    if(tac->op2->text[0] == '_' && tac->op2->text[3] == 't')
-    {
-      index = tac->op2->text[7] - '0';
-      if(declaredTemps[9]==1){
-        index = (tac->op2->text[8] - '0') + 10;
-      }
-      if(declaredTemps[index] == 0)
-      {
-        declaredTemps[index] = 1;
-        sprintf(tempString, "	.comm	%s,4,4\n", tac->op2->text);
-        strcat(asmString0, tempString);
-      }
-    }
-  }
-}
-
-void asmAdd(TAC* tac, char* asmString0, char* asmString1, char* tempString)
-{
-  strcat(asmString1, "\n## TAC_ADD\n");
-  setOperandos(tac, asmString0, asmString1, tempString);
-  if(tac->op1 && tac->op2 && tac->res){
-    sprintf(tempString, "\taddl	%%edx, %%eax\n	movl	%%eax, %s(%%rip)\n", tac->res->text);
-    strcat(asmString1, tempString);
-  }else{
-    fprintf(stderr, "ERRO que nao deveria acontecer: asmAdd\n" );
-  }
-
-}
-
-void asmSub(TAC* tac, char* asmString0, char* asmString1, char* tempString)
-{
-  strcat(asmString1, "\n## TAC_SUB\n");
-  setOperandos(tac, asmString0, asmString1, tempString);
-  if(tac->op1 && tac->op2 && tac->res){
-    sprintf(tempString, "\tsubl	%%eax, %%edx\n  	movl	%%edx, %%eax\n  	movl	%%eax, %s(%%rip)\n", tac->res->text);
-    strcat(asmString1, tempString);
-  }else{
-    fprintf(stderr, "ERRO que nao deveria acontecer: asmSub\n" );
-  }
-
-}
-
-void asmMul(TAC* tac, char* asmString0, char* asmString1, char* tempString)
-{
-  strcat(asmString1, "\n## TAC_MUL\n");
-  setOperandos(tac, asmString0, asmString1, tempString);
-  if(tac->op1 && tac->op2 && tac->res){
-    sprintf(tempString, "\timull	%%edx, %%eax\n	movl	%%eax, %s(%%rip)\n", tac->res->text);
-    strcat(asmString1, tempString);
-  }else{
-    fprintf(stderr, "ERRO que nao deveria acontecer: asmMul\n" );
-  }
-
-}
-
-void asmDiv(TAC* tac, char* asmString0, char* asmString1, char* tempString)
-{
-  strcat(asmString1, "\n## TAC_DIV\n");
-  if(tac->op1 && tac->op2 && tac->res){
-      //setando operandos
-      if(isdigit(tac->op1->text[0]) && isdigit(tac->op2->text[0]))
-      {
-        int divValue = atoi(tac->op1->text) / atoi(tac->op2->text);
-        //fprintf(stderr, "\ndebug %i\n", divValue);
-        sprintf(tempString, "\tmovl	$%i,%s(%%rip)\n", divValue, tac->res->text);
-        strcat(asmString1, tempString);
-      }else if(isdigit(tac->op1->text[0]))
-      {
-
-      }else if(isdigit(tac->op2->text[0]))
-      {
-        sprintf(tempString, "\tmovl	$%s, %%ecx\n", tac->op2->text);
-        strcat(asmString1, tempString);
-
-      }else{ // nenhum valor imediato
-        sprintf(tempString, "\tmovl	%s(%%rip), %%ecx\n", tac->op2->text);
-        strcat(asmString1, tempString);
-      }
-  }else{
-    fprintf(stderr, "ERRO que nao deveria acontecer: asmDiv\n" );
-  }
-
-}
-
-void asmParam(TAC* tac, char* asmString0, char* asmString1, char* tempString)
-{
-  strcat(asmString0, "\n## TAC_VARDEC_PARAM\n");
-  sprintf(tempString, "	.comm	%s,4,4\n", tac->res->text);
-  strcat(asmString0, tempString);
-}
-
-void asmLabel(TAC* tac, char* asmString0, char* asmString1, char* tempString)
-{
-  strcat(asmString1, "\n## TAC_LABEL\n");
-  sprintf(tempString, ".%s:\n", tac->res->text);
-  strcat(asmString1, tempString);
-}
-
-void asmMov(TAC* tac, char* asmString0, char* asmString1, char* tempString)
-{
-  strcat(asmString1, "\n## TAC_MOVE\n");
-  //if(tac->op1->text[0] >= '0' && tac->op1->text[0] <= '9')
-  if(isdigit(tac->op1->text[0]))
-  {
-    sprintf(tempString, "	movl	$%s, %s(%%rip)\n", tac->op1->text, tac->res->text);
-  }else{
-    sprintf(tempString, "	movl	%s(%%rip), %%eax\n  movl	%%eax, %s(%%rip)\n", tac->op1->text, tac->res->text);
-  }
-  strcat(asmString1, tempString);
-}
-
-void asmIFN(TAC* tac, char* asmString0, char* asmString1, char* tempString)
-{
-  strcat(asmString1, "\n## TAC_IFN\n");
-  sprintf(tempString, "	movl	%s(%%rip), %%eax\n	testl	%%eax, %%eax\n	js	.%s", tac->op1->text, tac->res->text);
-  strcat(asmString1, tempString);
-}
-
-void asmIFZ(TAC* tac, char* asmString0, char* asmString1, char* tempString)
-{
-  strcat(asmString1, "\n## TAC_IFZ\n");
-  sprintf(tempString, "	movl	%s(%%rip), %%eax\n	testl	%%eax, %%eax\n	je	.%s", tac->op1->text, tac->res->text);
-  strcat(asmString1, tempString);
-}
-
-void asmCall(TAC* tac, char* asmString0, char* asmString1, char* tempString)
-{
-  TAC* temp1; //aponta pros argumentos
-  TAC* temp2; //aponta pros parametros
-  strcat(asmString1, "\n## TAC_CALL\n");
-  temp2 = tacGetFirst(tac);
-  while(!(temp2 && temp2->type == TAC_BEGINFUNC && temp2->res->text == tac->op1->text)){
-    temp2 = temp2->next; //BEGGINFUN
-  }
-  temp2 = temp2->next; // PARAM
-  for(temp1 = tac->prev; (temp1) && (temp1->type == TAC_ARG || temp1->type == TAC_SYMBOL); temp1 = temp1->prev){
-    if(temp1->type != TAC_SYMBOL) //ignora TAC_SYMBOLs
-    if(isdigit(temp1->op1->text[0])){
-        sprintf(tempString, "\tmovl $%s, %%eax\n\tmovl %%eax,%s(%%rip)\n", temp1->op1->text, temp2->res->text);
-    }else{
-      sprintf(tempString, "\tmovl %s(%%rip), %%eax\n\tmovl %%eax,%s(%%rip)\n", temp1->op1->text, temp2->res->text);
-    }
-    strcat(asmString1, tempString);
-    temp2 = temp2->next;
-  }
-  sprintf(tempString, "	movl	$0, %%eax\ncall	%s\n	movl	%%eax, %s(%%rip)\n", tac->op1->text, tac->res->text);
-  strcat(asmString1, tempString);
-}
-
-void asmInc(TAC* tac, char* asmString0, char* asmString1, char* tempString)
-{
-  strcat(asmString1, "\n## TAC_INC\n");
-  sprintf(tempString, "	movl	%s(%%rip), %%eax\n	addl	$1, %%eax\n	movl	%%eax, %s(%%rip)\n", tac->res->text, tac->res->text);
-  strcat(asmString1, tempString);
-}
-
-void asmJump(TAC* tac, char* asmString0, char* asmString1, char* tempString)
-{
-  strcat(asmString1, "\n## TAC_JUMP\n");
-  sprintf(tempString, "	jmp .%s\n", tac->res->text);
-  strcat(asmString1, tempString);
-}
-
-void asmJmpFalse(TAC* tac, char* asmString0, char* asmString1, char* tempString)
-{
-  strcat(asmString1, "\n## TAC_JUMPFALSE\n");
-  sprintf(tempString, "	movl	%s(%%rip), %%eax\n	testl	%%eax, %%eax\n	je	.%s\n", tac->op1->text, tac->res->text);
-  strcat(asmString1, tempString);
-}
-
-void boolExpressionResult(TAC* tac, char* asmString1, char* tempString)
-{
-  sprintf(tempString, ".boolLabelTrue_%i:\n	movl	$1,%s(%%rip)\n\tjmp .boolLabelEnd_%i\n", boolLabelCount, tac->res->text, boolLabelCount );
-  strcat(asmString1, tempString);
-  sprintf(tempString, ".boolLabelFalse_%i:\n	movl	$0,%s(%%rip)\n.boolLabelEnd_%i:\n", boolLabelCount, tac->res->text, boolLabelCount);
-  strcat(asmString1, tempString);
-  boolLabelCount += 1;
-}
-
-void setOperandos(TAC* tac, char* asmString0, char* asmString1, char* tempString)
-{
-  //bota op1 no edx e o op2 no eax
-  if(isdigit(tac->op1->text[0]))
-  {
-    sprintf(tempString, "\tmovl	$%s, %%edx\n", tac->op1->text);
-    strcat(asmString1, tempString);
-  }else{
-    sprintf(tempString, "\tmovl	%s(%%rip), %%edx\n", tac->op1->text);
-    strcat(asmString1, tempString);
-  }
-  if(isdigit(tac->op2->text[0]))
-  {
-    sprintf(tempString, "\tmovl	$%s, %%eax\n", tac->op2->text);
-    strcat(asmString1, tempString);
-
-  }else{
-    sprintf(tempString, "\tmovl	%s(%%rip), %%eax\n", tac->op2->text);
-    strcat(asmString1, tempString);
-  }
-}
-
-void asmEqual(TAC* tac, char* asmString0, char* asmString1, char* tempString)
-{
-  strcat(asmString1, "\n## TAC_EQ\n");
-  setOperandos(tac, asmString0, asmString1, tempString);
-  sprintf(tempString, "\tcmpl %%eax, %%edx\n\tje .boolLabelTrue_%i\n\tjmp .boolLabelFalse_%i\n", boolLabelCount, boolLabelCount);
-  strcat(asmString1, tempString);
-  boolExpressionResult(tac, asmString1, tempString);
 }
 
 
-void asmNotEqual(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+
+void generateAdd(TAC * tac, FILE * out)
 {
-  strcat(asmString1, "\n## TAC_NE\n");
-  setOperandos(tac, asmString0, asmString1, tempString);
-  sprintf(tempString, "\tcmpl %%eax, %%edx\n\tjne .boolLabelTrue_%i\n\tjmp .boolLabelFalse_%i\n", boolLabelCount, boolLabelCount);
-  strcat(asmString1, tempString);
-  boolExpressionResult(tac, asmString1, tempString);
+	if(tac->op1->type == SYMBOL_LIT_INTEGER && tac->op2->type == SYMBOL_LIT_INTEGER)
+	{
+		fprintf(out,
+				"\tmovl	$%s, %%eax\n"
+				"\taddl	$%s, %%eax\n"
+				"\tmovw	%%ax, %s\n"
+				, tac->op1->text, tac->op2->text,tac->res->text);
+	}
+	else
+	if((tac->op1->type == SYMBOL_IDENTIFIER || tac->op1->type == SYMBOL_VARTEMP) && tac->op2->type == SYMBOL_LIT_INTEGER)
+	{
+		fprintf(out,
+				"\tmovl	%s, %%eax\n"
+				"\taddl	$%s, %%eax\n"
+				"\tmovw	%%ax, %s\n"
+				, tac->op1->text, tac->op2->text,tac->res->text);
+	}
+	else
+	if(tac->op1->type == SYMBOL_LIT_INTEGER && (tac->op2->type == SYMBOL_IDENTIFIER || tac->op2->type == SYMBOL_VARTEMP))
+	{
+		fprintf(out,
+				"\tmovl	%s, %%eax\n"
+				"\taddl	$%s, %%eax\n"
+				"\tmovw	%%ax, %s\n"
+				, tac->op2->text, tac->op1->text,tac->res->text);
+	}
+	else
+	if((tac->op1->type == SYMBOL_IDENTIFIER || tac->op1->type == SYMBOL_VARTEMP) && (tac->op2->type == SYMBOL_IDENTIFIER || tac->op2->type == SYMBOL_VARTEMP))
+	{
+		fprintf(out,
+				"\tmovl	%s, %%eax\n"
+				"\tmovl	%s, %%edx\n"
+				"\taddl	%%edx, %%eax\n"
+				"\tmovw	%%ax, %s\n"
+				, tac->op2->text, tac->op1->text,tac->res->text);
+	}
 }
 
-void asmLess(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+void generateSub(TAC * tac, FILE * out)
 {
-  strcat(asmString1, "\n## TAC_NE\n");
-  setOperandos(tac, asmString0, asmString1, tempString);
-  sprintf(tempString, "\tcmpl %%eax, %%edx\n\tjge .boolLabelFalse_%i\n\tjmp .boolLabelTrue_%i\n", boolLabelCount, boolLabelCount);
-  strcat(asmString1, tempString);
-  boolExpressionResult(tac, asmString1, tempString);
+	//printf("op2type=%d\n",tac->op2 ? tac->op2->type : 0);
+	if(tac->op1->type == SYMBOL_LIT_INTEGER && tac->op2->type == SYMBOL_LIT_INTEGER)
+	{
+		fprintf(out,
+				"\tmovl	$%s, %%eax\n"
+				"\tsubl	$%s, %%eax\n"
+				"\tmovw	%%ax, %s\n"
+				, tac->op1->text, tac->op2->text,tac->res->text);
+	}
+	else
+	if((tac->op1->type == SYMBOL_IDENTIFIER || tac->op1->type == SYMBOL_VARTEMP) && tac->op2->type == SYMBOL_LIT_INTEGER)
+	{
+		fprintf(out,
+				"\tmovl	%s, %%eax\n"
+				"\tsubl	$%s, %%eax\n"
+				"\tmovw	%%ax, %s\n"
+				, tac->op1->text, tac->op2->text,tac->res->text);
+	}
+	else
+	if(tac->op1->type == SYMBOL_LIT_INTEGER && (tac->op2->type == SYMBOL_IDENTIFIER || tac->op2->type == SYMBOL_VARTEMP))
+	{
+		fprintf(out,
+				"\tmovl	$%s, %%eax\n"
+				"\tsubl	%s, %%eax\n"
+				"\tmovw	%%ax, %s\n"
+				, tac->op1->text, tac->op2->text,tac->res->text);
+	}
+	else
+	if((tac->op1->type == SYMBOL_IDENTIFIER || tac->op1->type == SYMBOL_VARTEMP) && (tac->op2->type == SYMBOL_IDENTIFIER || tac->op2->type == SYMBOL_VARTEMP))
+	{
+		fprintf(out,
+				"\tmovl	%s, %%eax\n"
+				"\tmovl	%s, %%edx\n"
+				"\tsubl	%%edx, %%eax\n"
+				"\tmovw	%%ax, %s\n"
+				, tac->op1->text, tac->op2->text,tac->res->text);
+	}
 }
 
-void asmGreater(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+void generateMul(TAC * tac, FILE * out)
 {
-  strcat(asmString1, "\n## TAC_NE\n");
-  setOperandos(tac, asmString0, asmString1, tempString);
-  sprintf(tempString, "\tcmpl %%eax, %%edx\n\tjle .boolLabelFalse_%i\n\tjmp .boolLabelTrue_%i\n", boolLabelCount, boolLabelCount);
-  strcat(asmString1, tempString);
-  boolExpressionResult(tac, asmString1, tempString);
+	if(tac->op1->type == SYMBOL_LIT_INTEGER && tac->op2->type == SYMBOL_LIT_INTEGER)
+	{
+		fprintf(out,
+				"\tmovl	$%s, %%eax\n"
+				"\timulw	$%s, %%ax, %%ax\n"
+				"\tmovw	%%ax, %s\n"
+				, tac->op1->text, tac->op2->text,tac->res->text);
+	}
+	else
+	if((tac->op1->type == SYMBOL_IDENTIFIER || tac->op1->type == SYMBOL_VARTEMP) && tac->op2->type == SYMBOL_LIT_INTEGER)
+	{
+		fprintf(out,
+				"\tmovl	%s, %%eax\n"
+				"\timulw	$%s, %%ax, %%ax\n"
+				"\tmovw	%%ax, %s\n"
+				, tac->op1->text, tac->op2->text,tac->res->text);
+	}
+	else
+	if(tac->op1->type == SYMBOL_LIT_INTEGER && (tac->op2->type == SYMBOL_IDENTIFIER || tac->op2->type == SYMBOL_VARTEMP))
+	{
+		fprintf(out,
+				"\tmovl	%s, %%eax\n"
+				"\timulw	$%s, %%ax, %%ax\n"
+				"\tmovw	%%ax, %s\n"
+				, tac->op2->text, tac->op1->text,tac->res->text);
+	}
+	else
+	if((tac->op1->type == SYMBOL_IDENTIFIER || tac->op1->type == SYMBOL_VARTEMP) && (tac->op2->type == SYMBOL_IDENTIFIER || tac->op2->type == SYMBOL_VARTEMP))
+	{
+		fprintf(out,
+				"\tmovl	%s, %%eax\n"
+				"\tmovl	%s, %%edx\n"
+				"\timull	%%edx, %%eax\n"
+				"\tmovw	%%ax, %s\n"
+				, tac->op2->text, tac->op1->text,tac->res->text);
+	}
 }
 
-void asmGreaterEqual(TAC* tac, char* asmString0, char* asmString1, char* tempString)
+void generateBoolOp(TAC *tac, FILE* out)
 {
-  strcat(asmString1, "\n## TAC_GE\n");
-  setOperandos(tac, asmString0, asmString1, tempString);
-  sprintf(tempString, "\tcmpl %%eax, %%edx\n\tjl .boolLabelFalse_%i\n\tjmp .boolLabelTrue_%i\n", boolLabelCount, boolLabelCount);
-  strcat(asmString1, tempString);
-  boolExpressionResult(tac, asmString1, tempString);
-}
+	char tempString[100];
+	switch (tac->type)
+	{
+		case TAC_EQ:
+			strcpy(tempString,"\tsete	%al\n");
+		break;
+		case TAC_LE:
+			strcpy(tempString,"\tsetle	%al\n");
+		break;
+		case TAC_GE:
+			strcpy(tempString,"\tsetge	%al\n");
+		break;
+		case TAC_LESS:
+			strcpy(tempString,"\tsetl	%al\n");
+		break;
+		case TAC_GREATER:
+			strcpy(tempString,"\tsetg	%al\n");
+		break;
+		case TAC_NE:
+			strcpy(tempString,"\tsetne	%al\n");
+		break;
+	}
+			if(tac->op1->type == SYMBOL_LIT_INTEGER && (tac->op2->type == SYMBOL_IDENTIFIER || tac->op2->type == SYMBOL_VARTEMP))
+			{
+				fprintf(out,
+					"\tmovzwl	%s, %%eax\n"
+					"\tcmpw	$%s, %%ax\n"
+					"%s"
+					"\tmovzbl	%%al, %%eax\n"
+					"\tmovw	%%ax, %s\n"
+					, tac->op2->text, tac->op1->text, tempString, tac->res->text);
+			}
+			else
+			if((tac->op1->type == SYMBOL_IDENTIFIER || tac->op1->type == SYMBOL_VARTEMP) && tac->op2->type == SYMBOL_LIT_INTEGER)
+			{
+				fprintf(out,
+					"\tmovzwl	%s, %%eax\n"
+					"\tcmpw	$%s, %%ax\n"
+					"%s"
+					"\tmovzbl	%%al, %%eax\n"
+					"\tmovw	%%ax, %s\n"
+					, tac->op1->text, tac->op2->text, tempString, tac->res->text);
+			}
+			else
+			if((tac->op1->type == SYMBOL_IDENTIFIER || tac->op1->type == SYMBOL_VARTEMP) && (tac->op2->type == SYMBOL_IDENTIFIER || tac->op2->type == SYMBOL_VARTEMP))
+			{
+				fprintf(out,
+					"\tmovzwl	%s, %%eax\n"
+					"\tmovzwl	%s, %%edx\n"
+					"\tcmpw	%%dx, %%ax\n"
+					"%s"
+					"\tmovzbl	%%al, %%eax\n"
+					"\tmovw	%%ax, %s\n"
+					, tac->op1->text, tac->op2->text, tempString, tac->res->text);
+			}
+			else
+			if(tac->op1->type == SYMBOL_LIT_INTEGER && tac->op2->type == SYMBOL_LIT_INTEGER)
+			{
+				fprintf(out,
+					"\tmovw	$%s, %%ax\n"
+					"\tcmpw	$%s, %%ax\n"
+					"%s"
+					"\tmovzbl	%%al, %%eax\n"
+					"\tmovw	%%ax, %s\n"
+					, tac->op1->text, tac->op2->text, tempString, tac->res->text);
+			}
 
-void asmLessEqual(TAC* tac, char* asmString0, char* asmString1, char* tempString)
-{
-  strcat(asmString1, "\n## TAC_LE\n");
-  setOperandos(tac, asmString0, asmString1, tempString);
-  sprintf(tempString, "\tcmpl %%eax, %%edx\n\tjg .boolLabelFalse_%i\n\tjmp .boolLabelTrue_%i\n", boolLabelCount, boolLabelCount);
-  strcat(asmString1, tempString);
-  boolExpressionResult(tac, asmString1, tempString);
-}
-
-void asmOr(TAC* tac, char* asmString0, char* asmString1, char* tempString)
-{
-  strcat(asmString1, "\n## TAC_OR\n");
-  setOperandos(tac, asmString0, asmString1, tempString);
-  sprintf(tempString, "\tcmpl $1,%%eax\n\tje .boolLabelTrue_%i\n\tcmpl $1,%%edx\n\tje .boolLabelTrue_%i\n\tjmp .boolLabelFalse_%i\n", boolLabelCount, boolLabelCount, boolLabelCount);
-  strcat(asmString1, tempString);
-  boolExpressionResult(tac, asmString1, tempString);
-}
-
-void asmAnd(TAC* tac, char* asmString0, char* asmString1, char* tempString)
-{
-  strcat(asmString1, "\n## TAC_AND\n");
-  setOperandos(tac, asmString0, asmString1, tempString);
-  sprintf(tempString, "\tcmpl $0,%%eax\n\tje .boolLabelFalse_%i\n\tcmpl $0,%%edx\n\tje .boolLabelFalse_%i\n\tjmp .boolLabelTrue_%i\n", boolLabelCount, boolLabelCount, boolLabelCount);
-  strcat(asmString1, tempString);
-  boolExpressionResult(tac, asmString1, tempString);
-}
-
-char* generateAsm (TAC* first)
-{
-  //recebe uma corrente de TACs
-  // e gera uma string
-  // que eh o programa em assembly
-  char asmString0[ASM_STRING_SIZE]; //declaracoes assembly
-  char asmString1[ASM_STRING_SIZE];
-  char tempString[ASM_STRING_SIZE];
-
-  strcat(asmString0, "###\n### string0\n	.data\n");
-  strcat(asmString1, "###\n###\n###\n###\n### string1\n	.text\n");
-
-
-  strcat(asmString1, "	.file	\"testProgram.c\"\n");
-
-  initDeclaredTemps();
-
-  TAC* tac;
-  for (tac = first; tac; tac= tac->next)
-  {
-    //fprintf(stderr, "debug %i\n", tac->type );
-    if(tac->type != TAC_LABEL)
-    asmDeclareTemp(tac, asmString0, asmString1, tempString);
-    switch (tac->type) {
-      case TAC_SYMBOL:
-          //ignora
-          break;
-      case TAC_VARDEC_INIT:
-          asmVardec(tac, asmString0, asmString1, tempString);
-          break;
-      case TAC_VECTORDEC1:
-          asmVecdec(tac, asmString0, asmString1, tempString);
-          break;
-      case TAC_RETURN:
-          asmReturn(tac, asmString0, asmString1, tempString);
-          break;
-      case TAC_BEGINFUNC:
-          asmBeginFun(tac, asmString0, asmString1, tempString);
-          break;
-      case TAC_ENDFUNC:
-          strcat(asmString1, "\n## TAC_ENDFUNC\n");
-          strcat(asmString1,"	popq	%rbp\n	ret\n	leave\n");
-          break;
-      case TAC_VECTOR_READ:
-          asmVecRead(tac, asmString0, asmString1, tempString);
-          break;
-      case TAC_VECTOR_WRITE:
-          asmVecWrite(tac, asmString0, asmString1, tempString);
-          break;
-      case TAC_MOVE:
-          asmMov(tac, asmString0, asmString1, tempString);
-          break;
-      case TAC_INPUT:
-          strcat(asmString0, "\n## TAC_INPUT\n");
-          asmRead(tac, asmString0, asmString1, tempString);
-          break;
-      case TAC_PRINT:
-          strcat(asmString0, "\n## TAC_PRINT\n");
-          asmPrint(tac, asmString0, asmString1, tempString);
-          break;
-      case TAC_ARG:
-          //nao faz nada, eh processado no TAC_CALL
-          break;
-      case TAC_CALL:
-          asmCall(tac, asmString0, asmString1, tempString);
-          break;
-      case TAC_IFZ:
-          asmIFZ(tac, asmString0, asmString1, tempString);
-          break;
-      case TAC_IFN:
-          asmIFN(tac, asmString0, asmString1, tempString);
-          break;
-      case TAC_LABEL:
-          asmLabel(tac, asmString0, asmString1, tempString);
-          break;
-      case TAC_JUMP:
-          asmJump(tac, asmString0, asmString1, tempString);
-          break;
-      case TAC_SUB:
-          asmSub(tac, asmString0, asmString1, tempString);
-          break;
-      case TAC_ADD:
-          asmDeclareTemp(tac, asmString0, asmString1, tempString);
-          asmAdd(tac, asmString0, asmString1, tempString);
-          break;
-      case TAC_MUL:
-          asmMul(tac, asmString0, asmString1, tempString);
-          break;
-      case TAC_DIV:
-          asmMul(tac, asmString0, asmString1, tempString);
-          break;
-      case TAC_INC:
-          asmInc(tac, asmString0, asmString1, tempString);
-          break;
-      case TAC_VARDEC_PARAM:
-          //todas variaveis sao globais
-          asmParam(tac, asmString0, asmString1, tempString);
-          break;
-      case TAC_OR:
-          asmOr(tac, asmString0, asmString1, tempString);
-          break;
-      case TAC_EQ:
-          asmEqual(tac, asmString0, asmString1, tempString);
-          break;
-      case TAC_NE:
-          asmNotEqual(tac, asmString0, asmString1, tempString);
-          break;
-      case TAC_LE:
-          asmLessEqual(tac, asmString0, asmString1, tempString);
-          break;
-      case TAC_GE:
-          asmGreaterEqual(tac, asmString0, asmString1, tempString);
-          break;
-      case TAC_LESS:
-          asmLess(tac, asmString0, asmString1, tempString);
-          break;
-      case TAC_GREATER:
-          asmGreater(tac, asmString0, asmString1, tempString);
-          break;
-      case TAC_AND:
-          asmAnd(tac, asmString0, asmString1, tempString);
-          break;
-      case TAC_JUMPFALSE:
-          asmJmpFalse(tac, asmString0, asmString1, tempString);
-          break;
-      case TAC_PRINTELEMENT:
-          //nao faz nada, eh processado na tacPrint
-          break;
-      default:
-        fprintf(stderr, "\nERRO que nao era pra acontecer: generateAsm()\n" );
-        break;
-      }
-  }
-
-
-
-    strcat(asmString1,"	.ident	\"Pedros compiler: (Ubuntu 4.8.4-2ubuntu1~14.04.3) 4.8.4\"\n" );
-    strcat(asmString1,"	.section	.note.GNU-stack,\"\",@progbits\n");
-
-    strcat(asmString0,asmString1);
-
-    return asmString0;
 }
