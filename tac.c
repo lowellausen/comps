@@ -219,8 +219,18 @@ TAC * generateCode(ASTREE * root)
 
 TAC * makeOp(int type, TAC * code0, TAC * code1)
 {
-	return tacJoin(tacJoin(code0,code1),
-			tacCreate(type,(HASHNODE *)makeTemp(), code0 ? code0->res : 0, code1 ? code1->res : 0));
+	HASHNODE * temp = makeTemp();
+	TAC * tacTemp;
+
+	if(code0->res->dataType == DATATYPE_ASTREE_INTEGER || code1->res->dataType == DATATYPE_ASTREE_INTEGER)
+		temp->dataType = DATATYPE_ASTREE_INTEGER;
+	else
+		temp->dataType = DATATYPE_ASTREE_BOOLEAN;
+
+	tacTemp = tacCreate(TAC_TEMP, temp, 0, 0);
+
+	return tacJoin(tacJoin(tacJoin(code0,code1),tacTemp),
+			tacCreate(type, temp, code0 ? code0->res : 0, code1 ? code1->res : 0));
 }
 
 TAC * makeIfThen(TAC * code0, TAC * code1)
@@ -332,12 +342,15 @@ TAC * makeOutputParam(TAC * expression, TAC * next)
 
 TAC * makeFuncCall(HASHNODE * symbol, TAC * params)
 {
-	TAC * new;
-	HASHNODE * temp = makeTemp();
+		HASHNODE * temp = makeTemp();
+		TAC * tacTemp;
+		TAC * new;
 
-	new = tacCreate(TAC_CALL, temp, symbol, params ? params->res : 0);
+		new = tacCreate(TAC_CALL, temp, symbol, params ? params->res : 0);
 
-	return tacJoin(params, new);
+
+		tacTemp = tacCreate(TAC_TEMP, temp, 0, 0);
+		return tacJoin(tacJoin(params, new),tacTemp);
 }
 
 TAC * makeArg(HASHNODE * symbol, TAC * exp, TAC * next)
@@ -368,9 +381,11 @@ TAC * makeFuncDec(HASHNODE * symbol, TAC * param, TAC * cmds)
 TAC * makeVectorRead(HASHNODE * symbol, TAC * index)
 {
 	TAC * new;
-	HASHNODE * tempResult = makeTemp();
+		TAC * tacTemp;
+		HASHNODE * tempResult = makeTemp();
 
-	new = tacCreate(TAC_VECTOR_READ, tempResult, symbol, index ? index->res : 0);
+		new = tacCreate(TAC_VECTOR_READ, tempResult, symbol, index ? index->res : 0);
+		tacTemp = tacCreate(TAC_TEMP, tempResult, 0, 0);
 
-	return tacJoin(index, new);
+		return tacJoin(tacJoin(index, new),tacTemp);
 }

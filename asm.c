@@ -69,8 +69,8 @@ void generateInstr(TAC * tac, FILE * out)
 							"\t.type	main, @function\n"
 							"main:\n"
 							".LFB%d:\n"		// Aux counter
-							"\tpushl	%%ebp\n"
-							"\tmovl	%%esp, %%ebp\n"
+							"\tpushq	%%rbp\n"
+							"\tmovq	%%rsp, %%rbp\n"
 							"\tandl	$-16, %%esp\n"
 						, LFBcount++);
 					}
@@ -93,8 +93,8 @@ void generateInstr(TAC * tac, FILE * out)
 							"\t.globl	%s\n"
 							"%s:\n"
 							".LFB%d:\n"		// Aux counter
-							"\tpushl	%%ebp\n"
-							"\tmovl	%%esp, %%ebp\n"
+							"\tpushq	%%rbp\n"
+							"\tmovq	%%rsp, %%rbp\n"
 							, tac->res->text, tac->res->text, LFBcount++);
 						if(beginFuncArgs > 0)
 						{
@@ -227,17 +227,19 @@ void generateInstr(TAC * tac, FILE * out)
    			        numArgsPrint=0;
 				for(aux = aux->next ; aux != tac ; aux = aux->next)
 				{
+					printf("AA %d\n", tac->type);
 					if(aux->type == TAC_ARG)
 					{
 						numArgsPrint++;
 						printf("numargsprint=%d\n",numArgsPrint);
 
-						if(aux->op1->type == SYMBOL_LIT_STRING && strcmp(aux->op1->text,"%c") && strcmp(aux->op1->text,"%d"))
+						if(aux->op1->type == SYMBOL_LIT_STRING && strcmp(aux->op1->text,"%c") && strcmp(aux->op1->text,"%d")){
+
 							fprintf(out,
-								"\tmovl	$.LC%d, %%eax\n"
-								"\tmovl	%%eax, (%%esp)\n"
+								"\tmovl	$.LC%d, %%edi\n"
+								"\tmovl	$0, %%eax\n"
 								"\tcall	printf\n"
-							,LCcount++);
+							,LCcount++);}
 						else if(aux->op1->dataType == DATATYPE_ASTREE_INTEGER || aux->op1->dataType == DATATYPE_ASTREE_INTEGER || aux->op1->dataType == DATATYPE_ASTREE_BOOLEAN || aux->op1->type == SYMBOL_VARTEMP)
 							if(aux->op1->natureza == SYMBOL_PTR && aux->prev->type == TAC_POINTER)
 								;
